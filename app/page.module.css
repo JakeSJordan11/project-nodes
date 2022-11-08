@@ -14,6 +14,8 @@
   border-radius: var(--size-border-radius-node);
   border-width: var(--size-border-width-node);
   border-color: var(--color-border-node);
+  cursor: grab;
+  user-select: none;
 }
 
 .numberNodeInput {
@@ -47,7 +49,6 @@
   border-width: var(--size-border-width-node);
   border-color: var(--color-border-node);
   background-color: var(--color-background-numberNode);
-  cursor: pointer;
 }
 
 .outputPort {
@@ -62,7 +63,10 @@
   border-width: var(--size-border-width-node);
   border-color: var(--color-border-node);
   background-color: var(--color-background-numberNode);
-  cursor: pointer;
+}
+
+.outputPort:hover {
+  cursor: crosshair;
 }
 
 .inputPort1 {
@@ -78,7 +82,10 @@
   border-width: var(--size-border-width-node);
   border-color: var(--color-border-node);
   background-color: var(--color-background-mathNode);
-  cursor: pointer;
+}
+
+.inputPort1:hover {
+  cursor: crosshair;
 }
 
 .inputPort2 {
@@ -94,7 +101,10 @@
   border-width: var(--size-border-width-node);
   border-color: var(--color-border-node);
   background-color: var(--color-background-mathNode);
-  cursor: pointer;
+}
+
+.inputPort2:hover {
+  cursor: crosshair;
 }
 
 .mathNodeLabel {
@@ -116,22 +126,22 @@
   border-width: var(--size-border-width-node);
   border-color: var(--color-border-node);
   background-color: var(--color-background-input);
+  cursor: text;
+  user-select: text;
 }
 
 .connectors {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
   height: 100%;
+  width: 100%;
   pointer-events: none;
 }
 
-[data-node-type="number"] {
+.nodeContainer[data-node-type="number"] {
   background-color: var(--color-background-numberNode);
 }
 
-[data-node-type="math"] {
+.nodeContainer[data-node-type="math"] {
   background-color: var(--color-background-mathNode);
 }
 

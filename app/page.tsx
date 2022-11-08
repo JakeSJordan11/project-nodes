@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./page.module.css";
-import type { ChangeEvent, PointerEvent } from "react";
+import type { ChangeEvent, MouseEvent, PointerEvent } from "react";
 import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
@@ -18,8 +18,9 @@ export default function Home() {
   const inputPort1 = useRef<HTMLButtonElement>(null);
   const inputPort2 = useRef<HTMLButtonElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [hoveredPort, setHoveredPort] = useState<HTMLButtonElement | null>();
-  const [startPort, setStartPort] = useState<HTMLButtonElement | null>();
+  const [isDraggingNode, setIsDraggingNode] = useState(false);
+  const [hoveredPort, setHoveredPort] = useState<HTMLButtonElement>();
+  const [startPort, setStartPort] = useState<HTMLButtonElement>();
   const [mathValue, setMathValue] = useState(0);
   const [currentPathColor, setCurrentPathColor] = useState("");
   const [paths, setPaths] = useState<
@@ -28,6 +29,30 @@ export default function Home() {
       endPort: HTMLButtonElement;
     }[]
   >([]);
+  const [mathNode1Position, setMathNode1Position] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 200, y: 300 });
+  const [mathNode1Offset, setMathNode1Offset] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
+  const [numberNode2Position, setNumberNode2Position] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 50, y: 50 });
+  const [numberNode2Offset, setNumberNode2Offset] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
+  const [numberNode1Position, setNumberNode1Position] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 350, y: 50 });
+  const [numberNode1Offset, setNumberNode1Offset] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
 
   function handleNumberNode1Change(event: ChangeEvent<HTMLInputElement>) {
     setNumberNode1Value(event.target.value);
@@ -65,7 +90,70 @@ export default function Home() {
     }
   }
 
-  function handleDown(event: PointerEvent) {
+  function handleInputDown(event: PointerEvent<HTMLInputElement>) {
+    event.stopPropagation();
+  }
+
+  function handleNodeDown(event: PointerEvent<HTMLButtonElement>) {
+    setIsDraggingNode(true);
+    event.currentTarget.style.cursor = "grabbing";
+    event.currentTarget.style.userSelect = "none";
+    event.currentTarget.setPointerCapture(event.pointerId);
+    switch (event.currentTarget.id) {
+      case "numberNode1":
+        setNumberNode1Offset({
+          x: event.clientX - event.currentTarget.getBoundingClientRect().x,
+          y: event.clientY - event.currentTarget.getBoundingClientRect().y,
+        });
+        break;
+      case "numberNode2":
+        setNumberNode2Offset({
+          x: event.clientX - event.currentTarget.getBoundingClientRect().x,
+          y: event.clientY - event.currentTarget.getBoundingClientRect().y,
+        });
+        break;
+      case "mathNode1":
+        setMathNode1Offset({
+          x: event.clientX - event.currentTarget.getBoundingClientRect().x,
+          y: event.clientY - event.currentTarget.getBoundingClientRect().y,
+        });
+        break;
+    }
+  }
+
+  function handleNodeMove(event: PointerEvent<HTMLButtonElement>) {
+    switch (event.currentTarget.id) {
+      case "mathNode1":
+        isDraggingNode &&
+          setMathNode1Position({
+            x: event.clientX - mathNode1Offset.x,
+            y: event.clientY - mathNode1Offset.y,
+          });
+        break;
+      case "numberNode2":
+        isDraggingNode &&
+          setNumberNode2Position({
+            x: event.clientX - numberNode2Offset.x,
+            y: event.clientY - numberNode2Offset.y,
+          });
+        break;
+      case "numberNode1":
+        isDraggingNode &&
+          setNumberNode1Position({
+            x: event.clientX - numberNode1Offset.x,
+            y: event.clientY - numberNode1Offset.y,
+          });
+        break;
+    }
+  }
+
+  function handleNodeUp(event: PointerEvent<HTMLButtonElement>) {
+    setIsDraggingNode(false);
+    // NOTE: Don't wory about making this css LOW PRIORITY
+    event.currentTarget.style.cursor = "grab";
+  }
+
+  function handlePortDown(event: PointerEvent) {
     setIsDragging(true);
     let port;
     setStartPort(port);
@@ -83,6 +171,11 @@ export default function Home() {
         port = inputPort2.current;
         break;
     }
+    if (port) {
+      /* setStartPort(port); */
+      event.stopPropagation();
+      port.style.userSelect = "none";
+    }
     if (port?.getAttribute("data-port-connected") === "false") {
       setStartPort(port);
       port.parentElement?.getAttribute("data-node-type") === "number"
@@ -97,7 +190,7 @@ export default function Home() {
     }
   }
 
-  function handleMove(event: PointerEvent) {
+  function handleMainMove(event: PointerEvent) {
     if (isDragging) {
       setCurrentPath((currentPath) => {
         if (currentPath) {
@@ -109,10 +202,22 @@ export default function Home() {
           };
         }
       });
+      // TODO: should be replaced with a react way of doing this
+      window.document.body.style.cursor = "crosshair";
+
+      paths.find(
+        (path) =>
+          path.startPort === outputPort2.current ||
+          path.endPort === outputPort2.current
+      )
+        ? outputPort2.current?.setAttribute("data-port-connected", "true")
+        : outputPort2.current?.setAttribute("data-port-connected", "false");
     }
   }
 
-  function handleUp() {
+  function handleMainUp() {
+    // TODO: should be replaced with a react way of doing this
+    window.document.body.style.cursor = "default";
     setIsDragging(false);
     setCurrentPath(undefined);
     if (hoveredPort?.parentElement?.id !== startPort?.parentElement?.id) {
@@ -120,19 +225,22 @@ export default function Home() {
         hoveredPort?.parentElement?.getAttribute("data-node-type") !==
         startPort?.parentElement?.getAttribute("data-node-type")
       ) {
-        hoveredPort &&
+        startPort &&
+          hoveredPort &&
           setPaths([
             ...paths,
             {
-              startPort: startPort!,
+              startPort: startPort,
               endPort: hoveredPort,
             },
           ]);
+        hoveredPort && startPort?.setAttribute("data-port-connected", "true");
+        hoveredPort?.setAttribute("data-port-connected", "true");
       }
     }
   }
 
-  function handleOver(event: PointerEvent) {
+  function handlePortOver(event: PointerEvent) {
     if (isDragging) {
       switch (event.currentTarget) {
         case inputPort1.current:
@@ -151,15 +259,17 @@ export default function Home() {
           outputPort2.current?.getAttribute("data-port-connected") ===
             "false" && setHoveredPort(outputPort2.current);
           break;
+        default:
+          setHoveredPort(undefined);
       }
     }
   }
 
-  function handleLeave() {
-    setHoveredPort(null);
+  function handlePortLeave() {
+    setHoveredPort(undefined);
   }
 
-  function handleDoubleClick(event: MouseEvent) {
+  function handlePortDoubleClick(event: MouseEvent<HTMLButtonElement>) {
     switch (event.currentTarget) {
       case inputPort1.current:
         inputPort1.current?.getAttribute("data-port-connected") === "true" &&
@@ -205,9 +315,12 @@ export default function Home() {
           );
         outputPort2.current?.setAttribute("data-port-connected", "false");
         break;
+      default:
+        break;
     }
   }
 
+  //TODO: there should be a way to do this without the useEfect hook this feels like it's not using react correctly
   useEffect(() => {
     if (outputPort1.current?.getAttribute("data-port-connected") === "true") {
       if (inputPort1.current?.getAttribute("data-port-connected") === "true") {
@@ -237,24 +350,59 @@ export default function Home() {
         setMathValue(Number(numberNode1Value) + Number(numberNode2Value));
       }
     }
-  }, [numberNode1Value, numberNode2Value, isDragging]);
+    // INFO: sets the data-port-connected attribute
+    // TODO: this could be done in a better way
+    paths.find(
+      (path) =>
+        path.startPort === outputPort2.current ||
+        path.endPort === outputPort2.current
+    )
+      ? outputPort2.current?.setAttribute("data-port-connected", "true")
+      : outputPort2.current?.setAttribute("data-port-connected", "false");
+    paths.find(
+      (path) =>
+        path.startPort === outputPort1.current ||
+        path.endPort === outputPort1.current
+    )
+      ? outputPort1.current?.setAttribute("data-port-connected", "true")
+      : outputPort1.current?.setAttribute("data-port-connected", "false");
+    paths.find(
+      (path) =>
+        path.startPort === inputPort1.current ||
+        path.endPort === inputPort1.current
+    )
+      ? inputPort1.current?.setAttribute("data-port-connected", "true")
+      : inputPort1.current?.setAttribute("data-port-connected", "false");
+    paths.find(
+      (path) =>
+        path.startPort === inputPort2.current ||
+        path.endPort === inputPort2.current
+    )
+      ? inputPort2.current?.setAttribute("data-port-connected", "true")
+      : inputPort2.current?.setAttribute("data-port-connected", "false");
+  }, [paths, numberNode1Value, numberNode2Value]);
 
   return (
     <main
       className={styles.main}
-      onPointerUp={handleUp}
-      onPointerMove={handleMove}
+      onPointerUp={handleMainUp}
+      onPointerMove={handleMainMove}
     >
       {/* number node1 */}
       <article
         className={styles.nodeContainer}
-        style={{ left: "5rem" }}
+        style={{ left: numberNode1Position.x, top: numberNode1Position.y }}
         data-node-type="number"
+        id="numberNode1"
+        onPointerDown={handleNodeDown}
+        onPointerMove={handleNodeMove}
+        onPointerUp={handleNodeUp}
       >
         <input
           className={styles.numberNodeInput}
           value={numberNode1Value}
           onChange={handleNumberNode1Change}
+          onPointerDown={handleInputDown}
           data-np-checked
         />
         <input
@@ -263,6 +411,7 @@ export default function Home() {
           max={10}
           value={numberNode1Value}
           onChange={handleNumberNode1Change}
+          onPointerDown={handleInputDown}
           data-np-checked
         />
         <button
@@ -270,32 +419,27 @@ export default function Home() {
           ref={outputPort1}
           id="outputPort1"
           data-port-type="output"
-          data-port-connected={
-            paths.find(
-              (path) =>
-                path.startPort === outputPort1.current ||
-                path.endPort === outputPort1.current
-            )
-              ? true
-              : false
-          }
-          onPointerDown={handleDown}
-          onPointerLeave={handleLeave}
-          onPointerOver={handleOver}
-          onDoubleClick={() => handleDoubleClick}
+          onPointerDown={handlePortDown}
+          onPointerLeave={handlePortLeave}
+          onPointerOver={handlePortOver}
+          onDoubleClick={handlePortDoubleClick}
         />
       </article>
       {/* number node2 */}
       <article
         className={styles.nodeContainer}
-        style={{ left: "35rem" }}
+        style={{ left: numberNode2Position.x, top: numberNode2Position.y }}
         data-node-type="number"
-        id="number-node2"
+        id="numberNode2"
+        onPointerDown={handleNodeDown}
+        onPointerMove={handleNodeMove}
+        onPointerUp={handleNodeUp}
       >
         <input
           className={styles.numberNodeInput}
           value={numberNode2Value}
           onChange={handleNumberNode2Change}
+          onPointerDown={handleInputDown}
           data-np-checked
         />
         <input
@@ -304,6 +448,7 @@ export default function Home() {
           max={10}
           value={numberNode2Value}
           onChange={handleNumberNode2Change}
+          onPointerDown={handleInputDown}
           data-np-checked
         />
         <button
@@ -311,72 +456,53 @@ export default function Home() {
           ref={outputPort2}
           id="outputPort2"
           data-port-type="output"
-          data-port-connected={
-            paths.find(
-              (path) =>
-                path.startPort === outputPort2.current ||
-                path.endPort === outputPort2.current
-            )
-              ? true
-              : false
-          }
-          onPointerDown={handleDown}
-          onPointerLeave={handleLeave}
-          onPointerOver={handleOver}
+          onPointerDown={handlePortDown}
+          onPointerLeave={handlePortLeave}
+          onPointerOver={handlePortOver}
+          onDoubleClick={handlePortDoubleClick}
         />
       </article>
       {/* math node */}
       <article
         className={styles.nodeContainer}
-        style={{ left: "20rem", top: "20rem" }}
+        style={{ left: mathNode1Position.x, top: mathNode1Position.y }}
         data-node-type="math"
-        id="math-node1"
+        id="mathNode1"
+        onPointerDown={handleNodeDown}
+        onPointerMove={handleNodeMove}
+        onPointerUp={handleNodeUp}
       >
         <button
           className={styles.inputPort1}
           ref={inputPort1}
           id="inputPort1"
           data-port-type="input"
-          data-port-connected={
-            paths.find(
-              (path) =>
-                path.startPort === inputPort1.current ||
-                path.endPort === inputPort1.current
-            )
-              ? true
-              : false
-          }
-          onPointerDown={handleDown}
-          onPointerLeave={handleLeave}
-          onPointerOver={handleOver}
-          onDoubleClick={() => handleDoubleClick}
+          onPointerDown={handlePortDown}
+          onPointerLeave={handlePortLeave}
+          onPointerOver={handlePortOver}
+          onDoubleClick={handlePortDoubleClick}
         />
         <button
           className={styles.inputPort2}
           ref={inputPort2}
           id="inputPort2"
           data-port-type="input"
-          data-port-connected={
-            paths.find(
-              (path) =>
-                path.startPort === inputPort2.current ||
-                path.endPort === inputPort2.current
-            )
-              ? true
-              : false
-          }
-          onPointerDown={handleDown}
-          onPointerLeave={handleLeave}
-          onPointerOver={handleOver}
-          onDoubleClick={() => handleDoubleClick}
+          onPointerDown={handlePortDown}
+          onPointerLeave={handlePortLeave}
+          onPointerOver={handlePortOver}
+          onDoubleClick={handlePortDoubleClick}
         />
         <div className={styles.mathNodeLabel}>Add</div>
-        <div className={styles.mathNodeValue} data-np-checked>
+        <div
+          className={styles.mathNodeValue}
+          onPointerDown={handleInputDown}
+          data-np-checked
+        >
           {mathValue}
         </div>
       </article>
       {/* connectors */}
-      <svg className={styles.connectors}>
+      <svg className={styles.connectors} preserveAspectRatio="xMinYMin meet">
         <linearGradient x1="50%" y1="92.034%" x2="50%" y2="7.2%" id="a">
           <stop offset="0%" stopColor="var(--color-background-mathNode)" />
           <stop offset="100%" stopColor="var(--color-background-numberNode)" />
@@ -388,6 +514,7 @@ export default function Home() {
             strokeWidth="4"
             strokeLinecap="round"
             strokeLinejoin="round"
+            pointerEvents="none"
             d={`M ${path.startPort.getBoundingClientRect().x + 8} ${
               path.startPort.getBoundingClientRect().y + 8
             } L ${path.endPort.getBoundingClientRect().x + 8} ${
@@ -397,6 +524,7 @@ export default function Home() {
         ))}
         {currentPath && (
           <path
+            cursor="crosshair"
             stroke={currentPathColor}
             strokeWidth="4"
             strokeLinecap="round"
