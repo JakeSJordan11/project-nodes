@@ -9,8 +9,8 @@
   --size-width-node: 5rem;
   --size-height-input: 3rem;
   --size-font: 1.25rem;
-  --size-height-port: 1.2rem;
-  --size-width-port: 1.2rem;
+  --size-height-port: 16px;
+  --size-width-port: 16px;
 
   --color-border-node: black;
   --color-background-input: white;
@@ -32,4 +32,5 @@ body {
   padding: 0;
   margin: 0;
   font-family: var(--font-family);
+  overflow: hidden;
 }

@@ -1,0 +1,17 @@
+.node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  width: var(--size-width-node);
+  height: var(--size-height-node);
+  border-style: solid;
+  border-radius: var(--size-border-radius-node);
+  border-width: var(--size-border-width-node);
+  border-color: var(--color-border-node);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  background-color: var(--color-background-numberNode);
+}
