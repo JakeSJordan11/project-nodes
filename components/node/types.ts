@@ -1,4 +1,4 @@
-import type { Dispatch, PointerEventHandler, SetStateAction } from "react";
+import type { PointerEventHandler } from "react";
 
 export interface NodeProps extends React.HTMLAttributes<HTMLElement> {
   inputs?: number;
@@ -8,5 +8,6 @@ export interface NodeProps extends React.HTMLAttributes<HTMLElement> {
   onPortPointerUp?: PointerEventHandler<HTMLButtonElement> | undefined;
   onPortPointerEnter?: PointerEventHandler<HTMLButtonElement> | undefined;
   onPortPointerLeave?: PointerEventHandler<HTMLButtonElement> | undefined;
-  onNodePointerMove?: Dispatch<SetStateAction<{ x: number; y: number }>>;
+  nodeRef?: React.RefObject<HTMLDivElement> | null;
+  portRef?: React.RefObject<HTMLButtonElement>;
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import type { PointerEvent } from "react";
+import { useState, useRef } from "react";
 import Port from "../ports";
 import styles from "./styles.module.css";
 import type { NodeProps } from "./types";
@@ -10,9 +10,9 @@ export default function Node({
   inputs,
   outputs,
   onPortPointerDown,
-  onPortPointerEnter,
-  onPortPointerLeave,
+  onPortPointerOver,
   onPortPointerUp,
+  portRef,
 }: NodeProps) {
   const [nodePosition, setNodePosition] = useState({ x: 0, y: 0 });
   const dynamicStyles = {
@@ -20,13 +20,13 @@ export default function Node({
     left: nodePosition.x,
   };
 
-  const isNodePointerDown = useRef(false);
-  const isPortPointerDown = useRef(false);
+  const [nodePointerDown, setNodePointerDown] = useState(false);
+  const [portPointerDown, setPortPointerDown] = useState(false);
   const nodeOffsetPosition = useRef({ x: 0, y: 0 });
 
   function handleNodePointerDown(event: PointerEvent) {
-    /* event.currentTarget.setPointerCapture(event.pointerId); */
-    isNodePointerDown.current = true;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setNodePointerDown(true);
     nodeOffsetPosition.current = {
       x: event.clientX - event.currentTarget.getBoundingClientRect().x,
       y: event.clientY - event.currentTarget.getBoundingClientRect().y,
@@ -34,14 +34,14 @@ export default function Node({
   }
 
   function handleNodePointerUp() {
-    isNodePointerDown.current && (isNodePointerDown.current = false);
-    isPortPointerDown.current && (isPortPointerDown.current = false);
+    nodePointerDown && setNodePointerDown(false);
+    portPointerDown && setPortPointerDown(false);
   }
 
   function handleNodePointerMove(event: PointerEvent) {
     // this works well I'm just not sure if this is the clearest way to do it
-    isNodePointerDown.current &&
-      !isPortPointerDown.current &&
+    nodePointerDown &&
+      !portPointerDown &&
       setNodePosition({
         x: event.clientX - nodeOffsetPosition.current.x,
         y: event.clientY - nodeOffsetPosition.current.y,
@@ -50,16 +50,9 @@ export default function Node({
 
   function handlePortPointerDown(event: PointerEvent<HTMLButtonElement>) {
     // using the onPointerDown prop in this scope and then passing the prop to allow it to be used as a Node prop in that scope as well
-    isPortPointerDown.current = true;
+    setPortPointerDown(true);
     onPortPointerDown && onPortPointerDown(event);
   }
-
-  useEffect(() => {
-    window.addEventListener("pointermove", handleNodePointerMove as any); // typescripts broken I don't want to make a global.d.ts file for the globalThis on the window
-    return () => {
-      window.removeEventListener("pointermove", handleNodePointerMove as any);
-    };
-  }, []);
 
   return (
     <article
@@ -71,23 +64,23 @@ export default function Node({
     >
       {inputs ? (
         <Port
+          ref={portRef}
           input
           amount={inputs}
           onPointerDown={handlePortPointerDown}
           onPointerUp={onPortPointerUp}
-          onPointerEnter={onPortPointerEnter}
-          onPointerLeave={onPortPointerLeave}
+          onPointerOver={onPortPointerOver}
         />
       ) : null}
       <h3> Node Content</h3>
       {outputs ? (
         <Port
+          ref={portRef}
           output
           amount={outputs}
           onPointerDown={handlePortPointerDown}
           onPointerUp={onPortPointerUp}
-          onPointerEnter={onPortPointerEnter}
-          onPointerLeave={onPortPointerLeave}
+          onPointerOver={onPortPointerOver}
         />
       ) : null}
     </article>

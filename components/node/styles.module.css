@@ -15,3 +15,7 @@
   -webkit-user-select: none;
   background-color: var(--color-background-numberNode);
 }
+
+.node:active {
+  cursor: grabbing;
+}

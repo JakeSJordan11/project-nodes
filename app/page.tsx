@@ -1,5 +1,5 @@
-import Viewport from "../components/viewport";
+import Canvas from "../components/canvas";
 
 export default function Page() {
-  return <Viewport />;
+  return <Canvas />;
 }
