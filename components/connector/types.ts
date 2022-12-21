@@ -1,8 +1,3 @@
-export interface ConnectorProps {
-  currentPath: {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
-  };
-}
+import type { SVGProps } from "react";
+
+export type ConnectorProps = SVGProps<SVGPathElement>;

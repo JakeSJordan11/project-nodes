@@ -1,29 +1,13 @@
-import styles from "./styles.module.css";
 import type { ConnectorProps } from "./types";
 
-export default function Connector({ currentPath }: ConnectorProps) {
+export default function Connector({ d }: ConnectorProps) {
   return (
-    <svg
-      className={styles.connectors}
-      preserveAspectRatio="xMinYMin meet"
-      height={currentPath.y1 > 0 ? "100%" : 0}
-      width={currentPath.x1 > 0 ? "100%" : 0}
-    >
+    <g>
       <linearGradient x1="50%" y1="92.034%" x2="50%" y2="7.2%" id="a">
-        <stop offset="0%" stopColor="var(--color-background-mathNode)" />
-        <stop offset="100%" stopColor="var(--color-background-numberNode)" />
+        <stop offset="0%" stopColor="var(--color-path-stop-1)" />
+        <stop offset="100%" stopColor="var(--color-path-stop-2)" />
       </linearGradient>
-      <g
-        fill="none"
-        stroke="url(#a)"
-        strokeWidth="4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path
-          d={`M ${currentPath.x1} ${currentPath.y1} L ${currentPath.x2} ${currentPath.y2}`}
-        />
-      </g>
-    </svg>
+      <path stroke="url(#a)" strokeWidth="4" strokeLinecap="round" d={d} />
+    </g>
   );
 }

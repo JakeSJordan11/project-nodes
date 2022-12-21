@@ -16,6 +16,8 @@
   --color-background-input: white;
   --color-background-numberNode: silver;
   --color-background-mathNode: deepskyblue;
+  --color-path-stop-1: darkgray;
+  --color-path-stop-2: gray;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +26,8 @@
     --color-background-input: hsl(0, 0%, 10%);
     --color-background-numberNode: gray;
     --color-background-mathNode: darkcyan;
+    --color-path-stop-1: darkgray;
+    --color-path-stop-2: gray;
   }
 }
 
