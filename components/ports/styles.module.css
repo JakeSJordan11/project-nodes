@@ -13,8 +13,12 @@
   border-width: var(--size-border-width-node);
   border-color: var(--color-border-node);
   background-color: var(--color-background-numberNode);
+  cursor: pointer;
 }
 
 .port:hover {
-  cursor: crosshair;
+  cursor: pointer;
+}
+.port:active {
+  cursor: move;
 }

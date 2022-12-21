@@ -3,7 +3,12 @@ import type { ConnectorProps } from "./types";
 
 export default function Connector({ currentPath }: ConnectorProps) {
   return (
-    <svg className={styles.connectors} preserveAspectRatio="xMinYMin meet">
+    <svg
+      className={styles.connectors}
+      preserveAspectRatio="xMinYMin meet"
+      height={currentPath.y1 > 0 ? "100%" : 0}
+      width={currentPath.x1 > 0 ? "100%" : 0}
+    >
       <linearGradient x1="50%" y1="92.034%" x2="50%" y2="7.2%" id="a">
         <stop offset="0%" stopColor="var(--color-background-mathNode)" />
         <stop offset="100%" stopColor="var(--color-background-numberNode)" />
