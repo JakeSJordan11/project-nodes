@@ -1,3 +1,7 @@
+.main {
+  height: 100vh;
+}
+
 .connectors {
   position: absolute;
   pointer-events: none;
