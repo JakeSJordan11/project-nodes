@@ -2,61 +2,101 @@
 
 import type { PointerEvent } from "react";
 import { useState } from "react";
-import Connector from "../components/connector";
-import { Node } from "../components/nodes";
-import { initialNodeData } from "../utils/data";
-import type { NodeData } from "../utils/types";
+import { Node } from "../components/node";
+import { Stream } from "../components/stream";
+import { initialNodes } from "../components/node/node.data";
+import { initialPorts } from "../components/port/port.data";
+import { initialStreams } from "../components/stream/stream.data";
 import styles from "./page.module.css";
 
 export default function Page() {
-  const [data, setData] = useState<NodeData[]>(initialNodeData);
-  const [dragging, setDragging] = useState(false);
-  const [currentPath, setCurrentPath] = useState<{
-    x1?: number;
-    y1?: number;
-    x2: number;
-    y2: number;
-  }>();
+  const [nodes, setNodes] = useState(initialNodes);
+  const [ports, setPorts] = useState(initialPorts);
+  const [streams, setStreams] = useState(initialStreams);
   const [cursor, setCursor] = useState("default");
-  const [paths, setPaths] = useState<{
-    [key: string]: {
-      x1: number;
-      y1: number;
-      x2: number;
-      y2: number;
-    };
-  }>({});
 
-  const dynamicStyles = {
-    cursor: cursor,
-  };
-
-  function handlePortPointerDown(event: PointerEvent<HTMLButtonElement>) {
-    setCursor("move");
+  function handlePortPointerDown(event: PointerEvent) {
+    const buttonBounds = event.currentTarget.getBoundingClientRect();
     event.stopPropagation();
-    setDragging(true);
-    setCurrentPath({
-      x1: event.currentTarget.getBoundingClientRect().x + 8,
-      y1: event.currentTarget.getBoundingClientRect().y + 8,
-      x2: event.currentTarget.getBoundingClientRect().x + 8,
-      y2: event.currentTarget.getBoundingClientRect().y + 8,
-    });
+    setCursor("move");
+    setStreams([
+      ...streams,
+      {
+        isActive: true,
+        isLinked: false,
+        m: `M ${buttonBounds.x + 8} ${buttonBounds.y + 8}`,
+      },
+    ]);
   }
 
   function handleMainPointerMove(event: PointerEvent) {
-    if (dragging) {
-      setCurrentPath({
-        ...currentPath,
-        x2: event.clientX,
-        y2: event.clientY,
-      });
-    }
+    setStreams(
+      streams.map((stream) => {
+        if (stream.isActive) {
+          return {
+            ...stream,
+            m: stream.m,
+            l: `L ${event.clientX} ${event.clientY}`,
+          };
+        }
+        return stream;
+      })
+    );
+    setNodes(
+      nodes.map((node) => {
+        if (node.isActive) {
+          return {
+            ...node,
+            nodePosition: {
+              x: event.clientX - node.nodeOffset.x,
+              y: event.clientY - node.nodeOffset.y,
+            },
+          };
+        }
+        return node;
+      })
+    );
+  }
+
+  function handleNodePointerDown(event: PointerEvent) {
+    setNodes(
+      nodes.map((node) => {
+        if (node.nodeId.toString() === event.currentTarget.id) {
+          return {
+            ...node,
+            isActive: true,
+            nodeOffset: {
+              x: event.clientX - event.currentTarget.getBoundingClientRect().x,
+              y: event.clientY - event.currentTarget.getBoundingClientRect().y,
+            },
+          };
+        }
+        return node;
+      })
+    );
   }
 
   function handleMainPointerUp() {
-    setCursor("unset");
-    setDragging(false);
-    setCurrentPath(undefined);
+    setCursor("default");
+    setNodes(
+      nodes.map((node) => {
+        if (node.isActive) {
+          return {
+            ...node,
+            isActive: false,
+          };
+        }
+        return node;
+      })
+    );
+    setStreams(
+      streams.map((stream) => {
+        if (stream.isActive && !stream.isLinked) {
+          return {};
+        }
+        return stream;
+      })
+    );
   }
 
   function handlePortPointerOver() {}
@@ -66,37 +106,35 @@ export default function Page() {
   return (
     <main
       className={styles.main}
-      style={dynamicStyles}
+      style={{ cursor: cursor }}
       onPointerMove={handleMainPointerMove}
       onPointerUp={handleMainPointerUp}
     >
-      {data.map((node) => (
+      {nodes.map((node) => (
         <Node
-          key={node.id}
-          id={node.id}
-          type={node.type}
-          title={node.title}
-          position={node.position}
-          ports={node.ports.map((port) => ({
-            id: port.id,
-            type: port.type,
-            connectedTo: port.connectedTo,
-          }))}
-          onPortPointerDown={handlePortPointerDown}
-          onPortPointerOver={handlePortPointerOver}
-          onPortPointerLeave={handlePortPointerLeave}
+          {...node}
+          key={node.nodeId}
+          onPointerDown={handleNodePointerDown}
+          ports={ports.filter((port) => port.nodeId === node.nodeId)}
+          portProps={{
+            onPointerDown: handlePortPointerDown,
+            onPointerOver: handlePortPointerOver,
+            onPointerLeave: handlePortPointerLeave,
+          }}
         />
       ))}
       <svg
         preserveAspectRatio="xMinYMin meet"
         height={"100%"}
         width={"100%"}
-        className={styles.connectors}
+        className={styles.streams}
       >
-        {currentPath && (
-          <Connector
-            d={`M${currentPath.x1} ${currentPath.y1} L${currentPath.x2} ${currentPath.y2}`}
-          />
+        {streams.map(
+          (stream, index) =>
+            stream.m &&
+            stream.l && (
+              <Stream key={index} stroke="red" d={stream.m + stream.l} />
+            )
         )}
       </svg>
     </main>

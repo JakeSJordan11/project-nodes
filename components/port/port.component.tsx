@@ -1,15 +1,15 @@
-import styles from "./styles.module.css";
-import { PortProps } from "./types";
+import type { PortProps } from "./port.types";
+import styles from "./port.module.css";
 
-export default function Port({
+export function Port({
   onPointerDown,
   onPointerOver,
   onPointerLeave,
 }: PortProps) {
   return (
     <button
-      aria-label="port"
       type="button"
+      aria-label="port"
       className={styles.port}
       onPointerDown={onPointerDown}
       onPointerOver={onPointerOver}

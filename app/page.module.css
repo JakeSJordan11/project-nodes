@@ -2,7 +2,7 @@
   height: 100vh;
 }
 
-.connectors {
+.streams {
   position: absolute;
   pointer-events: none;
 }
