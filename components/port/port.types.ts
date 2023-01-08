@@ -6,6 +6,8 @@ export interface PortData {
   nodeId: number;
   portType: PortTypes;
   portName: string;
+  isLinked: boolean;
+  isHovered: boolean;
 }
 
 export type PortProps = ButtonHTMLAttributes<HTMLButtonElement>;

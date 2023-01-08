@@ -2,7 +2,25 @@
   height: 100vh;
 }
 
-.streams {
+.nodeTitle {
+  letter-spacing: 1px;
+  margin: 0;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: large;
+  border: 0.2rem solid #404040;
+  border-radius: 0.25rem;
+}
+
+.portContainer {
   position: absolute;
-  pointer-events: none;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  left: 0;
+  right: 0;
+  height: 0;
+  width: "100%";
 }

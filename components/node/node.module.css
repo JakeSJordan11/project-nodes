@@ -19,20 +19,3 @@
 .node:active {
   cursor: grabbing;
 }
-
-.portContainer {
-  position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  left: 0;
-  right: 0;
-  height: 0;
-  width: "100%";
-}
-
-.title {
-  align-self: center;
-  padding: 1rem;
-  letter-spacing: 1px;
-}

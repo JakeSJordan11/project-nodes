@@ -1,19 +1,21 @@
-import type { PortProps } from "./port.types";
+import type { PortProps, PortData } from "./port.types";
 import styles from "./port.module.css";
 
 export function Port({
   onPointerDown,
   onPointerOver,
-  onPointerLeave,
-}: PortProps) {
+  onPointerOut,
+  portId,
+}: PortProps & PortData) {
   return (
     <button
       type="button"
       aria-label="port"
+      id={portId.toString()}
       className={styles.port}
       onPointerDown={onPointerDown}
       onPointerOver={onPointerOver}
-      onPointerLeave={onPointerLeave}
+      onPointerOut={onPointerOut}
     />
   );
 }

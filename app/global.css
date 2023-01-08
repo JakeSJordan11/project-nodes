@@ -1,6 +1,5 @@
 :root {
   color-scheme: light dark;
-  --font-family: "Inter", sans-serif;
   --size-border-radius-round: 50%;
 
   --size-border-radius-node: 0.5rem;
@@ -35,6 +34,6 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: var(--font-family);
+  font-family: "Inter", sans-serif;
   overflow: hidden;
 }
