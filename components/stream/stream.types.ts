@@ -1,15 +1,13 @@
-import type { CSSProperties, SVGProps } from "react";
+import type { CSSProperties } from "react";
 
 export interface StreamData {
-  streamId?: number;
+  id?: string;
   m?: string;
   l?: string;
   isActive?: boolean;
   isLinked?: boolean;
   isReadyToLink?: boolean;
-  streamColor?: CSSProperties["color"];
-  streamTarget?: HTMLButtonElement;
-  streamSource?: HTMLButtonElement;
+  color?: CSSProperties["color"];
+  target?: HTMLButtonElement;
+  source?: HTMLButtonElement;
 }
-
-export type StreamProps = SVGProps<SVGPathElement>;

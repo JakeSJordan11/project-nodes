@@ -1,21 +1,22 @@
+import type { HTMLAttributes, PropsWithChildren } from "react";
 import styles from "./node.module.css";
-import type { NodeData, NodeProps } from "./node.types";
+import type { NodeData } from "./node.types";
 
 export function Node({
-  nodeId,
-  nodeTitle,
-  nodePosition,
+  id,
+  title,
+  position,
   children,
   onPointerDown,
-}: NodeProps & NodeData) {
+}: NodeData & PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
   return (
     <article
-      className={styles.node}
-      title={nodeTitle}
-      id={nodeId?.toString()}
       style={{
-        transform: `translate(${nodePosition?.x}px, ${nodePosition?.y}px)`,
+        transform: `translate(${position?.x}px, ${position?.y}px)`,
       }}
+      id={id}
+      title={title}
+      className={styles.node}
       onPointerDown={onPointerDown}
     >
       {children}

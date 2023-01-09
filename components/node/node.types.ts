@@ -1,16 +1,8 @@
-import type { HTMLAttributes } from "react";
-
-type NodeTypes = "input" | "output" | "default";
-type NodeCoordinates = { x: number; y: number };
-
 export interface NodeData {
-  nodeId?: number;
-  nodeType?: NodeTypes;
-  nodeTitle?: string;
+  id: string;
+  title?: string;
+  io?: "input" | "output" | "default";
   isActive?: boolean;
-  nodePosition?: NodeCoordinates;
-  nodeOffset?: NodeCoordinates;
-  portIds?: number[];
+  offset?: { x: number; y: number };
+  position?: { x: number; y: number };
 }
-
-export type NodeProps = HTMLAttributes<HTMLElement>;

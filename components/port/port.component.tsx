@@ -1,17 +1,19 @@
-import type { PortProps, PortData } from "./port.types";
+import type { PortData } from "./port.types";
+import type { ButtonHTMLAttributes } from "react";
 import styles from "./port.module.css";
 
 export function Port({
+  id,
+  title,
   onPointerDown,
   onPointerOver,
   onPointerOut,
-  portId,
-}: PortProps & PortData) {
+}: PortData & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
+      id={id}
       type="button"
-      aria-label="port"
-      id={portId.toString()}
+      title={title}
       className={styles.port}
       onPointerDown={onPointerDown}
       onPointerOver={onPointerOver}

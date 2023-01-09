@@ -1,11 +1,7 @@
-import type { StreamData, StreamProps } from "./stream.types";
 import styles from "./stream.module.css";
+import type { StreamData } from "./stream.types";
 
-export function Stream({
-  streamColor = "red",
-  streamId,
-  d,
-}: StreamData & StreamProps) {
+export function Stream({ color, id, d }: StreamData & { d: string }) {
   return (
     <svg
       preserveAspectRatio="xMinYMin meet"
@@ -14,9 +10,9 @@ export function Stream({
       className={styles.streams}
     >
       <path
-        id={streamId?.toString()}
+        id={id}
         fill="none"
-        stroke={streamColor}
+        stroke={color}
         strokeWidth="4"
         strokeLinecap="round"
         d={d}

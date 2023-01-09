@@ -1,13 +1,7 @@
-import type { ButtonHTMLAttributes } from "react";
-
-type PortTypes = "input" | "output";
 export interface PortData {
-  portId: number;
-  nodeId: number;
-  portType: PortTypes;
-  portName: string;
+  id: string;
+  nodeId: string;
+  title: string;
   isLinked: boolean;
-  isHovered: boolean;
+  io: "input" | "output";
 }
-
-export type PortProps = ButtonHTMLAttributes<HTMLButtonElement>;
