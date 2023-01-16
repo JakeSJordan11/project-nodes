@@ -1,14 +1,14 @@
-import type { HTMLAttributes, PropsWithChildren } from "react";
 import styles from "./node.module.css";
-import type { NodeData } from "./node.types";
+import { NodeProps } from "./node.types";
 
 export function Node({
   id,
   title,
   position,
   children,
+  draggable,
   onPointerDown,
-}: NodeData & PropsWithChildren<HTMLAttributes<HTMLDivElement>>) {
+}: NodeProps) {
   return (
     <article
       style={{
@@ -18,6 +18,7 @@ export function Node({
       title={title}
       className={styles.node}
       onPointerDown={onPointerDown}
+      draggable={draggable}
     >
       {children}
     </article>

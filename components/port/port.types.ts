@@ -1,7 +1,15 @@
+import { PointerEventHandler } from "react";
+
 export interface PortData {
   id: string;
-  nodeId: string;
+  parentId: string;
   title: string;
   isLinked: boolean;
-  io: "input" | "output";
+  type: "input" | "output";
+}
+
+export interface PortProps extends PortData {
+  onPointerDown: PointerEventHandler<HTMLButtonElement>;
+  onPointerEnter: PointerEventHandler<HTMLButtonElement>;
+  onPointerLeave: PointerEventHandler<HTMLButtonElement>;
 }

@@ -2,58 +2,31 @@
 
 import type { PointerEvent } from "react";
 import { useState } from "react";
-import { Node } from "../components/node";
-import { initialNodes } from "../components/node/node.data";
-import { Port } from "../components/port";
-import { initialPorts } from "../components/port/port.data";
-import { Stream } from "../components/stream";
-import type { StreamData } from "../components/stream/stream.types";
+import {
+  Node, initialNodes, Port, initialPorts, Stream, initialStreams,
+} from "../components/";
 import styles from "./page.module.css";
+
 
 export default function Page() {
   const [nodes, setNodes] = useState(initialNodes);
   const [ports, setPorts] = useState(initialPorts);
-  const [streams, setStreams] = useState<StreamData[]>([]);
+  const [streams, setStreams] = useState(initialStreams);
   const [cursor, setCursor] = useState("default");
 
   function handleMainPointerMove(event: PointerEvent) {
-    setNodes(
-      nodes.map((node) => {
-        if (node.isActive && node.offset) {
-          return {
-            ...node,
-            position: {
-              x: event.clientX - node.offset.x,
-              y: event.clientY - node.offset.y,
-            },
-          };
-        }
-        return node;
-      })
-    );
-    setStreams([
-      ...streams.map((stream) => {
-        if (stream.isLinked && stream.source && stream.target) {
-          return {
-            ...stream,
-            m: `M ${stream.source.getBoundingClientRect().x + 8} ${
-              stream.source.getBoundingClientRect().y + 8
-            }`,
-            l: `L ${stream.target.getBoundingClientRect().x + 8} ${
-              stream.target.getBoundingClientRect().y + 8
-            }`,
-          };
-        }
-        if (stream.isActive) {
-          return {
-            ...stream,
-            m: stream.m,
-            l: `L ${event.clientX} ${event.clientY}`,
-          };
-        }
-        return stream;
-      }),
-    ]);
+    const newNodes = nodes.map((node) => {
+      if (node.draggable) {
+        return {
+          ...node,
+          position: {
+            x: event.clientX - node.offset.x, y: event.clientY - node.offset.y
+          },
+        };
+      }
+      return { ...node }
+    });
+    setNodes(newNodes);
   }
 
   function handleMainPointerUp() {
@@ -67,7 +40,7 @@ export default function Page() {
           };
         }
         return node;
-      })
+      }),
     );
     setStreams([
       ...streams
@@ -81,24 +54,24 @@ export default function Page() {
             streamSourceBounds
           ) {
             setPorts(
-              ports.map((port) =>
-                port.id?.toString() === stream.source?.id ||
-                port.id?.toString() === stream.target?.id
-                  ? {
-                      ...port,
-                      isLinked: true,
-                    }
-                  : port
-              )
+              ports.map((port) => {
+                if (
+                  port.id === stream.source?.id ||
+                  port.id === stream.target?.id
+                ) {
+                  return { ...port, isLinked: true };
+                }
+                return port;
+              }),
             );
             return {
               ...stream,
-              m: `M ${streamSourceBounds.x + 8} ${streamSourceBounds.y + 8}`,
-              l: `L ${streamTargetBounds.x + 8} ${streamTargetBounds.y + 8}`,
+              d: `M ${streamSourceBounds.x + 8} ${streamSourceBounds.y + 8} 
+              L ${streamTargetBounds.x + 8} ${streamTargetBounds.y + 8}`,
               isLinked: true,
               isActive: false,
               isReadyToLink: false,
-              color: "teal",
+              stroke: "teal",
             };
           } else if (stream.isActive) {
             return {
@@ -112,34 +85,39 @@ export default function Page() {
     ]);
   }
 
-  function handlePortPointerDown(event: PointerEvent) {
-    const buttonBounds = event.currentTarget.getBoundingClientRect();
+  function handlePortPointerDown(event: PointerEvent<HTMLButtonElement>) {
     event.stopPropagation();
     setCursor("move");
-    const sourcePort = ports.find(
-      (port) => port.id?.toString() === event.currentTarget.id
+    const buttonBounds = event.currentTarget.getBoundingClientRect();
+    const port = ports.find(
+      (port) => port.id?.toString() === event.currentTarget.id,
     );
 
-    !sourcePort?.isLinked &&
-      setStreams([
-        ...streams,
-        {
+    !port?.isLinked &&
+      setStreams(streams.map((stream) => {
+        return {
+          ...stream,
+          id: `stream-${streams.length}`,
           isActive: true,
-          m: `M ${buttonBounds.x + 8} ${buttonBounds.y + 8}`,
-          source: event.currentTarget as HTMLButtonElement,
-          color: "blue",
-        },
-      ]);
+          isLinked: false,
+          isReadyToLink: false,
+          source: event.currentTarget,
+          target: null,
+          d: `M ${buttonBounds.x + 8} ${buttonBounds.y + 8}`,
+          stroke: "blue",
+        };
+      }),
+      );
   }
 
-  function handlePortPointerOver(event: PointerEvent) {
+  function handlePortPointerEnter(event: PointerEvent) {
     const targetPort = ports.find(
-      (port) => port.id?.toString() === event.currentTarget.id
+      (port) => port.id?.toString() === event.currentTarget.id,
     );
     const sourcePort = ports.find(
       (port) =>
         port.id?.toString() ===
-        streams.find((stream) => stream.isActive)?.source?.id
+        streams.find((stream) => stream.isActive)?.source?.id,
     );
     const isPortLinked = targetPort?.isLinked;
 
@@ -147,8 +125,8 @@ export default function Page() {
       ...streams.map((stream) => {
         if (
           stream.isActive &&
-          sourcePort?.io !== targetPort?.io &&
-          sourcePort?.nodeId !== targetPort?.nodeId &&
+          sourcePort?.type !== targetPort?.type &&
+          sourcePort?.parentId !== targetPort?.parentId &&
           !isPortLinked
         ) {
           return {
@@ -158,30 +136,29 @@ export default function Page() {
           };
         }
         if (
-          (stream.isActive && sourcePort?.nodeId === targetPort?.nodeId) ||
-          (stream.isActive && sourcePort?.io === targetPort?.io) ||
+          (stream.isActive && sourcePort?.parentId === targetPort?.parentId) ||
+          (stream.isActive && sourcePort?.type === targetPort?.type) ||
           (stream.isActive && isPortLinked)
         ) {
-          return { ...stream, color: (stream.color = "darkred") };
+          return { ...stream, stroke: (stream.stroke = "darkred") };
         }
         return stream;
       }),
     ]);
   }
 
-  function handlePortPointerOut() {
+  function handlePortPointerLeave() {
     setStreams(
       streams.map((stream) => {
         if (stream.isActive) {
           return {
             ...stream,
             isReadyToLink: (stream.isReadyToLink = false),
-            target: (stream.target = undefined),
-            color: (stream.color = "blue"),
+            stroke: (stream.stroke = "blue"),
           };
         }
         return stream;
-      })
+      }),
     );
   }
 
@@ -200,7 +177,7 @@ export default function Page() {
           };
         }
         return node;
-      })
+      }),
     );
   }
 
@@ -212,23 +189,17 @@ export default function Page() {
       onPointerUp={handleMainPointerUp}
     >
       {nodes.map((node) => (
-        <Node
-          id={node.id}
-          key={node.id}
-          title={node.title}
-          position={node.position}
-          onPointerDown={handleNodePointerDown}
-        >
+        <Node key={node.id} onPointerDown={handleNodePointerDown} {...node}>
           <div className={styles.portContainer} style={{ top: 0 }}>
             {ports.map((port) => {
-              if (port.io === "input" && port.nodeId === node.id) {
+              if (port.type === "input" && port.parentId === node.id) {
                 return (
                   <Port
-                    {...port}
                     key={port.id}
                     onPointerDown={handlePortPointerDown}
-                    onPointerOver={handlePortPointerOver}
-                    onPointerOut={handlePortPointerOut}
+                    onPointerEnter={handlePortPointerEnter}
+                    onPointerLeave={handlePortPointerLeave}
+                    {...port}
                   />
                 );
               }
@@ -237,14 +208,14 @@ export default function Page() {
           <p className={styles.nodeTitle}>{node.title}</p>
           <div className={styles.portContainer} style={{ bottom: 0 }}>
             {ports.map((port) => {
-              if (port.io === "output" && port.nodeId === node.id) {
+              if (port.type === "output" && port.parentId === node.id) {
                 return (
                   <Port
-                    {...port}
                     key={port.id}
                     onPointerDown={handlePortPointerDown}
-                    onPointerOver={handlePortPointerOver}
-                    onPointerOut={handlePortPointerOut}
+                    onPointerEnter={handlePortPointerEnter}
+                    onPointerLeave={handlePortPointerLeave}
+                    {...port}
                   />
                 );
               }
@@ -252,20 +223,7 @@ export default function Page() {
           </div>
         </Node>
       ))}
-
-      {streams.map(
-        (stream, index) =>
-          (stream.isActive || stream.isLinked) &&
-          stream.m &&
-          stream.l && (
-            <Stream
-              {...stream}
-              key={index.toString()}
-              id={index.toString()}
-              d={stream.m + stream.l}
-            />
-          )
-      )}
+      {streams.map((stream) => <Stream key={stream.id} {...stream} />)}
     </main>
   );
 }

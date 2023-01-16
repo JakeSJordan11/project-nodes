@@ -1,13 +1,16 @@
-import type { CSSProperties } from "react";
+import type { ReactNode, SVGProps } from "react";
 
 export interface StreamData {
-  id?: string;
-  m?: string;
-  l?: string;
-  isActive?: boolean;
-  isLinked?: boolean;
-  isReadyToLink?: boolean;
-  color?: CSSProperties["color"];
-  target?: HTMLButtonElement;
-  source?: HTMLButtonElement;
+  id: string;
+  isActive: boolean;
+  isLinked: boolean;
+  isReadyToLink: boolean;
+  target: HTMLButtonElement | null;
+  source: HTMLButtonElement | null;
+  d: SVGProps<SVGPathElement>["d"];
+  stroke: SVGProps<SVGPathElement>["stroke"];
+}
+
+export interface StreamProps extends StreamData {
+  children: ReactNode;
 }
