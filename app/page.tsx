@@ -99,21 +99,19 @@ export default function Page() {
     );
 
     !port?.isLinked &&
-      setStreams(
-        streams.map((stream) => {
-          return {
-            ...stream,
-            id: `stream-${streams.length}`,
-            isActive: true,
-            isLinked: false,
-            isReadyToLink: false,
-            source: event.currentTarget,
-            target: null,
-            d: `M ${buttonBounds.x + 8} ${buttonBounds.y + 8}`,
-            stroke: "blue",
-          };
-        })
-      );
+      setStreams([
+        ...streams,
+        {
+          id: `stream-${streams.length}`,
+          isActive: true,
+          isLinked: false,
+          isReadyToLink: false,
+          source: event.currentTarget,
+          target: null,
+          d: `M ${buttonBounds.x + 8} ${buttonBounds.y + 8}`,
+          stroke: "blue",
+        },
+      ]);
   }
 
   function handlePortPointerEnter(event: PointerEvent) {
