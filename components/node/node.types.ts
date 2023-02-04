@@ -7,7 +7,6 @@ export interface NodeData {
   isActive: boolean;
   offset: { x: number; y: number };
   position: { x: number; y: number };
-  draggable: boolean;
 }
 
 export interface NodeProps extends NodeData {

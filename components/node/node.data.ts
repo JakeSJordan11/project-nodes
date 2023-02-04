@@ -8,7 +8,6 @@ export const initialNodes: NodeData[] = [
     isActive: false,
     offset: { x: 0, y: 0 },
     position: { x: 50, y: 50 },
-    draggable: false,
   },
   {
     id: "1",
@@ -17,7 +16,6 @@ export const initialNodes: NodeData[] = [
     isActive: false,
     offset: { x: 0, y: 0 },
     position: { x: 200, y: 50 },
-    draggable: false,
   },
   {
     id: "2",
@@ -26,7 +24,6 @@ export const initialNodes: NodeData[] = [
     isActive: false,
     offset: { x: 0, y: 0 },
     position: { x: 350, y: 50 },
-    draggable: false,
   },
   {
     id: "3",
@@ -35,7 +32,6 @@ export const initialNodes: NodeData[] = [
     isActive: false,
     offset: { x: 0, y: 0 },
     position: { x: 500, y: 50 },
-    draggable: false,
   },
   {
     id: "4",
@@ -44,6 +40,5 @@ export const initialNodes: NodeData[] = [
     isActive: false,
     offset: { x: 0, y: 0 },
     position: { x: 650, y: 50 },
-    draggable: false,
   },
 ];
