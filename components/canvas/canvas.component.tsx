@@ -47,20 +47,16 @@ export function Canvas() {
               streamSourceBounds && streamSourceBounds.y + STREAM_ALIGNMENT
             } L ${
               streamTargetBounds && streamTargetBounds.x + STREAM_ALIGNMENT
-            } ${
-              streamTargetBounds && streamTargetBounds.y + STREAM_ALIGNMENT
-            } `,
+            } ${streamTargetBounds && streamTargetBounds.y + STREAM_ALIGNMENT}`,
           };
         }
         return {
           ...stream,
           d: `M ${
-            stream.source &&
-            stream.source.getBoundingClientRect().x + STREAM_ALIGNMENT
+            streamSourceBounds && streamSourceBounds.x + STREAM_ALIGNMENT
           } ${
-            stream.source &&
-            stream.source.getBoundingClientRect().y + STREAM_ALIGNMENT
-          } L ${event.clientX} ${event.clientY} `,
+            streamSourceBounds && streamSourceBounds.y + STREAM_ALIGNMENT
+          } L ${event.clientX} ${event.clientY}`,
         };
       }),
     ]);
@@ -268,9 +264,16 @@ export function Canvas() {
           </div>
         </Node>
       ))}
-      {streams.map((stream) => (
-        <Stream key={stream.id} {...stream} />
-      ))}
+      <svg
+        className={styles.streams}
+        height={"100%"}
+        width={"100%"}
+        preserveAspectRatio="xMinYMin meet"
+      >
+        {streams.map((stream) => (
+          <Stream key={stream.id} {...stream} />
+        ))}
+      </svg>
     </main>
   );
 }

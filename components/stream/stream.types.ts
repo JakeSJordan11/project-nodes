@@ -1,4 +1,4 @@
-import type { ReactNode, SVGProps } from "react";
+import type { SVGProps } from "react";
 
 export interface StreamData {
   id: string;
@@ -9,8 +9,4 @@ export interface StreamData {
   source: HTMLButtonElement | null;
   d: SVGProps<SVGPathElement>["d"];
   stroke: SVGProps<SVGPathElement>["stroke"];
-}
-
-export interface StreamProps extends StreamData {
-  children: ReactNode;
 }
