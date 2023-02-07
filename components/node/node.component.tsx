@@ -6,7 +6,6 @@ export function Node({
   title,
   position,
   children,
-  draggable,
   onPointerDown,
 }: NodeProps) {
   return (
@@ -18,7 +17,6 @@ export function Node({
       title={title}
       className={styles.node}
       onPointerDown={onPointerDown}
-      draggable={draggable}
     >
       {children}
     </article>
