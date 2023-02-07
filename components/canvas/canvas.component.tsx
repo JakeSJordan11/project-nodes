@@ -36,6 +36,22 @@ export function Canvas() {
     );
     setStreams([
       ...streams.map((stream) => {
+        const streamSourceBounds = stream.source?.getBoundingClientRect();
+        const streamTargetBounds = stream.target?.getBoundingClientRect();
+        if (stream.isLinked) {
+          return {
+            ...stream,
+            d: `M ${
+              streamSourceBounds && streamSourceBounds.x + STREAM_ALIGNMENT
+            } ${
+              streamSourceBounds && streamSourceBounds.y + STREAM_ALIGNMENT
+            } L ${
+              streamTargetBounds && streamTargetBounds.x + STREAM_ALIGNMENT
+            } ${
+              streamTargetBounds && streamTargetBounds.y + STREAM_ALIGNMENT
+            } `,
+          };
+        }
         return {
           ...stream,
           d: `M ${
@@ -54,60 +70,62 @@ export function Canvas() {
     setCursor("default");
     setNodes(
       nodes.map((node) => {
-        if (node) {
-          return {
-            ...node,
-            isActive: false,
-          };
+        if (!node) {
+          return node;
         }
-        return node;
+        return {
+          ...node,
+          isActive: false,
+        };
       })
     );
     setStreams([
-      ...streams
-        .filter((stream) => stream.isLinked || stream.isActive)
-        .map((stream) => {
-          const streamSourceBounds = stream.source?.getBoundingClientRect();
-          const streamTargetBounds = stream.target?.getBoundingClientRect();
-          if (
-            stream.isReadyToLink &&
-            streamTargetBounds &&
-            streamSourceBounds
-          ) {
-            setPorts(
-              ports.map((port) => {
-                if (
-                  port.id === stream.source?.id ||
-                  port.id === stream.target?.id
-                ) {
-                  return { ...port, isLinked: true };
-                }
-                return port;
-              })
-            );
-            return {
-              ...stream,
-              d: `M ${streamSourceBounds.x + STREAM_ALIGNMENT} ${
-                streamSourceBounds.y + STREAM_ALIGNMENT
-              }
-              L ${streamTargetBounds.x + STREAM_ALIGNMENT} ${
-                streamTargetBounds.y + STREAM_ALIGNMENT
-              }`,
-              isLinked: true,
-              isActive: false,
-              isReadyToLink: false,
-              stroke: "teal",
-            };
-          } else if (stream.isActive) {
-            return {
-              ...stream,
-              isActive: false,
-              isReadyToLink: false,
-            };
-          }
+      ...streams.map((stream) => {
+        const streamSourceBounds = stream.source?.getBoundingClientRect();
+        const streamTargetBounds = stream.target?.getBoundingClientRect();
+        if (stream.isReadyToLink && streamTargetBounds && streamSourceBounds) {
+          return {
+            ...stream,
+            d: `M ${streamSourceBounds.x + STREAM_ALIGNMENT} ${
+              streamSourceBounds.y + STREAM_ALIGNMENT
+            } L ${streamTargetBounds.x + STREAM_ALIGNMENT} ${
+              streamTargetBounds.y + STREAM_ALIGNMENT
+            }`,
+            isLinked: true,
+            isActive: false,
+            isReadyToLink: false,
+            stroke: "teal",
+          };
+        }
+        if (!stream.isActive) {
           return { ...stream, isActive: false, isReadyToLink: false };
-        }),
+        }
+        return {
+          ...stream,
+          isActive: false,
+          isReadyToLink: false,
+        };
+      }),
     ]);
+
+    streams.map((stream) => {
+      stream.isReadyToLink &&
+        setPorts(
+          ports.map((port) => {
+            if (
+              port.id === stream.source?.id ||
+              port.id === stream.target?.id
+            ) {
+              return { ...port, isLinked: true };
+            }
+            return port;
+          })
+        );
+    });
+
+    setStreams((prevStreams) =>
+      prevStreams.filter((stream) => stream.isLinked)
+    );
   }
 
   function handlePortPointerDown(event: PointerEvent<HTMLButtonElement>) {
@@ -145,7 +163,6 @@ export function Canvas() {
         port.id?.toString() ===
         streams.find((stream) => stream.isActive)?.source?.id
     );
-    const isPortLinked = targetPort?.isLinked;
 
     setStreams([
       ...streams.map((stream) => {
@@ -153,18 +170,20 @@ export function Canvas() {
           stream.isActive &&
           sourcePort?.type !== targetPort?.type &&
           sourcePort?.parentId !== targetPort?.parentId &&
-          !isPortLinked
+          !targetPort?.isLinked
         ) {
           return {
             ...stream,
             isReadyToLink: (stream.isReadyToLink = true),
             target: (stream.target = event.currentTarget as HTMLButtonElement),
+            stroke: (stream.stroke = "teal"),
           };
         }
+
         if (
           (stream.isActive && sourcePort?.parentId === targetPort?.parentId) ||
           (stream.isActive && sourcePort?.type === targetPort?.type) ||
-          (stream.isActive && isPortLinked)
+          (stream.isActive && targetPort?.isLinked)
         ) {
           return { ...stream, stroke: (stream.stroke = "darkred") };
         }
@@ -176,14 +195,14 @@ export function Canvas() {
   function handlePortPointerLeave() {
     setStreams(
       streams.map((stream) => {
-        if (stream.isActive) {
-          return {
-            ...stream,
-            isReadyToLink: (stream.isReadyToLink = false),
-            stroke: (stream.stroke = "blue"),
-          };
+        if (!stream.isActive) {
+          return stream;
         }
-        return stream;
+        return {
+          ...stream,
+          isReadyToLink: (stream.isReadyToLink = false),
+          stroke: (stream.stroke = "blue"),
+        };
       })
     );
   }
@@ -192,17 +211,17 @@ export function Canvas() {
     const nodeBounds = event.currentTarget.getBoundingClientRect();
     setNodes(
       nodes.map((node) => {
-        if (node.id === event.currentTarget.id) {
-          return {
-            ...node,
-            isActive: true,
-            offset: {
-              x: event.clientX - nodeBounds.x,
-              y: event.clientY - nodeBounds.y,
-            },
-          };
+        if (node.id !== event.currentTarget.id) {
+          return node;
         }
-        return node;
+        return {
+          ...node,
+          isActive: true,
+          offset: {
+            x: event.clientX - nodeBounds.x,
+            y: event.clientY - nodeBounds.y,
+          },
+        };
       })
     );
   }
