@@ -79,21 +79,22 @@ export function Canvas() {
       ...streams.map((stream) => {
         const streamSourceBounds = stream.source?.getBoundingClientRect();
         const streamTargetBounds = stream.target?.getBoundingClientRect();
-        if (stream.isReadyToLink && streamTargetBounds && streamSourceBounds) {
+        if (stream.isReadyToLink) {
           return {
             ...stream,
-            d: `M ${streamSourceBounds.x + STREAM_ALIGNMENT} ${
-              streamSourceBounds.y + STREAM_ALIGNMENT
-            } L ${streamTargetBounds.x + STREAM_ALIGNMENT} ${
-              streamTargetBounds.y + STREAM_ALIGNMENT
-            }`,
+            d: `M ${
+              streamSourceBounds && streamSourceBounds.x + STREAM_ALIGNMENT
+            } ${
+              streamSourceBounds && streamSourceBounds.y + STREAM_ALIGNMENT
+            } L ${
+              streamTargetBounds && streamTargetBounds.x + STREAM_ALIGNMENT
+            } ${streamTargetBounds && streamTargetBounds.y + STREAM_ALIGNMENT}`,
             isLinked: true,
             isActive: false,
             isReadyToLink: false,
             stroke: "teal",
           };
-        }
-        if (!stream.isActive) {
+        } else if (!stream.isActive) {
           return { ...stream, isActive: false, isReadyToLink: false };
         }
         return {
@@ -151,54 +152,46 @@ export function Canvas() {
   }
 
   function handlePortPointerEnter(event: PointerEvent) {
-    const targetPort = ports.find(
-      (port) => port.id?.toString() === event.currentTarget.id
-    );
+    const targetPort = ports.find((port) => port.id === event.currentTarget.id);
     const sourcePort = ports.find(
       (port) =>
-        port.id?.toString() ===
-        streams.find((stream) => stream.isActive)?.source?.id
+        port.id === streams.find((stream) => stream.isActive)?.source?.id
     );
+    const portTypesMatch = sourcePort?.type === targetPort?.type;
+    const portParentsMatch = sourcePort?.parentId === targetPort?.parentId;
+    const portIsLinked = targetPort?.isLinked;
+    const streamErrors = portTypesMatch || portParentsMatch || portIsLinked;
 
-    setStreams([
-      ...streams.map((stream) => {
-        if (
-          stream.isActive &&
-          sourcePort?.type !== targetPort?.type &&
-          sourcePort?.parentId !== targetPort?.parentId &&
-          !targetPort?.isLinked
-        ) {
-          return {
-            ...stream,
-            isReadyToLink: (stream.isReadyToLink = true),
-            target: (stream.target = event.currentTarget as HTMLButtonElement),
-            stroke: (stream.stroke = "teal"),
-          };
-        }
-
-        if (
-          (stream.isActive && sourcePort?.parentId === targetPort?.parentId) ||
-          (stream.isActive && sourcePort?.type === targetPort?.type) ||
-          (stream.isActive && targetPort?.isLinked)
-        ) {
-          return { ...stream, stroke: (stream.stroke = "darkred") };
-        }
-        return stream;
-      }),
-    ]);
-  }
-
-  function handlePortPointerLeave() {
+    /* NOTE: it’s completely fine to change variables and objects that you’ve just created while rendering
+    https://beta.reactjs.org/learn/keeping-components-pure#local-mutation-your-components-little-secret */
     setStreams(
       streams.map((stream) => {
         if (!stream.isActive) {
           return stream;
+        } else if (streamErrors) {
+          stream.stroke = "darkred";
+        } else {
+          stream.isReadyToLink = true;
+          stream.target = event.currentTarget as HTMLButtonElement;
+          stream.stroke = "teal";
         }
-        return {
-          ...stream,
-          isReadyToLink: (stream.isReadyToLink = false),
-          stroke: (stream.stroke = "blue"),
-        };
+        return stream;
+      })
+    );
+  }
+
+  function handlePortPointerLeave() {
+    /* NOTE: it’s completely fine to change variables and objects that you’ve just created while rendering
+    https://beta.reactjs.org/learn/keeping-components-pure#local-mutation-your-components-little-secret */
+    setStreams(
+      streams.map((stream) => {
+        if (!stream.isActive) {
+          return stream;
+        } else {
+          stream.isReadyToLink = false;
+          stream.stroke = "blue";
+        }
+        return stream;
       })
     );
   }
@@ -207,17 +200,16 @@ export function Canvas() {
     const nodeBounds = event.currentTarget.getBoundingClientRect();
     setNodes(
       nodes.map((node) => {
-        if (node.id !== event.currentTarget.id) {
-          return node;
-        }
-        return {
-          ...node,
-          isActive: true,
-          offset: {
-            x: event.clientX - nodeBounds.x,
-            y: event.clientY - nodeBounds.y,
-          },
-        };
+        if (node.id === event.currentTarget.id) {
+          return {
+            ...node,
+            isActive: true,
+            offset: {
+              x: event.clientX - nodeBounds.x,
+              y: event.clientY - nodeBounds.y,
+            },
+          };
+        } else return node;
       })
     );
   }
@@ -233,8 +225,7 @@ export function Canvas() {
             ...stream,
             isLinked: false,
           };
-        }
-        return stream;
+        } else return stream;
       }),
     ]);
 
@@ -252,8 +243,7 @@ export function Canvas() {
               port.id === stream.target?.id
             ) {
               return { ...port, isLinked: false };
-            }
-            return port;
+            } else return port;
           })
         );
       });
