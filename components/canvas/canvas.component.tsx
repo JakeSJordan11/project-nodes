@@ -1,6 +1,6 @@
 "use client";
 
-import type { PointerEvent } from "react";
+import type { MouseEvent, PointerEvent } from "react";
 import { useState } from "react";
 import {
   initialNodes,
@@ -136,7 +136,7 @@ export function Canvas() {
       setStreams([
         ...streams,
         {
-          id: `stream-${streams.length}`,
+          id: crypto.randomUUID(),
           isActive: true,
           isLinked: false,
           isReadyToLink: false,
@@ -222,6 +222,47 @@ export function Canvas() {
     );
   }
 
+  function handlePortDoubleClick(event: MouseEvent) {
+    setStreams([
+      ...streams.map((stream) => {
+        if (
+          stream.source?.id === event.currentTarget.id ||
+          stream.target?.id === event.currentTarget.id
+        ) {
+          return {
+            ...stream,
+            isLinked: false,
+          };
+        }
+        return stream;
+      }),
+    ]);
+
+    streams
+      .filter(
+        (stream) =>
+          stream.target?.id === event.currentTarget.id ||
+          stream.source?.id === event.currentTarget.id
+      )
+      .map((stream) => {
+        setPorts(
+          ports.map((port) => {
+            if (
+              port.id === stream.source?.id ||
+              port.id === stream.target?.id
+            ) {
+              return { ...port, isLinked: false };
+            }
+            return port;
+          })
+        );
+      });
+
+    setStreams((prevStreams) =>
+      prevStreams.filter((stream) => stream.isLinked)
+    );
+  }
+
   return (
     <main
       className={styles.main}
@@ -240,6 +281,7 @@ export function Canvas() {
                     onPointerDown={handlePortPointerDown}
                     onPointerEnter={handlePortPointerEnter}
                     onPointerLeave={handlePortPointerLeave}
+                    onDoubleClick={handlePortDoubleClick}
                     {...port}
                   />
                 );
@@ -256,6 +298,7 @@ export function Canvas() {
                     onPointerDown={handlePortPointerDown}
                     onPointerEnter={handlePortPointerEnter}
                     onPointerLeave={handlePortPointerLeave}
+                    onDoubleClick={handlePortDoubleClick}
                     {...port}
                   />
                 );

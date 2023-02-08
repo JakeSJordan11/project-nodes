@@ -7,6 +7,7 @@ export function Port({
   onPointerDown,
   onPointerEnter,
   onPointerLeave,
+  onDoubleClick,
 }: PortProps) {
   return (
     <button
@@ -16,6 +17,7 @@ export function Port({
       onPointerDown={onPointerDown}
       onPointerEnter={onPointerEnter}
       onPointerLeave={onPointerLeave}
+      onDoubleClick={onDoubleClick}
     />
   );
 }

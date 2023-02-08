@@ -1,4 +1,4 @@
-import { PointerEventHandler } from "react";
+import { MouseEventHandler, PointerEventHandler } from "react";
 
 export interface PortData {
   id: string;
@@ -12,4 +12,5 @@ export interface PortProps extends PortData {
   onPointerDown: PointerEventHandler<HTMLButtonElement>;
   onPointerEnter: PointerEventHandler<HTMLButtonElement>;
   onPointerLeave: PointerEventHandler<HTMLButtonElement>;
+  onDoubleClick: MouseEventHandler<HTMLButtonElement>;
 }
