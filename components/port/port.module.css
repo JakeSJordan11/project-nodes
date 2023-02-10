@@ -25,3 +25,8 @@
   height: 0;
   width: 100%;
 }
+
+.streams {
+  position: absolute;
+  pointer-events: none;
+}
