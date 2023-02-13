@@ -27,25 +27,17 @@ export function useStreamsDispatch() {
   return useContext(StreamsDispatchContext);
 }
 
-export enum StreamsActionType {
-  NodePointerMove = "NODE_POINTER_MOVE",
-  StreamPointerUp = "STREAM_POINTER_UP",
-  PortPointerDown = "PORT_POINTER_DOWN",
-  PortPointerEnter = "PORT_POINTER_ENTER",
-  PortPointerLeave = "PORT_POINTER_LEAVE",
-  PortDoubleClick = "PORT_DOUBLE_CLICK",
-}
 type StreamsAction =
   | {
-      type: StreamsActionType.NodePointerMove;
+      type: "CANVAS_POINTER_MOVE";
       payload: {
         clientX: number;
         clientY: number;
       };
     }
-  | { type: StreamsActionType.StreamPointerUp }
+  | { type: "CANVAS_POINTER_UP"; payload: { ports: PortData[] } }
   | {
-      type: StreamsActionType.PortPointerDown;
+      type: "PORT_POINTER_DOWN";
       payload: {
         id: string;
         boundsX: number;
@@ -55,84 +47,73 @@ type StreamsAction =
       };
     }
   | {
-      type: StreamsActionType.PortPointerEnter;
+      type: "PORT_POINTER_ENTER";
       payload: {
         currentTarget: HTMLButtonElement;
         id: string;
         ports: PortData[];
       };
     }
-  | { type: StreamsActionType.PortPointerLeave }
+  | { type: "PORT_POINTER_LEAVE" }
   | {
-      type: StreamsActionType.PortDoubleClick;
+      type: "PORT_DOUBLE_CLICK";
       payload: { id: string };
     };
 function streamsReducer(streams: StreamData[], action: StreamsAction) {
   const STREAM_ALIGNMENT = 8;
   switch (action.type) {
-    case StreamsActionType.NodePointerMove: {
+    case "CANVAS_POINTER_MOVE": {
       return [
         ...streams.map((stream) => {
           const streamSourceBounds = stream.source?.getBoundingClientRect();
           const streamTargetBounds = stream.target?.getBoundingClientRect();
-          if (stream.isLinked) {
+          if (stream.isLinked && streamSourceBounds && streamTargetBounds) {
             return {
               ...stream,
-              d: `M ${
-                streamSourceBounds && streamSourceBounds.x + STREAM_ALIGNMENT
-              }
-              ${streamSourceBounds && streamSourceBounds.y + STREAM_ALIGNMENT}
-              L ${streamTargetBounds && streamTargetBounds.x + STREAM_ALIGNMENT}
-              ${streamTargetBounds && streamTargetBounds.y + STREAM_ALIGNMENT}`,
+              d: `M ${streamSourceBounds.x + STREAM_ALIGNMENT} ${
+                streamSourceBounds.y + STREAM_ALIGNMENT
+              } L ${streamTargetBounds.x + STREAM_ALIGNMENT} ${
+                streamTargetBounds.y + STREAM_ALIGNMENT
+              }`,
             };
-          }
-          return {
-            ...stream,
-            d: `M ${
-              streamSourceBounds && streamSourceBounds.x + STREAM_ALIGNMENT
-            }
-            ${streamSourceBounds && streamSourceBounds.y + STREAM_ALIGNMENT}
-            L ${action.payload.clientX} ${action.payload.clientY}`,
-          };
+          } else if (streamSourceBounds) {
+            return {
+              ...stream,
+              d: `M ${streamSourceBounds.x + STREAM_ALIGNMENT} ${
+                streamSourceBounds.y + STREAM_ALIGNMENT
+              } L ${action.payload.clientX} ${action.payload.clientY}`,
+            };
+          } else return { ...stream };
         }),
       ];
     }
-    case StreamsActionType.StreamPointerUp: {
-      return (
-        streams.map((stream) => {
+    case "CANVAS_POINTER_UP": {
+      return streams
+        .filter((stream) => stream.isReadyToLink || stream.isLinked)
+        .map((stream) => {
           const streamSourceBounds = stream.source?.getBoundingClientRect();
           const streamTargetBounds = stream.target?.getBoundingClientRect();
-          if (stream.isReadyToLink) {
+          if (
+            stream.isReadyToLink &&
+            streamSourceBounds &&
+            streamTargetBounds
+          ) {
             return {
               ...stream,
-              d: `M ${
-                streamSourceBounds && streamSourceBounds.x + STREAM_ALIGNMENT
-              } 
-                ${streamSourceBounds && streamSourceBounds.y + STREAM_ALIGNMENT}
-                L ${
-                  streamTargetBounds && streamTargetBounds.x + STREAM_ALIGNMENT
-                }
-                ${
-                  streamTargetBounds && streamTargetBounds.y + STREAM_ALIGNMENT
-                }`,
+              d: `M ${streamSourceBounds.x + STREAM_ALIGNMENT} ${
+                streamSourceBounds.y + STREAM_ALIGNMENT
+              }  ${streamTargetBounds.x + STREAM_ALIGNMENT} ${
+                streamTargetBounds.y + STREAM_ALIGNMENT
+              }`,
               isLinked: true,
               isActive: false,
               isReadyToLink: false,
               stroke: "teal",
             };
-          } else if (!stream.isActive) {
-            return { ...stream, isActive: false, isReadyToLink: false };
-          }
-          return {
-            ...stream,
-            isActive: false,
-            isReadyToLink: false,
-          };
-        }),
-        streams.filter((stream) => stream.isLinked)
-      );
+          } else return stream;
+        });
     }
-    case StreamsActionType.PortPointerDown: {
+    case "PORT_POINTER_DOWN": {
       const port = action.payload.ports.find(
         (port) => port.id === action.payload.id
       );
@@ -145,7 +126,7 @@ function streamsReducer(streams: StreamData[], action: StreamsAction) {
             isActive: true,
             isLinked: false,
             isReadyToLink: false,
-            source: action.payload.currentTarget,
+            source: action.payload.currentTarget as HTMLButtonElement,
             target: null,
             d: `M ${action.payload.boundsX + STREAM_ALIGNMENT} ${
               action.payload.boundsY + STREAM_ALIGNMENT
@@ -153,9 +134,9 @@ function streamsReducer(streams: StreamData[], action: StreamsAction) {
             stroke: "blue",
           },
         ];
-      }
+      } else return streams;
     }
-    case StreamsActionType.PortPointerEnter: {
+    case "PORT_POINTER_ENTER": {
       const targetPort = action.payload.ports.find(
         (port) => port.id === action.payload.id
       );
@@ -172,41 +153,42 @@ function streamsReducer(streams: StreamData[], action: StreamsAction) {
         if (!stream.isActive) {
           return stream;
         } else if (streamErrors) {
-          stream.stroke = "darkred";
-        } else {
-          stream.isReadyToLink = true;
-          stream.target = action.payload.currentTarget;
-          stream.stroke = "teal";
-        }
-        return stream;
+          return { ...stream, stroke: "darkred" };
+        } else
+          return {
+            ...stream,
+            isReadyToLink: true,
+            target: action.payload.currentTarget as HTMLButtonElement,
+            stroke: "teal",
+          };
       });
     }
-    case StreamsActionType.PortPointerLeave: {
+    case "PORT_POINTER_LEAVE": {
       return streams.map((stream) => {
         if (!stream.isActive) {
           return stream;
-        } else {
-          stream.isReadyToLink = false;
-          stream.stroke = "blue";
-        }
-        return stream;
+        } else
+          return {
+            ...stream,
+            isReadyToLink: false,
+            stroke: "blue",
+          };
       });
     }
-    case StreamsActionType.PortDoubleClick: {
-      return (
-        streams.map((stream) => {
-          if (
-            stream.source?.id === action.payload.id ||
-            stream.target?.id === action.payload.id
-          ) {
-            return {
-              ...stream,
-              isLinked: false,
-            };
-          }
-        }),
-        streams.filter((stream) => stream.isLinked)
-      );
+    case "PORT_DOUBLE_CLICK": {
+      return streams.map((stream) => {
+        if (
+          stream.source?.id === action.payload.id ||
+          stream.target?.id === action.payload.id
+        ) {
+          return {
+            ...stream,
+            source: null,
+            target: null,
+            isLinked: false,
+          };
+        } else return stream;
+      });
     }
     default: {
       throw new Error(`Unhandled action type - ${JSON.stringify(action)}`);

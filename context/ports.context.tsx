@@ -27,36 +27,33 @@ export function usePortsDispatch() {
   return useContext(PortsDispatchContext);
 }
 
-export enum PortsActionType {
-  StreamPointerUp = "STREAM_POINTER_UP",
-  PortDoubleClick = "PORT_DOUBLE_CLICK",
-}
 type PortsAction =
   | {
-      type: PortsActionType.StreamPointerUp;
+      type: "CANVAS_POINTER_UP";
       payload: { streams: StreamData[] };
     }
   | {
-      type: PortsActionType.PortDoubleClick;
-      payload: { id: string; streams: StreamData[] };
+      type: "PORT_DOUBLE_CLICK";
+      payload: {
+        id: string;
+        streams: StreamData[];
+      };
     };
 function portsReducer(ports: PortData[], action: PortsAction) {
   switch (action.type) {
-    case PortsActionType.StreamPointerUp: {
-      action.payload.streams.map((stream) => {
-        if (stream.isReadyToLink) {
-          return ports.map((port) => {
-            if (
-              port.id === stream.source?.id ||
-              port.id === stream.target?.id
-            ) {
+    case "CANVAS_POINTER_UP": {
+      action.payload.streams
+        .filter((stream) => stream.isLinked || stream.isReadyToLink)
+        .map((stream) => {
+          ports.map((port) => {
+            if (stream.source && port.id === stream.source.id) {
+              console.log("stream", stream);
               return { ...port, isLinked: true };
-            }
+            } else return port;
           });
-        }
-      });
+        });
     }
-    case PortsActionType.PortDoubleClick: {
+    case "PORT_DOUBLE_CLICK": {
       return ports.map((port) => {
         if (port.isLinked) {
           return { ...port, isLinked: false };

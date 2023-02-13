@@ -32,11 +32,24 @@
   border-radius: var(--size-border-radius-node);
 }
 
-.portContainer {
+.portContainerTop {
   position: absolute;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  width: "100%";
+}
+
+.portContainerBottom {
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  bottom: 0;
   left: 0;
   right: 0;
   height: 0;

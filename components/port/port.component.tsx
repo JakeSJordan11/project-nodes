@@ -1,6 +1,4 @@
 import {
-  PortsActionType,
-  StreamsActionType,
   usePorts,
   usePortsDispatch,
   useStreams,
@@ -18,11 +16,12 @@ export function Port({ id, title }: PortData) {
     <button
       id={id}
       title={title}
+      type="button"
       className={styles.port}
       onPointerDown={(event) => {
         event.stopPropagation();
         streamsDispatch({
-          type: StreamsActionType.PortPointerDown,
+          type: "PORT_POINTER_DOWN",
           payload: {
             boundsX: event.currentTarget.getBoundingClientRect().x,
             boundsY: event.currentTarget.getBoundingClientRect().y,
@@ -34,7 +33,7 @@ export function Port({ id, title }: PortData) {
       }}
       onPointerEnter={(event) =>
         streamsDispatch({
-          type: StreamsActionType.PortPointerEnter,
+          type: "PORT_POINTER_ENTER",
           payload: {
             currentTarget: event.currentTarget as HTMLButtonElement,
             id: event.currentTarget.id,
@@ -42,22 +41,19 @@ export function Port({ id, title }: PortData) {
           },
         })
       }
-      onPointerLeave={() =>
-        streamsDispatch({ type: StreamsActionType.PortPointerLeave })
-      }
+      onPointerLeave={() => streamsDispatch({ type: "PORT_POINTER_LEAVE" })}
       onDoubleClick={(event) => {
-        streamsDispatch({
-          type: StreamsActionType.PortDoubleClick,
-          payload: {
-            id: event.currentTarget.id,
-          },
-        });
-
         portsDispatch({
-          type: PortsActionType.PortDoubleClick,
+          type: "PORT_DOUBLE_CLICK",
           payload: {
             id: event.currentTarget.id,
             streams: streams,
+          },
+        });
+        streamsDispatch({
+          type: "PORT_DOUBLE_CLICK",
+          payload: {
+            id: event.currentTarget.id,
           },
         });
       }}

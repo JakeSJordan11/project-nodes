@@ -25,19 +25,14 @@ export function useNodesDispatch() {
   return useContext(NodesDispatchContext);
 }
 
-export enum NodesActionType {
-  NodePointerDown = "NODE_POINTER_DOWN",
-  NodePointerMove = "NODE_POINTER_MOVE",
-  NodePointerUp = "NODE_POINTER_UP",
-}
 type Action =
   | {
-      type: NodesActionType.NodePointerMove;
+      type: "CANVAS_POINTER_MOVE";
       payload: { clientX: number; clientY: number };
     }
-  | { type: NodesActionType.NodePointerUp }
+  | { type: "NODE_POINTER_UP" }
   | {
-      type: NodesActionType.NodePointerDown;
+      type: "NODE_POINTER_DOWN";
       payload: {
         id: string;
         clientX: number;
@@ -48,7 +43,7 @@ type Action =
     };
 function nodesReducer(nodes: NodeData[], action: Action) {
   switch (action.type) {
-    case NodesActionType.NodePointerDown: {
+    case "NODE_POINTER_DOWN": {
       return nodes.map((node) => {
         if (node.id === action.payload.id) {
           return {
@@ -62,7 +57,7 @@ function nodesReducer(nodes: NodeData[], action: Action) {
         } else return node;
       });
     }
-    case NodesActionType.NodePointerMove: {
+    case "CANVAS_POINTER_MOVE": {
       return nodes.map((node) => {
         if (node.isActive) {
           return {
@@ -76,7 +71,7 @@ function nodesReducer(nodes: NodeData[], action: Action) {
         return { ...node };
       });
     }
-    case NodesActionType.NodePointerUp: {
+    case "NODE_POINTER_UP": {
       return nodes.map((node) => {
         if (!node) {
           return node;
