@@ -1,4 +1,4 @@
-import type { NodeData } from "./node.types";
+import type { NodeData } from "../types";
 
 export const initialNodes: NodeData[] = [
   {

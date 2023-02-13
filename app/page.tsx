@@ -1,16 +1,12 @@
 "use client";
 
 import { Canvas } from "../components";
-import { NodesProvider, PortsProvider, StreamsProvider } from "../context";
+import { CanvasProvider } from "../hooks";
 
 export default function Page() {
   return (
-    <NodesProvider>
-      <PortsProvider>
-        <StreamsProvider>
-          <Canvas />
-        </StreamsProvider>
-      </PortsProvider>
-    </NodesProvider>
+    <CanvasProvider>
+      <Canvas />
+    </CanvasProvider>
   );
 }

@@ -1,4 +1,4 @@
-import type { StreamData } from "./stream.types";
+import type { StreamData } from "../../types";
 
 export function Stream({ stroke, id, d }: StreamData) {
   return (

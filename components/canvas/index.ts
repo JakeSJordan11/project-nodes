@@ -1,1 +1,1 @@
-export { Canvas } from "./canvas.component";
+export * from "./canvas.component";

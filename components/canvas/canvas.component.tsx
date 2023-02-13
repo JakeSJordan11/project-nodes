@@ -1,52 +1,19 @@
-import {
-  useNodes,
-  useNodesDispatch,
-  usePorts,
-  usePortsDispatch,
-  useStreams,
-  useStreamsDispatch,
-} from "../../context";
+import { useCanvas, useCanvasDispatch } from "../../hooks";
 import { Node } from "../node";
 import { Stream } from "../stream";
 import styles from "./canvas.module.css";
 
 export function Canvas() {
-  const nodes = useNodes();
-  const nodesDispatch = useNodesDispatch();
-  const ports = usePorts();
-  const portsDispatch = usePortsDispatch();
-  const streams = useStreams();
-  const streamsDispatch = useStreamsDispatch();
+  const { nodes, streams } = useCanvas();
+  const dispatch = useCanvasDispatch();
   return (
     <main
       className={styles.main}
       onPointerUp={() => {
-        portsDispatch({
-          type: "CANVAS_POINTER_UP",
-          payload: {
-            streams: streams,
-          },
-        });
-        streamsDispatch({
-          type: "CANVAS_POINTER_UP",
-          payload: { ports: ports },
-        });
+        dispatch({ type: "CANVAS_POINTER_UP" });
       }}
       onPointerMove={(event) => {
-        nodesDispatch({
-          type: "CANVAS_POINTER_MOVE",
-          payload: {
-            clientX: event.clientX,
-            clientY: event.clientY,
-          },
-        });
-        streamsDispatch({
-          type: "CANVAS_POINTER_MOVE",
-          payload: {
-            clientX: event.clientX,
-            clientY: event.clientY,
-          },
-        });
+        dispatch({ type: "CANVAS_POINTER_MOVE", payload: event });
       }}
     >
       {nodes.map((node) => (

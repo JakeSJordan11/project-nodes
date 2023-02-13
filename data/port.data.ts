@@ -1,4 +1,4 @@
-import { PortData } from "./port.types";
+import type { PortData } from "../types";
 
 export const initialPorts: PortData[] = [
   {

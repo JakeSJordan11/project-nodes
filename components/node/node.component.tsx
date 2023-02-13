@@ -1,11 +1,11 @@
-import { useNodesDispatch, usePorts } from "../../context";
+import { useCanvas, useCanvasDispatch } from "../../hooks";
+import type { NodeData } from "../../types";
 import { Port } from "../port";
 import styles from "./node.module.css";
-import type { NodeData } from "./node.types";
 
 export function Node({ id, title, position }: NodeData) {
-  const nodesDispatch = useNodesDispatch();
-  const ports = usePorts();
+  const { ports } = useCanvas();
+  const dispatch = useCanvasDispatch();
   return (
     <article
       style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
@@ -13,19 +13,10 @@ export function Node({ id, title, position }: NodeData) {
       title={title}
       className={styles.node}
       onPointerDown={(event) => {
-        nodesDispatch({
-          type: "NODE_POINTER_DOWN",
-          payload: {
-            clientX: event.clientX,
-            clientY: event.clientY,
-            id: event.currentTarget.id,
-            boundsX: event.currentTarget.getBoundingClientRect().x,
-            boundsY: event.currentTarget.getBoundingClientRect().y,
-          },
-        });
+        dispatch({ type: "NODE_POINTER_DOWN", payload: event });
       }}
       onPointerUp={() => {
-        nodesDispatch({ type: "NODE_POINTER_UP" });
+        dispatch({ type: "NODE_POINTER_UP" });
       }}
     >
       <div className={styles.portContainerTop}>
