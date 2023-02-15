@@ -16,11 +16,16 @@ export function Canvas() {
     dispatch({ type: "CANVAS_POINTER_UP", payload: { ...event } });
   }
 
+  function handlePointerLeave(event: PointerEvent<HTMLElement>) {
+    dispatch({ type: "CANVAS_POINTER_LEAVE", payload: { ...event } });
+  }
+
   return (
     <main
       className={styles.main}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerLeave}
     >
       {nodes.map((node) => (
         <Node key={node.id} {...node} />
