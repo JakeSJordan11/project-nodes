@@ -1,0 +1,32 @@
+.port {
+  height: var(--size-height-port);
+  width: var(--size-width-port);
+  border-style: solid;
+  border-radius: var(--size-border-radius-round);
+  border-width: var(--size-border-width-node);
+  border-color: var(--color-border-node);
+  background-color: var(--color-background-numberNode);
+  cursor: pointer;
+}
+
+.port:hover {
+  cursor: pointer;
+}
+.port:active {
+  cursor: move;
+}
+
+.portContainer {
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  left: 0;
+  height: 0;
+  width: 100%;
+}
+
+.streams {
+  position: absolute;
+  pointer-events: none;
+}
