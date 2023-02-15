@@ -1,3 +1,4 @@
+import type { PointerEvent } from "react";
 import { useCanvas, useCanvasDispatch } from "../../hooks";
 import type { NodeData } from "../../types";
 import { Port } from "../port";
@@ -6,18 +7,17 @@ import styles from "./node.module.css";
 export function Node({ id, title, position }: NodeData) {
   const { ports } = useCanvas();
   const dispatch = useCanvasDispatch();
+
+  function handlePointerDown(event: PointerEvent<HTMLElement>) {
+    dispatch({ type: "NODE_POINTER_DOWN", payload: { ...event } });
+  }
   return (
     <article
       style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
       id={id}
       title={title}
       className={styles.node}
-      onPointerDown={(event) => {
-        dispatch({ type: "NODE_POINTER_DOWN", payload: event });
-      }}
-      onPointerUp={() => {
-        dispatch({ type: "NODE_POINTER_UP" });
-      }}
+      onPointerDown={handlePointerDown}
     >
       <div className={styles.portContainerTop}>
         {ports.map((port) => {

@@ -4,9 +4,9 @@ import { initialNodes, initialPorts, initialStreams } from "../data";
 import type { NodeData, PortData, StreamData } from "../types";
 
 export const CanvasContext = createContext({
-  nodes: [] as NodeData[],
-  ports: [] as PortData[],
-  streams: [] as StreamData[],
+  nodes: {} as NodeData[],
+  ports: {} as PortData[],
+  streams: {} as StreamData[],
 });
 export const CanvasDispatchContext = createContext<Dispatch<Action>>(
   () => null
@@ -36,61 +36,247 @@ export function useCanvasDispatch() {
 }
 
 type Action =
-  | { type: "CANVAS_POINTER_UP" }
-  | { type: "CANVAS_POINTER_MOVE"; payload: PointerEvent }
-  | { type: "NODE_POINTER_DOWN"; payload: PointerEvent }
-  | { type: "NODE_POINTER_UP" }
-  | { type: "PORT_POINTER_DOWN"; payload: PointerEvent }
-  | { type: "PORT_POINTER_ENTER"; payload: PointerEvent }
-  | { type: "PORT_POINTER_LEAVE" }
-  | { type: "PORT_DOUBLE_CLICK"; payload: MouseEvent };
+  | { type: "NODE_POINTER_DOWN"; payload: PointerEvent<HTMLElement> }
+  | { type: "CANVAS_POINTER_MOVE"; payload: PointerEvent<HTMLElement> }
+  | { type: "CANVAS_POINTER_UP"; payload: PointerEvent<HTMLElement> }
+  | { type: "PORT_POINTER_DOWN"; payload: PointerEvent<HTMLElement> }
+  | { type: "PORT_POINTER_ENTER"; payload: PointerEvent<HTMLElement> }
+  | { type: "PORT_POINTER_LEAVE"; payload: PointerEvent<HTMLElement> }
+  | { type: "PORT_DOUBLE_CLICK"; payload: MouseEvent<HTMLElement> };
 
 function nodesReducer(
   state: { nodes: NodeData[]; ports: PortData[]; streams: StreamData[] },
   action: Action
 ) {
+  const STREAM_ALIGNMENT = 8;
+  const { payload } = action;
   switch (action.type) {
-    case "CANVAS_POINTER_UP": {
+    case "NODE_POINTER_DOWN": {
+      const nodeBounds = payload.currentTarget.getBoundingClientRect();
       return {
         ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id === payload.currentTarget.id) {
+            return {
+              ...node,
+              isActive: true,
+              offset: {
+                x: payload.clientX - nodeBounds.x,
+                y: payload.clientY - nodeBounds.y,
+              },
+            };
+          } else return node;
+        }),
       };
     }
     case "CANVAS_POINTER_MOVE": {
       return {
         ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.isActive) {
+            return {
+              ...node,
+              position: {
+                x: payload.clientX - node.offset.x,
+                y: payload.clientY - node.offset.y,
+              },
+            };
+          } else return node;
+        }),
+        streams: [
+          ...state.streams.map((stream) => {
+            if (stream.isLinked) {
+              return {
+                ...stream,
+                d: `M ${
+                  stream.source &&
+                  stream.source.getBoundingClientRect().x + STREAM_ALIGNMENT
+                } ${
+                  stream.source &&
+                  stream.source.getBoundingClientRect().y + STREAM_ALIGNMENT
+                } L ${
+                  stream.target &&
+                  stream.target.getBoundingClientRect().x + STREAM_ALIGNMENT
+                } ${
+                  stream.target &&
+                  stream.target.getBoundingClientRect().y + STREAM_ALIGNMENT
+                }`,
+              };
+            } else
+              return {
+                ...stream,
+                d: `M ${
+                  stream.source &&
+                  stream.source.getBoundingClientRect().x + STREAM_ALIGNMENT
+                } ${
+                  stream.source &&
+                  stream.source.getBoundingClientRect().y + STREAM_ALIGNMENT
+                } L ${payload.clientX} ${payload.clientY}`,
+              };
+          }),
+        ],
       };
     }
-    case "NODE_POINTER_DOWN": {
+    case "CANVAS_POINTER_UP": {
+      const activeStream = state.streams.find((stream) => stream.isActive);
       return {
         ...state,
-      };
-    }
-    case "NODE_POINTER_UP": {
-      return {
-        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.isActive) {
+            return {
+              ...node,
+              isActive: false,
+            };
+          } else return node;
+        }),
+        streams: state.streams
+          .filter((stream) => stream.isReadyToLink || stream.isLinked)
+          .map((stream) => {
+            return {
+              ...stream,
+              d: `M ${
+                stream.source &&
+                stream.source.getBoundingClientRect().x + STREAM_ALIGNMENT
+              } ${
+                stream.source &&
+                stream.source.getBoundingClientRect().y + STREAM_ALIGNMENT
+              } L ${
+                stream.target &&
+                stream.target.getBoundingClientRect().x + STREAM_ALIGNMENT
+              } ${
+                stream.target &&
+                stream.target.getBoundingClientRect().y + STREAM_ALIGNMENT
+              }`,
+              isLinked: true,
+              isActive: false,
+              isReadyToLink: false,
+              stroke: "teal",
+            };
+          }),
+        ports: state.ports.map((port) => {
+          if (
+            activeStream?.isLinked ||
+            (activeStream?.isReadyToLink &&
+              port.id === activeStream?.source?.id) ||
+            port.id === activeStream?.target?.id
+          ) {
+            return {
+              ...port,
+              isLinked: true,
+            };
+          } else return port;
+        }),
       };
     }
     case "PORT_POINTER_DOWN": {
-      return {
-        ...state,
-      };
+      const selectedPort = state.ports.find(
+        (port) => port.id === payload.currentTarget.id
+      );
+
+      if (selectedPort?.isLinked) {
+        return state;
+      } else
+        return {
+          ...state,
+          streams: [
+            ...state.streams,
+            {
+              id: crypto.randomUUID(),
+              isActive: true,
+              isLinked: false,
+              isReadyToLink: false,
+              source: payload.currentTarget as HTMLButtonElement,
+              d: `M ${
+                payload.currentTarget.getBoundingClientRect().x +
+                STREAM_ALIGNMENT
+              }
+                ${
+                  payload.currentTarget.getBoundingClientRect().y +
+                  STREAM_ALIGNMENT
+                }`,
+              stroke: "blue",
+            },
+          ] as StreamData[],
+        };
     }
     case "PORT_POINTER_ENTER": {
+      const targetPort = state.ports.find(
+        (port) => port.id === payload.currentTarget.id
+      );
+      const sourcePort = state.ports.find(
+        (port) =>
+          port.id ===
+          state.streams.find((stream) => stream.isActive)?.source?.id
+      );
+      const portTypesMatch = sourcePort?.type === targetPort?.type;
+      const portParentsMatch = sourcePort?.parentId === targetPort?.parentId;
+      const portIsLinked = targetPort?.isLinked;
+      const streamErrors = portTypesMatch || portParentsMatch || portIsLinked;
+
       return {
         ...state,
+        streams: state.streams.map((stream) => {
+          if (stream.isActive) {
+            return {
+              ...stream,
+              isReadyToLink: !streamErrors,
+              target: payload.currentTarget as HTMLButtonElement,
+              stroke: streamErrors ? "darkred" : "teal",
+            };
+          } else return stream;
+        }),
       };
     }
     case "PORT_POINTER_LEAVE": {
       return {
         ...state,
+        streams: state.streams.map((stream) => {
+          if (stream.isActive) {
+            return {
+              ...stream,
+              isReadyToLink: false,
+              target: null,
+              stroke: "blue",
+            };
+          } else return stream;
+        }),
       };
     }
     case "PORT_DOUBLE_CLICK": {
       return {
         ...state,
+        streams: state.streams
+          .filter((stream) => stream.isLinked)
+          .map((stream) => {
+            if (
+              stream.source?.id === payload.currentTarget.id ||
+              stream.target?.id === payload.currentTarget.id
+            ) {
+              return {
+                ...stream,
+                isLinked: false,
+              };
+            } else return stream;
+          }),
+        ports: state.ports.map((port) => {
+          state.streams
+            .filter(
+              (stream) =>
+                stream.target?.id === payload.currentTarget.id ||
+                stream.source?.id === payload.currentTarget.id
+            )
+            .map((stream) => {
+              if (
+                port.id === stream.source?.id ||
+                port.id === stream.target?.id
+              ) {
+                return { ...port, isLinked: false };
+              } else return port;
+            });
+          return { ...port, isLinked: false };
+        }),
       };
     }
-
     default:
       throw new Error("Unhandled action type");
   }

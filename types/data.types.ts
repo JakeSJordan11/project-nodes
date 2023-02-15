@@ -1,3 +1,5 @@
+import type { SVGProps } from "react";
+
 export interface NodeData {
   id: string;
   title: string;
@@ -15,7 +17,6 @@ export interface PortData {
   type: "input" | "output";
 }
 
-import type { SVGProps } from "react";
 export interface StreamData {
   id: string;
   isActive: boolean;

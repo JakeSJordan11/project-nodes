@@ -1,28 +1,38 @@
+import type { MouseEvent, PointerEvent } from "react";
 import { useCanvasDispatch } from "../../hooks";
 import type { PortData } from "../../types";
 import styles from "./port.module.css";
 
 export function Port({ id, title }: PortData) {
   const dipatch = useCanvasDispatch();
+
+  function handlePointerDown(event: PointerEvent<HTMLElement>) {
+    event.stopPropagation();
+    dipatch({ type: "PORT_POINTER_DOWN", payload: { ...event } });
+  }
+
+  function handlePointerEnter(event: PointerEvent<HTMLElement>) {
+    dipatch({ type: "PORT_POINTER_ENTER", payload: { ...event } });
+  }
+
+  function handlePointerLeave(event: PointerEvent<HTMLElement>) {
+    dipatch({ type: "PORT_POINTER_LEAVE", payload: { ...event } });
+  }
+
+  function handleDoubleClick(event: MouseEvent<HTMLElement>) {
+    dipatch({ type: "PORT_DOUBLE_CLICK", payload: { ...event } });
+  }
+
   return (
     <button
       id={id}
       title={title}
       type="button"
       className={styles.port}
-      onPointerDown={(event) => {
-        event.stopPropagation();
-        dipatch({ type: "PORT_POINTER_DOWN", payload: event });
-      }}
-      onPointerEnter={(event) => {
-        dipatch({ type: "PORT_POINTER_ENTER", payload: event });
-      }}
-      onPointerLeave={() => {
-        dipatch({ type: "PORT_POINTER_LEAVE" });
-      }}
-      onDoubleClick={(event) => {
-        dipatch({ type: "PORT_DOUBLE_CLICK", payload: event });
-      }}
+      onPointerDown={handlePointerDown}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onDoubleClick={handleDoubleClick}
     />
   );
 }
