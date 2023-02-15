@@ -13,7 +13,7 @@ export const CanvasDispatchContext = createContext<Dispatch<Action>>(
 );
 
 export function CanvasProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(nodesReducer, {
+  const [state, dispatch] = useReducer(canvasReducer, {
     nodes: initialNodes,
     ports: initialPorts,
     streams: initialStreams,
@@ -45,7 +45,7 @@ type Action =
   | { type: "PORT_POINTER_LEAVE"; payload: PointerEvent<HTMLElement> }
   | { type: "PORT_DOUBLE_CLICK"; payload: MouseEvent<HTMLElement> };
 
-function nodesReducer(
+function canvasReducer(
   state: { nodes: NodeData[]; ports: PortData[]; streams: StreamData[] },
   action: Action
 ) {
