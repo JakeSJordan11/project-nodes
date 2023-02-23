@@ -1,5 +1,5 @@
 import type { MouseEvent, PointerEvent } from "react";
-import { useCanvasDispatch } from "../../hooks";
+import { ActionType, useCanvasDispatch } from "../../hooks";
 import type { PortData } from "../../types";
 import styles from "./port.module.css";
 
@@ -8,19 +8,19 @@ export function Port({ id, title }: PortData) {
 
   function handlePointerDown(event: PointerEvent<HTMLElement>) {
     event.stopPropagation();
-    dipatch({ type: "PORT_POINTER_DOWN", payload: { ...event } });
+    dipatch({ type: ActionType.PORT_POINTER_DOWN, payload: { ...event } });
   }
 
   function handlePointerEnter(event: PointerEvent<HTMLElement>) {
-    dipatch({ type: "PORT_POINTER_ENTER", payload: { ...event } });
+    dipatch({ type: ActionType.PORT_POINTER_ENTER, payload: { ...event } });
   }
 
   function handlePointerLeave(event: PointerEvent<HTMLElement>) {
-    dipatch({ type: "PORT_POINTER_LEAVE", payload: { ...event } });
+    dipatch({ type: ActionType.PORT_POINTER_LEAVE, payload: { ...event } });
   }
 
   function handleDoubleClick(event: MouseEvent<HTMLElement>) {
-    dipatch({ type: "PORT_DOUBLE_CLICK", payload: { ...event } });
+    dipatch({ type: ActionType.PORT_DOUBLE_CLICK, payload: { ...event } });
   }
 
   return (

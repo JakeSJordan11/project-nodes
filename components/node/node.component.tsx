@@ -1,5 +1,5 @@
 import type { PointerEvent } from "react";
-import { useCanvas, useCanvasDispatch } from "../../hooks";
+import { ActionType, useCanvas, useCanvasDispatch } from "../../hooks";
 import type { NodeData } from "../../types";
 import { Port } from "../port";
 import styles from "./node.module.css";
@@ -9,7 +9,7 @@ export function Node({ id, title, position }: NodeData) {
   const dispatch = useCanvasDispatch();
 
   function handlePointerDown(event: PointerEvent<HTMLElement>) {
-    dispatch({ type: "NODE_POINTER_DOWN", payload: { ...event } });
+    dispatch({ type: ActionType.NODE_POINTER_DOWN, payload: { ...event } });
   }
   return (
     <article

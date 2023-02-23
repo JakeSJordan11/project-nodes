@@ -35,15 +35,29 @@ export function useCanvasDispatch() {
   return useContext(CanvasDispatchContext);
 }
 
+export enum ActionType {
+  NODE_POINTER_DOWN = "NODE_POINTER_DOWN",
+  CANVAS_POINTER_MOVE = "CANVAS_POINTER_MOVE",
+  CANVAS_POINTER_UP = "CANVAS_POINTER_UP",
+  CANVAS_POINTER_LEAVE = "CANVAS_POINTER_LEAVE",
+  PORT_POINTER_DOWN = "PORT_POINTER_DOWN",
+  PORT_POINTER_ENTER = "PORT_POINTER_ENTER",
+  PORT_POINTER_LEAVE = "PORT_POINTER_LEAVE",
+  PORT_DOUBLE_CLICK = "PORT_DOUBLE_CLICK",
+}
+
 type Action =
-  | { type: "NODE_POINTER_DOWN"; payload: PointerEvent<HTMLElement> }
-  | { type: "CANVAS_POINTER_MOVE"; payload: PointerEvent<HTMLElement> }
-  | { type: "CANVAS_POINTER_UP"; payload: PointerEvent<HTMLElement> }
-  | { type: "CANVAS_POINTER_LEAVE"; payload: PointerEvent<HTMLElement> }
-  | { type: "PORT_POINTER_DOWN"; payload: PointerEvent<HTMLElement> }
-  | { type: "PORT_POINTER_ENTER"; payload: PointerEvent<HTMLElement> }
-  | { type: "PORT_POINTER_LEAVE"; payload: PointerEvent<HTMLElement> }
-  | { type: "PORT_DOUBLE_CLICK"; payload: MouseEvent<HTMLElement> };
+  | { type: ActionType.NODE_POINTER_DOWN; payload: PointerEvent<HTMLElement> }
+  | { type: ActionType.CANVAS_POINTER_MOVE; payload: PointerEvent<HTMLElement> }
+  | { type: ActionType.CANVAS_POINTER_UP; payload: PointerEvent<HTMLElement> }
+  | {
+      type: ActionType.CANVAS_POINTER_LEAVE;
+      payload: PointerEvent<HTMLElement>;
+    }
+  | { type: ActionType.PORT_POINTER_DOWN; payload: PointerEvent<HTMLElement> }
+  | { type: ActionType.PORT_POINTER_ENTER; payload: PointerEvent<HTMLElement> }
+  | { type: ActionType.PORT_POINTER_LEAVE; payload: PointerEvent<HTMLElement> }
+  | { type: ActionType.PORT_DOUBLE_CLICK; payload: MouseEvent<HTMLElement> };
 
 function canvasReducer(
   state: { nodes: NodeData[]; ports: PortData[]; streams: StreamData[] },
@@ -284,6 +298,6 @@ function canvasReducer(
       };
     }
     default:
-      throw new Error("Unhandled action type");
+      throw new Error("Unhandled action type" + action.type);
   }
 }
