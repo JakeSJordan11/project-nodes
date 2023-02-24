@@ -2,6 +2,7 @@ import type { PointerEvent } from "react";
 import { ActionType, useCanvas, useCanvasDispatch } from "../../hooks";
 import type { NodeData } from "../../types";
 import { Port } from "../port";
+import { Content } from "./content/content.component";
 import styles from "./node.module.css";
 
 export function Node({ id, title, position }: NodeData) {
@@ -26,7 +27,7 @@ export function Node({ id, title, position }: NodeData) {
           }
         })}
       </div>
-      <p className={styles.nodeTitle}>{title}</p>
+      <Content title={title} />
       <div className={styles.portContainerBottom}>
         {ports.map((port) => {
           if (port.type === "output" && port.parentId === id) {

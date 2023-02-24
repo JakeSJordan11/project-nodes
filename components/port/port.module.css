@@ -1,11 +1,11 @@
 .port {
-  height: var(--size-height-port);
-  width: var(--size-width-port);
+  height: var(--port-height);
+  width: var(--port-width);
   border-style: solid;
-  border-radius: var(--size-border-radius-round);
-  border-width: var(--size-border-width-node);
-  border-color: var(--color-border-node);
-  background-color: var(--color-background-numberNode);
+  border-radius: var(--port-border-radius);
+  border-width: var(--port-border-width);
+  border-color: var(--port-border-color);
+  background-color: var(--port-background-color);
   cursor: pointer;
 }
 

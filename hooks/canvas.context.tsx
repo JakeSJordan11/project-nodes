@@ -63,7 +63,7 @@ function canvasReducer(
   state: { nodes: NodeData[]; ports: PortData[]; streams: StreamData[] },
   action: Action
 ) {
-  const STREAM_ALIGNMENT = 8;
+  const STREAM_ALIGNMENT = 9;
   const { payload } = action;
   switch (action.type) {
     case "NODE_POINTER_DOWN": {
@@ -160,7 +160,7 @@ function canvasReducer(
                 stream.target.getBoundingClientRect().y + STREAM_ALIGNMENT
               }`,
               isActive: false,
-              stroke: "teal",
+              stroke: "#525252",
             };
           })
           .filter((stream) => stream.isLinked),
@@ -209,12 +209,10 @@ function canvasReducer(
             source: payload.currentTarget as HTMLButtonElement,
             d: `M ${
               payload.currentTarget.getBoundingClientRect().x + STREAM_ALIGNMENT
-            }
-                ${
-                  payload.currentTarget.getBoundingClientRect().y +
-                  STREAM_ALIGNMENT
-                }`,
-            stroke: "blue",
+            } ${
+              payload.currentTarget.getBoundingClientRect().y + STREAM_ALIGNMENT
+            }`,
+            stroke: "#525252",
           },
         ] as StreamData[],
       };
@@ -241,7 +239,7 @@ function canvasReducer(
               ...stream,
               isLinked: !streamErrors,
               target: payload.currentTarget as HTMLButtonElement,
-              stroke: streamErrors ? "darkred" : "teal",
+              stroke: streamErrors ? "#7f1d1d" : "#525252",
             };
           } else return stream;
         }),
@@ -256,7 +254,7 @@ function canvasReducer(
               ...stream,
               isLinked: false,
               target: null,
-              stroke: "blue",
+              stroke: "#a3a3a3",
             };
           } else return stream;
         }),

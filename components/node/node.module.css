@@ -1,35 +1,25 @@
 .node {
+  box-shadow: var(--node-box-shadow);
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 1rem;
-  width: var(--size-width-node);
-  height: var(--size-height-node);
+  justify-content: center;
+  padding: 0.75rem;
+  align-items: center;
+  width: var(--node-width);
+  height: var(--node-height);
   border-style: solid;
-  border-radius: var(--size-border-radius-node);
-  border-width: var(--size-border-width-node);
-  border-color: var(--color-border-node);
+  border-radius: var(--node-border-radius);
+  border-width: var(--node-border-width);
+  border-color: var(--node-border-color);
   cursor: grab;
   -webkit-user-select: none;
   user-select: none;
-  background-color: var(--color-background-numberNode);
+  background-color: var(--node-background-color);
 }
 
 .node:active {
   cursor: grabbing;
-}
-
-.nodeTitle {
-  letter-spacing: 1px;
-  margin: 0;
-  display: flex;
-  height: 100%;
-  align-items: center;
-  text-align: center;
-  font-size: large;
-  border: 0.2rem solid #404040;
-  border-radius: var(--size-border-radius-node);
 }
 
 .portContainerTop {

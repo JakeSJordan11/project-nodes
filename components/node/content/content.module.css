@@ -1,0 +1,18 @@
+.title {
+  margin: 0;
+  font-size: var(--node-title-font-size);
+  padding-bottom: 0.5rem;
+  color: var(--node-title-color);
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  outline-style: solid;
+  outline-color: var(--content-border-color);
+  border-radius: var(--content-border-radius);
+  outline-width: var(--content-border-width);
+  background-color: var(--content-background-color);
+  box-shadow: var(--content-box-shadow);
+  margin-bottom: 0.25rem;
+}
