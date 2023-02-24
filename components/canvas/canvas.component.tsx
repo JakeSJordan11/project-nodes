@@ -1,9 +1,8 @@
-import { PointerEvent } from "react";
+import type { PointerEvent } from "react";
 import { ActionType, useCanvas, useCanvasDispatch } from "../../hooks";
 import { Node } from "../node";
 import { Stream } from "../stream";
 import styles from "./canvas.module.css";
-
 export function Canvas() {
   const { nodes, streams } = useCanvas();
   const dispatch = useCanvasDispatch();
