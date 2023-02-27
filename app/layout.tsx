@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { inter } from "./fonts";
 import "./global.css";
 
 export const metadata = {
@@ -7,7 +8,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.className}>
       <script async src="http://localhost:8097" />
       <body>{children}</body>
     </html>
