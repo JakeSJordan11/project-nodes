@@ -49,14 +49,14 @@ export function Node({
       onPointerDown={handlePointerDown}
       onContextMenu={handleNodeMenu}
     >
-      <div className={styles.portContainerTop}>
+      <div className={styles.inputContainer}>
         {inputs.map((port) => (
           <Port key={port.id} {...port} />
         ))}
       </div>
       <h1 className={styles.title}>{title}</h1>
-      <Content value={value} inputs={inputs} outputs={outputs} type={type} />
-      <div className={styles.portContainerBottom}>
+      <Content value={value} type={type} />
+      <div className={styles.outputContainer}>
         {outputs.map((port) => (
           <Port key={port.id} {...port} />
         ))}

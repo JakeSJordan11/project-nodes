@@ -1,8 +1,7 @@
 import { ActionType, useCanvas, useCanvasDispatch } from "../../../../hooks";
-import type { Node } from "../node.types";
 import styles from "./content.module.css";
 
-export function Content({ type, value }: Node) {
+export function Content({ type, value }: { type: string; value: number }) {
   switch (type) {
     case "number":
       return <Number value={value} />;
@@ -17,7 +16,7 @@ export function Number({ value }: { value: number }) {
   const dispatch = useCanvasDispatch();
   return (
     <>
-      <div className={styles.container}>
+      <div className={styles.contentContainer}>
         <div className={styles.value}>{value}</div>
       </div>
       <input
@@ -42,16 +41,13 @@ export function Operator() {
   const { nodes } = useCanvas();
   return (
     <>
-      <select
+      <div
         className={styles.selector}
         onPointerDown={(event) => event.stopPropagation()}
       >
-        <option>add</option>
-        <option>subtract</option>
-        <option>multiply</option>
-        <option>divide</option>
-      </select>
-      <div className={styles.container}>
+        add
+      </div>
+      <div className={styles.contentContainer}>
         {nodes.map((node) =>
           node.inputs.map((input) => (
             <div key={input.id} className={styles.input}>

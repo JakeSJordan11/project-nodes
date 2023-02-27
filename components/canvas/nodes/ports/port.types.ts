@@ -1,4 +1,4 @@
-export interface PortProp {
+export interface PortProps {
   id: string;
   title: string;
   isLinked: boolean;
