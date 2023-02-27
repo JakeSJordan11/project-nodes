@@ -8,7 +8,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <script async src="http://localhost:8097"></script>
+      <script async src="http://localhost:8097" />
       <body>{children}</body>
     </html>
   );
