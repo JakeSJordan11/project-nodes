@@ -1,9 +1,9 @@
 import type { MouseEvent, PointerEvent } from "react";
-import { ActionType, useCanvasDispatch } from "../../hooks";
-import type { PortData } from "../../types";
+import { ActionType, useCanvasDispatch } from "../../../../hooks";
 import styles from "./port.module.css";
+import type { PortProps } from "./port.types";
 
-export function Port({ id, title }: PortData) {
+export function Port({ id, title }: PortProps) {
   const dipatch = useCanvasDispatch();
 
   function handlePointerDown(event: PointerEvent<HTMLElement>) {

@@ -1,21 +1,19 @@
 .node {
-  box-shadow: var(--node-box-shadow);
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 0.75rem;
   align-items: center;
+  padding: 0.75rem;
   width: var(--node-width);
   height: var(--node-height);
   border-style: solid;
   border-radius: var(--node-border-radius);
   border-width: var(--node-border-width);
   border-color: var(--node-border-color);
-  cursor: grab;
-  -webkit-user-select: none;
-  user-select: none;
   background-color: var(--node-background-color);
+  box-shadow: var(--node-box-shadow);
+  user-select: none;
+  cursor: grab;
 }
 
 .node:active {
@@ -32,6 +30,13 @@
   right: 0;
   height: 0;
   width: "100%";
+}
+
+.title {
+  margin: 0;
+  font-size: var(--node-title-font-size);
+  padding-bottom: 0.5rem;
+  color: var(--node-title-color);
 }
 
 .portContainerBottom {

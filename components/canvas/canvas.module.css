@@ -5,8 +5,3 @@
 .main:active {
   cursor: move;
 }
-
-.streams {
-  position: absolute;
-  pointer-events: none;
-}

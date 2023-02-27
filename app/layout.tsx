@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
 import "./global.css";
 
+export const metadata = {
+  title: "Project Nodes",
+};
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head />
+      <script async src="http://localhost:8097"></script>
       <body>{children}</body>
     </html>
   );
