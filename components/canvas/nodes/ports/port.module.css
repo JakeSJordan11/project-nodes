@@ -1,32 +1,26 @@
 .port {
-  height: var(--port-height);
-  width: var(--port-width);
+  padding: 0.5rem;
   border-style: solid;
   border-radius: var(--port-border-radius);
   border-width: var(--port-border-width);
   border-color: var(--port-border-color);
   background-color: var(--port-background-color);
   cursor: pointer;
+  overflow: visible;
 }
 
 .port:hover {
   cursor: pointer;
+  border-color: var(--port-border-color-hover);
+  transition: border 0.2s;
 }
+
+.port:not(:hover) {
+  transition: border 0.2s;
+}
+
 .port:active {
   cursor: move;
-}
-
-.portContainer {
-  position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  left: 0;
-  height: 0;
-  width: 100%;
-}
-
-.streams {
-  position: absolute;
-  pointer-events: none;
+  border-color: var(--port-border-color-active);
+  transition: border 0.4s;
 }

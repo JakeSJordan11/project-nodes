@@ -1,15 +1,19 @@
-.container {
+.contentContainer {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  outline-style: solid;
-  outline-color: var(--content-border-color);
   border-radius: var(--content-border-radius);
-  outline-width: var(--content-border-width);
+  border-color: var(--content-border-color);
+  border-width: var(--content-border-width);
+  border-style: solid;
   background-color: var(--content-background-color);
-  box-shadow: var(--content-box-shadow);
+  cursor: grab;
+}
+
+.container:active {
+  cursor: grabbing;
 }
 
 .value {
