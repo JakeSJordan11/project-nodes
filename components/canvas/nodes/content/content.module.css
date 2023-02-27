@@ -12,7 +12,7 @@
   cursor: grab;
 }
 
-.container:active {
+.contentContainer:active {
   cursor: grabbing;
 }
 
@@ -22,6 +22,11 @@
 
 .slider {
   width: 100%;
+  cursor: pointer;
+}
+
+.slider:active {
+  cursor: move;
 }
 
 .selector {
