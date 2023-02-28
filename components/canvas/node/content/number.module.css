@@ -12,10 +12,6 @@
   cursor: grab;
 }
 
-.contentContainer:active {
-  cursor: grabbing;
-}
-
 .value {
   font-size: x-large;
 }
@@ -27,15 +23,4 @@
 
 .slider:active {
   cursor: move;
-}
-
-.selector {
-  border: none;
-  outline: none;
-  appearance: none;
-  font-size: medium;
-  text-align-last: center;
-  color: var(--content-font-color);
-  background-color: var(--node-background-color);
-  width: 100%;
 }

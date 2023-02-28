@@ -1,10 +1,10 @@
 import type { MouseEvent, PointerEvent } from "react";
 import { useState } from "react";
-import { ActionType, useCanvas, useCanvasDispatch } from "../../hooks";
+import { CanvasActionType, useCanvas, useCanvasDispatch } from "../../hooks";
 import styles from "./canvas.module.css";
-import { Menu } from "./menus";
-import { Node } from "./nodes";
-import { Stream } from "./streams";
+import { Menu } from "./menu";
+import { Node } from "./node";
+import { Stream } from "./stream";
 
 export function Canvas() {
   const { nodes, streams } = useCanvas();
@@ -15,18 +15,6 @@ export function Canvas() {
     y: 0,
   });
 
-  function handlePointerMove(event: PointerEvent<HTMLElement>) {
-    dispatch({ type: ActionType.CANVAS_POINTER_MOVE, payload: { ...event } });
-  }
-
-  function handlePointerUp(event: PointerEvent<HTMLElement>) {
-    dispatch({ type: ActionType.CANVAS_POINTER_UP, payload: { ...event } });
-  }
-
-  function handlePointerLeave(event: PointerEvent<HTMLElement>) {
-    dispatch({ type: ActionType.PORT_POINTER_LEAVE, payload: { ...event } });
-  }
-
   function handleContextMenu(event: PointerEvent<HTMLElement>) {
     event.preventDefault();
     setContextMenuPosition({ x: event.clientX, y: event.clientY });
@@ -35,7 +23,7 @@ export function Canvas() {
 
   function handleNumberNodeClick(event: MouseEvent<HTMLButtonElement>) {
     dispatch({
-      type: ActionType.CREATE_NUMBER_NODE,
+      type: CanvasActionType.CREATE_NUMBER_NODE,
       payload: { ...event },
     });
     setContextMenuOpen(false);
@@ -43,17 +31,22 @@ export function Canvas() {
 
   function handleOperatorNodeClick(event: MouseEvent<HTMLButtonElement>) {
     dispatch({
-      type: ActionType.CREATE_OPERATOR_NODE,
+      type: CanvasActionType.CREATE_OPERATOR_NODE,
       payload: { ...event },
     });
     setContextMenuOpen(false);
+  }
+
+  function handlePointerMove(event: PointerEvent<HTMLElement>) {
+    dispatch({
+      type: CanvasActionType.MOVE_NODE,
+      payload: { ...event },
+    });
   }
   return (
     <main
       className={styles.main}
       onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerLeave}
       onContextMenu={handleContextMenu}
       onClick={() => setContextMenuOpen(false)}
     >
