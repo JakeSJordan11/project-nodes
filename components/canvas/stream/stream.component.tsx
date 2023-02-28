@@ -1,6 +1,6 @@
 import type { StreamProps } from "./stream.types";
 
-export function Stream({ stroke, id, d }: StreamProps) {
+export function Stream({ stroke, id, m, l }: StreamProps) {
   return (
     <path
       id={id}
@@ -10,7 +10,7 @@ export function Stream({ stroke, id, d }: StreamProps) {
       stroke={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
-      d={d}
+      d={m && l && m + l}
     />
   );
 }

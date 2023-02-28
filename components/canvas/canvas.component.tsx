@@ -39,7 +39,7 @@ export function Canvas() {
 
   function handlePointerMove(event: PointerEvent<HTMLElement>) {
     dispatch({
-      type: CanvasActionType.MOVE_NODE,
+      type: CanvasActionType.DRAG_SELECTION,
       payload: { ...event },
     });
   }
@@ -47,6 +47,8 @@ export function Canvas() {
     <main
       className={styles.main}
       onPointerMove={handlePointerMove}
+      onPointerLeave={() => dispatch({ type: CanvasActionType.DROP_SELECTION })}
+      onPointerUp={() => dispatch({ type: CanvasActionType.DROP_SELECTION })}
       onContextMenu={handleContextMenu}
       onClick={() => setContextMenuOpen(false)}
     >

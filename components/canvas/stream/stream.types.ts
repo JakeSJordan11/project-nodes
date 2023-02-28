@@ -1,9 +1,11 @@
 export interface StreamProps {
   id: string;
+  value: number;
   isActive: boolean;
   isLinked: boolean;
-  target: HTMLButtonElement | null;
-  source: HTMLButtonElement | null;
-  d: string;
+  m: string;
+  l: string;
   stroke: string;
+  source: HTMLButtonElement;
+  target: HTMLButtonElement;
 }

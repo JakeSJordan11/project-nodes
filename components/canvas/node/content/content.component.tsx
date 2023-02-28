@@ -12,7 +12,7 @@ export function Content({
     case "number":
       return <Number value={value} />;
     case "operator":
-      return <Operator />;
+      return <Operator value={value} />;
     default:
       return null;
   }

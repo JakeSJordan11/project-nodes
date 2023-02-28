@@ -1,6 +1,7 @@
 export interface PortProps {
   id: string;
-  title: string;
-  isLinked: boolean;
   value: number;
+  title: string;
+  isActive: boolean;
+  isLinked: boolean;
 }
