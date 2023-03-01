@@ -1,16 +1,11 @@
 import type { StreamProps } from "./stream.types";
+import styles from "./stream.module.css";
 
-export function Stream({ stroke, id, m, l }: StreamProps) {
+export function Stream({ ...stream }: StreamProps) {
   return (
     <path
-      id={id}
-      fill="none"
-      strokeDasharray={6}
-      strokeWidth={4}
-      stroke={stroke}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d={m && l && m + l}
+      className={styles.path}
+      d={stream.m && stream.l && stream.m + stream.l}
     />
   );
 }

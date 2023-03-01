@@ -32,6 +32,8 @@
   --content-border-color: var(--neutral-500);
   --content-background-color: var(--neutral-200);
   --content-font-color: var(--neutral-800);
+
+  --stream-color: var(--neutral-500);
 }
 
 @media (prefers-color-scheme: dark) {

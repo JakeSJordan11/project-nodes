@@ -1,8 +1,7 @@
+import type { PropsWithRef } from "react";
 import type { PortProps } from "./port";
 
-export interface NodeProps {
-  id: string;
-  title: string;
+export interface NodeProps extends PropsWithRef<HTMLDivElement> {
   type: "number" | "operator";
   value: number;
   isActive: boolean;

@@ -10,6 +10,14 @@
   border-style: solid;
   background-color: var(--content-background-color);
   cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.contentContainer:active {
+  cursor: grabbing;
 }
 
 .value {

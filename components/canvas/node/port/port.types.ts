@@ -1,7 +1,7 @@
-export interface PortProps {
-  id: string;
-  value: number;
-  title: string;
-  isActive: boolean;
+import type { PropsWithRef } from "react";
+
+export interface PortProps extends PropsWithRef<HTMLButtonElement> {
+  value: any;
   isLinked: boolean;
+  isHovered: boolean;
 }

@@ -1,7 +1,19 @@
 .main {
   height: 100%;
+  text-align: center;
 }
 
 .main:active {
   cursor: move;
+}
+
+.gettingStartedText {
+  opacity: 0.5;
+  font-size: large;
+  font-weight: 500;
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }

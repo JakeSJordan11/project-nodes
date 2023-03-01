@@ -1,18 +1,25 @@
+import { NodeProps } from "../node.types";
+import { Inputs, Outputs } from "../port";
 import { Number } from "./number.component";
 import { Operator } from "./operator.component";
 
-export function Content({
-  type,
-  value,
-}: {
-  type: "number" | "operator";
-  value: number;
-}) {
-  switch (type) {
+export function Content({ ...node }: NodeProps) {
+  switch (node.type) {
     case "number":
-      return <Number value={value} />;
+      return (
+        <>
+          <Number {...node} />
+          <Outputs {...node} />
+        </>
+      );
     case "operator":
-      return <Operator value={value} />;
+      return (
+        <>
+          <Inputs {...node} />
+          <Operator {...node} />
+        </>
+      );
+
     default:
       return null;
   }

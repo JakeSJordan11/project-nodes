@@ -22,38 +22,3 @@
 .node:active {
   cursor: grabbing;
 }
-
-.inputContainer {
-  position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0;
-  width: "100%";
-}
-
-.title {
-  margin: 0;
-  font-size: var(--node-title-font-size);
-  color: var(--node-title-color);
-  cursor: grab;
-}
-
-.title:active {
-  cursor: grabbing;
-}
-
-.outputContainer {
-  position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 0;
-  width: "100%";
-}

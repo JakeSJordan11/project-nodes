@@ -51,6 +51,10 @@ export enum CanvasActionType {
   DROP_SELECTION = "DROP_SELECTION",
   CREATE_STREAM = "CREATE_STREAM",
   LINK_STREAM = "LINK_STREAM",
+  UNLINK_STREAM = "UNLINK_STREAM",
+  ENTER_PORT = "ENTER_PORT",
+  LEAVE_PORT = "LEAVE_PORT",
+  LEAVE_CANVAS = "LEAVE_CANVAS",
 }
 
 type SelectNode = {
@@ -78,7 +82,10 @@ type DragSelection = {
   payload: PointerEvent<HTMLElement>;
 };
 
-type DropSelection = { type: CanvasActionType.DROP_SELECTION };
+type DropSelection = {
+  type: CanvasActionType.DROP_SELECTION;
+  payload?: PointerEvent<HTMLElement>;
+};
 
 type CreateStream = {
   type: CanvasActionType.CREATE_STREAM;
@@ -90,6 +97,23 @@ type LinkStream = {
   payload: PointerEvent<HTMLButtonElement>;
 };
 
+type UnlinkStream = {
+  type: CanvasActionType.UNLINK_STREAM;
+  payload: MouseEvent<HTMLButtonElement>;
+};
+
+type EnterPort = {
+  type: CanvasActionType.ENTER_PORT;
+  payload: PointerEvent<HTMLButtonElement>;
+};
+
+type LeavePort = {
+  type: CanvasActionType.LEAVE_PORT;
+  payload: PointerEvent<HTMLButtonElement>;
+};
+
+type LeaveCanvas = { type: CanvasActionType.LEAVE_CANVAS };
+
 export type CanvasAction =
   | SelectNode
   | CreateNumberNode
@@ -98,7 +122,11 @@ export type CanvasAction =
   | DragSelection
   | DropSelection
   | CreateStream
-  | LinkStream;
+  | LinkStream
+  | EnterPort
+  | LeavePort
+  | LeaveCanvas
+  | UnlinkStream;
 
 export function canvasReducer(state: CanvasState, action: CanvasAction) {
   const STREAM_ALIGNMENT = 10;
@@ -136,13 +164,21 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
             id: crypto.randomUUID(),
             title: "Number",
             type: "number",
-            value: 0,
+            isActive: false,
+            value: null,
             position: {
-              x: action.payload.clientX - 65,
-              y: action.payload.clientY - 25,
+              x: action.payload.clientX - CENTER_NODE_X,
+              y: action.payload.clientY - CENTER_NODE_Y,
             },
-            inputs: [],
-            outputs: [{ id: crypto.randomUUID() }],
+            outputs: [
+              {
+                id: crypto.randomUUID(),
+                value: null,
+                isHovered: false,
+                isLinked: false,
+                type: "output",
+              },
+            ],
           },
         ] as NodeProps[],
       };
@@ -160,8 +196,10 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
               x: action.payload.clientX - CENTER_NODE_X,
               y: action.payload.clientY - CENTER_NODE_Y,
             },
-            inputs: [{ id: crypto.randomUUID() }, { id: crypto.randomUUID() }],
-            outputs: [],
+            inputs: [
+              { id: crypto.randomUUID(), value: null, type: "input" },
+              { id: crypto.randomUUID(), value: null, type: "input" },
+            ],
           },
         ] as NodeProps[],
       };
@@ -174,6 +212,14 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
             return {
               ...node,
               value: parseInt(action.payload.currentTarget.value),
+              outputs:
+                node.outputs &&
+                node.outputs.map((output) => {
+                  return {
+                    ...output,
+                    value: parseInt(action.payload.currentTarget.value),
+                  };
+                }),
             };
           } else return node;
         }),
@@ -187,10 +233,10 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
           ) {
             return {
               ...stream,
-              value: action.payload.currentTarget.value,
+              value: parseInt(action.payload.currentTarget.value),
             };
           } else return stream;
-        }) as StreamProps[],
+        }),
       };
 
     case "DRAG_SELECTION":
@@ -224,10 +270,10 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
               } ${stream.target.getBoundingClientRect().y + STREAM_ALIGNMENT}`,
             };
           } else return stream;
-        }) as StreamProps[],
+        }),
       };
 
-    case "DROP_SELECTION":
+    case "LEAVE_CANVAS":
       return {
         ...state,
         nodes: state.nodes.map((node) => {
@@ -235,11 +281,80 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
             return {
               ...node,
               isActive: false,
+              inputs:
+                node.inputs &&
+                node.inputs.map((input) => {
+                  return {
+                    ...input,
+                    isLinked: false,
+                  };
+                }),
+              outputs:
+                node.outputs &&
+                node.outputs.map((output) => {
+                  return {
+                    ...output,
+                    isLinked: false,
+                  };
+                }),
             };
           } else return node;
         }),
-        streams: state.streams.filter((stream) => stream.isLinked),
+        streams: state.streams
+          .map((stream) => {
+            if (stream.isActive) {
+              return {
+                ...stream,
+                isActive: false,
+              };
+            } else return stream;
+          })
+          .filter((stream) => stream.isLinked),
       };
+
+    case "DROP_SELECTION": {
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          return {
+            ...node,
+            isActive: node.isActive ? false : node.isActive,
+            inputs:
+              node.inputs &&
+              node.inputs.map((input) => {
+                if (state.streams.find((stream) => stream.isActive)) {
+                  return {
+                    ...input,
+                    isLinked: false,
+                    isHovered: false,
+                  };
+                } else return input;
+              }),
+            outputs:
+              node.outputs &&
+              node.outputs.map((output) => {
+                if (state.streams.find((stream) => stream.isActive)) {
+                  return {
+                    ...output,
+                    isLinked: false,
+                    isHovered: false,
+                  };
+                } else return output;
+              }),
+          };
+        }),
+        streams: state.streams
+          .map((stream) => {
+            if (stream.isActive) {
+              return {
+                ...stream,
+                isActive: false,
+              };
+            } else return stream;
+          })
+          .filter((stream) => stream.isLinked),
+      };
+    }
 
     case "CREATE_STREAM":
       return {
@@ -249,8 +364,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
           {
             id: crypto.randomUUID(),
             isActive: true,
-            stroke: "red",
             source: action.payload.currentTarget,
+            target: null,
             m: `M${
               action.payload.currentTarget.getBoundingClientRect().x +
               STREAM_ALIGNMENT
@@ -258,13 +373,55 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
               action.payload.currentTarget.getBoundingClientRect().y +
               STREAM_ALIGNMENT
             }`,
-            value: state.nodes.find(
-              (node) =>
-                node.id ===
-                action.payload.currentTarget.parentElement?.parentElement?.id
-            )?.value,
+            l: `L${
+              action.payload.currentTarget.getBoundingClientRect().x +
+              STREAM_ALIGNMENT
+            } ${
+              action.payload.currentTarget.getBoundingClientRect().y +
+              STREAM_ALIGNMENT
+            }`,
+            value: state.streams.find((stream) => stream.isActive)?.source
+              .value,
           },
         ] as StreamProps[],
+        nodes: state.nodes.map((node) => {
+          if (
+            node.id ===
+            action.payload.currentTarget.parentElement?.parentElement?.id
+          ) {
+            return {
+              ...node,
+              outputs:
+                node.outputs &&
+                node.outputs.map((output) => {
+                  if (
+                    output.id === action.payload.currentTarget.id &&
+                    !output.isLinked
+                  ) {
+                    return {
+                      ...output,
+                      value: node.value,
+                      isLinked: true,
+                    };
+                  } else return output;
+                }),
+              inputs:
+                node.inputs &&
+                node.inputs.map((input) => {
+                  if (
+                    input.id === action.payload.currentTarget.id &&
+                    !input.isLinked
+                  ) {
+                    return {
+                      ...input,
+                      value: node.value,
+                      isLinked: true,
+                    };
+                  } else return input;
+                }),
+            };
+          } else return node;
+        }),
       };
 
     case "LINK_STREAM":
@@ -273,14 +430,15 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
         streams: state.streams.map((stream) => {
           if (
             stream.isActive &&
-            stream.source !== action.payload.currentTarget
+            action.payload.currentTarget.id !== stream.source.id &&
+            action.payload.currentTarget.parentElement?.parentElement?.id !==
+              stream.source.parentElement?.parentElement?.id
           ) {
             return {
               ...stream,
               isActive: false,
               isLinked: true,
               target: action.payload.currentTarget,
-              stroke: "blue",
               l: `L${
                 action.payload.currentTarget.getBoundingClientRect().x +
                 STREAM_ALIGNMENT
@@ -289,15 +447,168 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                 STREAM_ALIGNMENT
               }`,
             };
-          } else if (stream.value) {
-            console.log("ass");
+          } else return stream;
+        }),
+        nodes: state.nodes.map((node) => {
+          if (state.streams.find((stream) => stream.isActive)) {
+            return {
+              ...node,
+              inputs:
+                node.inputs &&
+                node.inputs.map((input) => {
+                  if (input.id === action.payload.currentTarget.id) {
+                    return {
+                      ...input,
+                      value: input.value,
+                      isLinked: true,
+                    };
+                  } else return input;
+                }),
+              outputs:
+                node.outputs &&
+                node.outputs.map((output) => {
+                  if (output.id === action.payload.currentTarget.id) {
+                    return {
+                      ...output,
+                      value: output.value,
+                      isLinked: true,
+                    };
+                  } else return output;
+                }),
+            };
+          } else return node;
+        }),
+      };
+
+    case "ENTER_PORT":
+      return {
+        ...state,
+        streams: state.streams.map((stream) => {
+          if (stream.isActive) {
             return {
               ...stream,
-              value: action.payload.currentTarget.value,
+              stroke: "deeppink",
             };
           } else return stream;
-        }) as StreamProps[],
+        }),
+        nodes: state.nodes.map((node) => {
+          return {
+            ...node,
+            inputs:
+              node.inputs &&
+              node.inputs.map((input) => {
+                if (state.streams.find((stream) => stream.isActive)) {
+                  return {
+                    ...input,
+                    isHovered: true,
+                  };
+                } else return input;
+              }),
+            outputs:
+              node.outputs &&
+              node.outputs.map((output) => {
+                if (state.streams.find((stream) => stream.isActive)) {
+                  return {
+                    ...output,
+                    isHovered: true,
+                  };
+                } else return output;
+              }),
+          };
+        }),
       };
+
+    case "LEAVE_PORT":
+      return {
+        ...state,
+        streams: state.streams.map((stream) => {
+          return {
+            ...stream,
+            stroke: stream.isLinked ? "deeppink" : "",
+          };
+        }),
+        nodes: state.nodes.map((node) => {
+          return {
+            ...node,
+            inputs:
+              node.inputs &&
+              node.inputs.map((input) => {
+                if (state.streams.find((stream) => stream.isActive)) {
+                  return {
+                    ...input,
+                    isHovered: false,
+                  };
+                } else return input;
+              }),
+            outputs:
+              node.outputs &&
+              node.outputs.map((output) => {
+                if (state.streams.find((stream) => stream.isActive)) {
+                  return {
+                    ...output,
+                    isHovered: false,
+                  };
+                } else return output;
+              }),
+          };
+        }),
+      };
+
+    case "UNLINK_STREAM": {
+      const stream = state.streams.find(
+        (stream) =>
+          stream.source.id === action.payload.currentTarget.id ||
+          stream.target.id === action.payload.currentTarget.id
+      );
+
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          return {
+            ...node,
+            outputs:
+              node.outputs &&
+              node.outputs.map((output) => {
+                if (
+                  output.id === stream?.source.id ||
+                  output.id === stream?.target.id
+                ) {
+                  return {
+                    ...output,
+                    isLinked: false,
+                  };
+                } else return output;
+              }),
+            inputs:
+              node.inputs &&
+              node.inputs.map((input) => {
+                if (
+                  input.id === stream?.source.id ||
+                  input.id === stream?.target.id
+                ) {
+                  return {
+                    ...input,
+                    isLinked: false,
+                  };
+                } else return input;
+              }),
+          };
+        }),
+        streams: state.streams
+          .map((stream) => {
+            if (
+              stream.source.id === action.payload.currentTarget.id ||
+              stream.target.id === action.payload.currentTarget.id
+            ) {
+              return {
+                ...stream,
+                isLinked: false,
+              };
+            } else return stream;
+          })
+          .filter((stream) => stream.isLinked),
+      };
+    }
 
     default:
       throw Error("Unknown action: " + action.type);
