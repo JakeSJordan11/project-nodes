@@ -1,0 +1,24 @@
+.contentContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--content-border-radius);
+  border-color: var(--content-border-color);
+  border-width: var(--content-border-width);
+  border-style: solid;
+  background-color: var(--content-background-color);
+  cursor: grab;
+  font-size: x-large;
+}
+
+.contentContainer:active {
+  cursor: grabbing;
+}
+
+.selector {
+  text-align-last: center;
+  background-color: var(--node-background-color);
+  color: var(--node-title-color);
+}

@@ -1,0 +1,35 @@
+.svg {
+  height: 100%;
+  width: 100%;
+  stroke: blue;
+  stroke-width: 4;
+  stroke-dasharray: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: glow 2s infinite alternate;
+}
+
+.path {
+  animation: stream 0.5s linear infinite;
+}
+
+@keyframes stream {
+  0% {
+    stroke-dashoffset: 16;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes glow {
+  0% {
+    stroke: red;
+  }
+  50% {
+    stroke: blue;
+  }
+  100% {
+    stroke: purple;
+  }
+}

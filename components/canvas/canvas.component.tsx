@@ -1,45 +1,79 @@
-import { PointerEvent } from "react";
-import { ActionType, useCanvas, useCanvasDispatch } from "../../hooks";
-import { Node } from "../node";
-import { Stream } from "../stream";
+import type { MouseEvent, PointerEvent } from "react";
+import { useState } from "react";
+import { CanvasActionType, useCanvas, useCanvasDispatch } from "../../hooks";
 import styles from "./canvas.module.css";
+import { Menu } from "./menu";
+import { Nodes } from "./node";
+import { Streams } from "./stream";
 
 export function Canvas() {
-  const { nodes, streams } = useCanvas();
+  const { nodes } = useCanvas();
   const dispatch = useCanvasDispatch();
+  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
+
+  function handleContextMenu(event: PointerEvent<HTMLElement>) {
+    event.preventDefault();
+    setContextMenuOpen(true);
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+  }
+
+  function handleNumberNodeClick(event: MouseEvent<HTMLButtonElement>) {
+    setContextMenuOpen(false);
+    dispatch({
+      type: CanvasActionType.CREATE_NUMBER_NODE,
+      payload: { ...event },
+    });
+  }
+
+  function handleOperatorNodeClick(event: MouseEvent<HTMLButtonElement>) {
+    setContextMenuOpen(false);
+    dispatch({
+      type: CanvasActionType.CREATE_OPERATOR_NODE,
+      payload: { ...event },
+    });
+  }
 
   function handlePointerMove(event: PointerEvent<HTMLElement>) {
-    dispatch({ type: ActionType.CANVAS_POINTER_MOVE, payload: { ...event } });
+    dispatch({
+      type: CanvasActionType.DRAG_SELECTION,
+      payload: { ...event },
+    });
   }
 
   function handlePointerUp(event: PointerEvent<HTMLElement>) {
-    dispatch({ type: ActionType.CANVAS_POINTER_UP, payload: { ...event } });
-  }
-
-  function handlePointerLeave(event: PointerEvent<HTMLElement>) {
-    dispatch({ type: ActionType.PORT_POINTER_LEAVE, payload: { ...event } });
+    dispatch({
+      type: CanvasActionType.DROP_SELECTION,
+      payload: { ...event },
+    });
   }
 
   return (
     <main
       className={styles.main}
-      onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onPointerLeave={handlePointerLeave}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={() => dispatch({ type: CanvasActionType.LEAVE_CANVAS })}
+      onContextMenu={handleContextMenu}
+      onClick={() => setContextMenuOpen(false)}
     >
-      {nodes.map((node) => (
-        <Node key={node.id} {...node} />
-      ))}
-      <svg
-        className={styles.streams}
-        height={"100%"}
-        width={"100%"}
-        preserveAspectRatio="xMinYMin meet"
-      >
-        {streams.map((stream) => (
-          <Stream key={stream.id} {...stream} />
-        ))}
-      </svg>
+      {nodes.length === 0 && <GettingStarted />}
+      <Nodes />
+      <Streams />
+      {contextMenuOpen && (
+        <Menu
+          contextMenuPosition={contextMenuPosition}
+          onNumberNodeClick={handleNumberNodeClick}
+          onOperatorNodeClick={handleOperatorNodeClick}
+        />
+      )}
     </main>
   );
+}
+
+function GettingStarted() {
+  return <p className={styles.gettingStartedText}>Right click to add a node</p>;
 }

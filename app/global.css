@@ -1,39 +1,62 @@
 :root {
   color-scheme: light dark;
-  --size-border-radius-round: 50%;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-800: #262626;
+  --amber-500: #f59e0b;
+  --amber-700: #ca6702;
 
-  --size-border-radius-node: 0.5rem;
-  --size-border-width-node: 0.1rem;
-  --size-height-node: 5rem;
-  --size-width-node: 5rem;
-  --size-height-input: 3rem;
-  --size-font: 1.25rem;
-  --size-height-port: 16px;
-  --size-width-port: 16px;
+  --node-height: 6.5rem;
+  --node-width: 6.5rem;
+  --node-border-width: 0.125rem;
+  --node-border-radius: 0.35rem;
+  --node-border-color: var(--neutral-500);
+  --node-background-color: var(--neutral-400);
+  --node-box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.5);
 
-  --color-border-node: black;
-  --color-background-input: white;
-  --color-background-numberNode: silver;
-  --color-background-mathNode: deepskyblue;
-  --color-path-stop-1: darkgray;
-  --color-path-stop-2: gray;
+  --node-title-font-size: medium;
+  --node-title-color: var(--neutral-800);
+
+  --port-border-radius: 50%;
+  --port-border-width: 0.15rem;
+  --port-background-color: var(--neutral-500);
+  --port-border-color: var(--neutral-300);
+  --port-border-color-hover: var(--amber-500);
+  --port-border-color-active: var(--amber-500);
+
+  --content-border-radius: 0.25rem;
+  --content-border-width: 0.1rem;
+  --content-border-color: var(--neutral-500);
+  --content-background-color: var(--neutral-200);
+  --content-font-color: var(--neutral-800);
+
+  --stream-color: var(--neutral-500);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-border-node: hsl(0, 0%, 20%);
-    --color-background-input: hsl(0, 0%, 10%);
-    --color-background-numberNode: gray;
-    --color-background-mathNode: darkcyan;
-    --color-path-stop-1: darkgray;
-    --color-path-stop-2: gray;
+    --node-border-color: var(--neutral-800);
+    --node-background-color: var(--neutral-600);
+
+    --node-title-color: var(--neutral-200);
+
+    --port-background-color: var(--neutral-600);
+    --port-border-color: var(--neutral-800);
+    --port-border-color-hover: var(--amber-700);
+    --port-border-color-active: var(--amber-700);
+
+    --content-border-color: var(--neutral-500);
+    --content-background-color: var(--neutral-800);
   }
 }
 
 html,
 body {
+  height: 100%;
   padding: 0;
   margin: 0;
-  font-family: "Inter", sans-serif;
   overflow: hidden;
 }
