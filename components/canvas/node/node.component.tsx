@@ -2,6 +2,7 @@ import { CanvasActionType, useCanvasDispatch } from "../../../hooks";
 import { Content } from "./content/content.component";
 import styles from "./node.module.css";
 import type { NodeProps } from "./node.types";
+import { Inputs, Outputs } from "./port";
 
 export function Node({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch();
@@ -15,7 +16,9 @@ export function Node({ ...node }: NodeProps) {
         dispatch({ type: CanvasActionType.SELECT_NODE, payload: { ...event } })
       }
     >
+      <Inputs {...node} />
       <Content {...node} />
+      <Outputs {...node} />
     </article>
   );
 }

@@ -1,11 +1,14 @@
+import { PortProps } from "../node";
+
 export interface StreamProps {
   id: string;
-  value: number;
+  streamValue: number;
   isActive: boolean;
   isLinked: boolean;
   m: string;
   l: string;
   stroke: string;
-  source: HTMLButtonElement;
-  target: HTMLButtonElement;
+  sourcePort: PortProps;
+  targetPort: PortProps;
+  chained: boolean;
 }

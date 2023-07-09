@@ -1,5 +1,4 @@
 import { NodeProps } from "../node.types";
-import { Inputs, Outputs } from "../port";
 import { Number } from "./number.component";
 import { Operator } from "./operator.component";
 
@@ -9,13 +8,11 @@ export function Content({ ...node }: NodeProps) {
       return (
         <>
           <Number {...node} />
-          <Outputs {...node} />
         </>
       );
     case "operator":
       return (
         <>
-          <Inputs {...node} />
           <Operator {...node} />
         </>
       );

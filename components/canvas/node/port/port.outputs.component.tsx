@@ -6,7 +6,17 @@ export function Outputs({ ...node }: NodeProps) {
   return (
     <div className={styles.outputContainer}>
       {node.outputs &&
-        node.outputs.map((output) => <Port key={output.id} {...output} />)}
+        node.outputs.map((output) => (
+          <Port
+            key={output.id}
+            {...output}
+            portValue={
+              node.type === "operator"
+                ? node.inputs[0].portValue + node.inputs[1].portValue
+                : output.portValue
+            }
+          />
+        ))}
     </div>
   );
 }

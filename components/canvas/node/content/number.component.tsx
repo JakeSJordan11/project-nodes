@@ -4,13 +4,6 @@ import styles from "./number.module.css";
 
 export function Number({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch();
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    dispatch({
-      type: CanvasActionType.CHANGE_VALUE_SLIDER,
-      payload: { ...event },
-    });
-  }
   return (
     <>
       <div className={styles.contentContainer}>
@@ -23,7 +16,12 @@ export function Number({ ...node }: NodeProps) {
         max="10"
         value={node.value || 0}
         onPointerDown={(event) => event.stopPropagation()}
-        onChange={handleChange}
+        onChange={(event) =>
+          dispatch({
+            type: CanvasActionType.CHANGE_VALUE_SLIDER,
+            payload: { ...event },
+          })
+        }
       />
     </>
   );

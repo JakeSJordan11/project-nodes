@@ -11,5 +11,3 @@ export function Nodes() {
     </>
   );
 }
-
-//NOTE: Maybe make this compose all the different node types...

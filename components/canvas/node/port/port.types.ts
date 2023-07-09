@@ -1,7 +1,9 @@
 import type { PropsWithRef } from "react";
 
 export interface PortProps extends PropsWithRef<HTMLButtonElement> {
-  value: any;
+  id: string;
+  portType: "input" | "output";
+  portValue: number;
   isLinked: boolean;
   isHovered: boolean;
 }

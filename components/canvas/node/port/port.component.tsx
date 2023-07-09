@@ -7,6 +7,7 @@ export function Port({ ...port }: PortProps) {
   return (
     <button
       id={port.id}
+      value={port.portValue}
       className={styles.port}
       onPointerDown={(event) => {
         event.stopPropagation();

@@ -4,7 +4,9 @@ import styles from "./operator.module.css";
 export function Operator({ ...node }: NodeProps) {
   return (
     <>
-      <div className={styles.contentContainer}>{node.value}</div>
+      <div className={styles.contentContainer}>
+        {node.inputs[0].portValue + node.inputs[1].portValue || node.value}
+      </div>
       <div className={styles.selector}>Addition</div>
     </>
   );
