@@ -1,5 +1,5 @@
 import type { MouseEventHandler } from "react";
-import styles from "./menu.module.css";
+import styles from "../styles/canvas.contextmenu.module.css";
 
 export function Menu({
   onNumberNodeClick,

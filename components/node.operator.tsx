@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { CanvasActionType, useCanvasDispatch } from "../../../hooks";
-import { Content } from "./content/content.component";
-import { NodeMenu } from "./menu";
-import styles from "./node.module.css";
-import type { NodeProps } from "./node.types";
-import { Inputs, Outputs } from "./port";
+import { useCanvasDispatch } from "../hooks";
+import styles from "../styles/node.operator.module.css";
+import { CanvasActionType, type NodeProps } from "../types";
+import { Inputs, NodeMenu, Outputs } from "../components";
 
-export function Node({ ...node }: NodeProps) {
+export function OperatorNode({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch();
   const [nodeContextMenuOpen, setNodeContextMenuOpen] = useState(false);
   const [nodeContextMenuPosition, setNodeContextMenuPosition] = useState({
@@ -32,9 +30,12 @@ export function Node({ ...node }: NodeProps) {
         dispatch({ type: CanvasActionType.SELECT_NODE, payload: { ...event } })
       }
     >
-      <Inputs {...node} />
-      <Content {...node} />
-      <Outputs {...node} />
+      {node.inputs && <Inputs {...node} />}
+      <div className={styles.contentContainer}>
+        {node.inputs[0].portValue + node.inputs[1].portValue || 0}
+      </div>
+      <div className={styles.selector}>Addition</div>
+      {node.outputs && <Outputs {...node} />}
       {nodeContextMenuOpen && (
         <NodeMenu
           nodeMenuPosition={nodeContextMenuPosition}

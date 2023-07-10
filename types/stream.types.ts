@@ -1,4 +1,4 @@
-import { PortProps } from "../node";
+import type { PortProps } from "../types";
 
 export interface StreamProps {
   id: string;
@@ -9,4 +9,8 @@ export interface StreamProps {
   l: string;
   sourcePort: PortProps;
   targetPort: PortProps;
+  sourcePortId: string;
+  targetPortId: string;
+  sourceNodeId: string;
+  targetNodeId: string;
 }

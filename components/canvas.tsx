@@ -1,10 +1,9 @@
 import type { MouseEvent, PointerEvent } from "react";
 import { useState } from "react";
-import { CanvasActionType, useCanvas, useCanvasDispatch } from "../../hooks";
-import styles from "./canvas.module.css";
-import { Menu } from "./menu";
-import { Nodes } from "./node";
-import { Streams } from "./stream";
+import { Menu, Nodes, Streams } from "../components";
+import { useCanvas, useCanvasDispatch } from "../hooks";
+import styles from "../styles/canvas.module.css";
+import { CanvasActionType } from "../types";
 
 export function Canvas() {
   const { nodes } = useCanvas();

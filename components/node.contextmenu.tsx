@@ -1,5 +1,5 @@
 import type { MouseEventHandler } from "react";
-import styles from "./nodeContextMenu.module.css";
+import styles from "../styles/node.contextmenu.module.css";
 
 export function NodeMenu({
   onRemoveNodeClick: onRemoveNodeClick,

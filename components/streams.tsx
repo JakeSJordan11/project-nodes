@@ -1,6 +1,6 @@
-import { useCanvas } from "../../../hooks";
-import { Stream } from "./stream.component";
-import styles from "./stream.module.css";
+import { Stream } from "../components";
+import { useCanvas } from "../hooks";
+import styles from "../styles/stream.module.css";
 
 export function Streams() {
   const { streams } = useCanvas();

@@ -1,13 +1,13 @@
-import { CanvasActionType, useCanvasDispatch } from "../../../../hooks";
-import styles from "./port.module.css";
-import { PortProps } from "./port.types";
+import { useCanvasDispatch } from "../hooks";
+import styles from "../styles/port.module.css";
+import { CanvasActionType, type PortProps } from "../types";
 
 export function Port({ ...port }: PortProps) {
   const dispatch = useCanvasDispatch();
   return (
     <button
       id={port.id}
-      value={port.portValue}
+      value={port.portValue || 0}
       className={styles.port}
       onPointerDown={(event) => {
         event.stopPropagation();
