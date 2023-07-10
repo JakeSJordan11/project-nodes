@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Inputs, NodeMenu, Outputs } from "../components";
+import { NodeMenu, Port } from "../components";
 import { useCanvasDispatch } from "../hooks";
 import styles from "../styles/node.number.module.css";
 import { CanvasActionType, type NodeProps } from "../types";
@@ -30,7 +30,6 @@ export function NumberNode({ ...node }: NodeProps) {
         dispatch({ type: CanvasActionType.SELECT_NODE, payload: { ...event } })
       }
     >
-      {node.inputs && <Inputs {...node} />}
       <div className={styles.contentContainer}>
         <div className={styles.value}>{node.value || 0}</div>
       </div>
@@ -48,7 +47,19 @@ export function NumberNode({ ...node }: NodeProps) {
           })
         }
       />
-      {node.outputs && <Outputs {...node} />}
+      {node.outputs && (
+        <div className={styles.outputContainer}>
+          {node.outputs &&
+            node.outputs.map((output) => (
+              <Port
+                key={output.id}
+                {...output}
+                id={output.id}
+                nodeId={node.id}
+              />
+            ))}
+        </div>
+      )}
       {nodeContextMenuOpen && (
         <NodeMenu
           nodeMenuPosition={nodeContextMenuPosition}

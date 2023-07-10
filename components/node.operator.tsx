@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { NodeMenu, Port } from "../components";
 import { useCanvasDispatch } from "../hooks";
 import styles from "../styles/node.operator.module.css";
 import { CanvasActionType, type NodeProps } from "../types";
-import { Inputs, NodeMenu, Outputs } from "../components";
 
 export function OperatorNode({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch();
@@ -30,12 +30,31 @@ export function OperatorNode({ ...node }: NodeProps) {
         dispatch({ type: CanvasActionType.SELECT_NODE, payload: { ...event } })
       }
     >
-      {node.inputs && <Inputs {...node} />}
+      {node.inputs && (
+        <div className={styles.inputContainer}>
+          {node.inputs &&
+            node.inputs.map((input) => (
+              <Port key={input.id} {...input} id={input.id} nodeId={node.id} />
+            ))}
+        </div>
+      )}
       <div className={styles.contentContainer}>
         {node.inputs[0].portValue + node.inputs[1].portValue || 0}
       </div>
       <div className={styles.selector}>Addition</div>
-      {node.outputs && <Outputs {...node} />}
+      {node.outputs && (
+        <div className={styles.outputContainer}>
+          {node.outputs &&
+            node.outputs.map((output) => (
+              <Port
+                key={output.id}
+                {...output}
+                id={output.id}
+                nodeId={node.id}
+              />
+            ))}
+        </div>
+      )}
       {nodeContextMenuOpen && (
         <NodeMenu
           nodeMenuPosition={nodeContextMenuPosition}

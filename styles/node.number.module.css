@@ -57,3 +57,65 @@
 .slider:active {
   cursor: move;
 }
+
+.port {
+  padding: 0.5rem;
+  border-style: solid;
+  border-radius: var(--port-border-radius);
+  border-width: var(--port-border-width);
+  border-color: var(--port-border-color);
+  background-color: var(--port-background-color);
+  cursor: pointer;
+  overflow: visible;
+}
+
+.port:hover {
+  cursor: pointer;
+}
+
+.port:active {
+  cursor: move;
+  border-color: var(--port-border-color-active);
+  animation: pulse 1.4s infinite ease-in-out;
+}
+
+.inputContainer {
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  width: "100%";
+}
+
+.outputContainer {
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  width: "100%";
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    border-color: rgba(0, 0, 0, 0.4);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    border-color: var(--port-border-color);
+  }
+}
