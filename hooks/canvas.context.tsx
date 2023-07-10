@@ -519,13 +519,15 @@ export function canvasReducer(
             outputs:
               node.outputs &&
               node.outputs.map((output) => {
-                return {
-                  ...output,
-                  isHovered: output.isHovered ? false : output.isHovered,
-                  portValue:
-                    state.streams.find((stream) => stream.isActive)
-                      ?.streamValue || output.portValue,
-                };
+                if (output.id === action.payload.currentTarget.id) {
+                  return {
+                    ...output,
+                    isHovered: output.isHovered ? false : output.isHovered,
+                    portValue:
+                      state.streams.find((stream) => stream.isActive)
+                        ?.streamValue || output.portValue,
+                  };
+                } else return output;
               }),
           };
         }) as NodeProps[],
