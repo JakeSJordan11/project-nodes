@@ -17,8 +17,8 @@ export function Canvas() {
 
   function handleContextMenu(event: PointerEvent<HTMLElement>) {
     event.preventDefault();
-    setContextMenuOpen(true);
-    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+    !nodes.find((node) => node.isActive) && setContextMenuOpen(true),
+      setContextMenuPosition({ x: event.clientX, y: event.clientY });
   }
 
   function handleNumberNodeClick(event: MouseEvent<HTMLButtonElement>) {

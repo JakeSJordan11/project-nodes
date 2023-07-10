@@ -7,8 +7,6 @@ export interface StreamProps {
   isLinked: boolean;
   m: string;
   l: string;
-  stroke: string;
   sourcePort: PortProps;
   targetPort: PortProps;
-  chained: boolean;
 }

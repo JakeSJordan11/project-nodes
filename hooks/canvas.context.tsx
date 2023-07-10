@@ -55,6 +55,7 @@ export enum CanvasActionType {
   ENTER_PORT = "ENTER_PORT",
   LEAVE_PORT = "LEAVE_PORT",
   LEAVE_CANVAS = "LEAVE_CANVAS",
+  REMOVE_NODE = "REMOVE_NODE",
 }
 
 type SelectNode = {
@@ -114,6 +115,11 @@ type LeavePort = {
 
 type LeaveCanvas = { type: CanvasActionType.LEAVE_CANVAS };
 
+type RemoveNode = {
+  type: CanvasActionType.REMOVE_NODE;
+  payload: { id: string };
+};
+
 export type CanvasAction =
   | SelectNode
   | CreateNumberNode
@@ -126,7 +132,8 @@ export type CanvasAction =
   | EnterPort
   | LeavePort
   | LeaveCanvas
-  | UnlinkStream;
+  | UnlinkStream
+  | RemoveNode;
 
 export function canvasReducer(
   state: CanvasState,
@@ -523,6 +530,7 @@ export function canvasReducer(
           };
         }) as NodeProps[],
       };
+
     case "ENTER_PORT":
       return {
         ...state,
@@ -650,6 +658,29 @@ export function canvasReducer(
               return {
                 ...stream,
                 isLinked: false,
+              };
+            } else return stream;
+          })
+          .filter((stream) => stream.isLinked),
+      };
+    }
+    case "REMOVE_NODE": {
+      const node = state.nodes.find(
+        (node) => node.id === action.payload.id
+      ) as NodeProps;
+      return {
+        ...state,
+        nodes: state.nodes.filter((node) => node.id !== action.payload.id),
+        streams: state.streams
+          .map((stream) => {
+            if (
+              stream.sourcePort.parentElement?.parentElement?.id === node.id ||
+              stream.targetPort.parentElement?.parentElement?.id === node.id
+            ) {
+              return {
+                ...stream,
+                isLinked: false,
+                streamValue: 0,
               };
             } else return stream;
           })

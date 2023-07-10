@@ -5,7 +5,7 @@ export function Operator({ ...node }: NodeProps) {
   return (
     <>
       <div className={styles.contentContainer}>
-        {node.inputs[0].portValue + node.inputs[1].portValue || node.value}
+        {node.inputs[0].portValue + node.inputs[1].portValue || 0}
       </div>
       <div className={styles.selector}>Addition</div>
     </>
