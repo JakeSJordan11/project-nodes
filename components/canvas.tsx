@@ -1,9 +1,11 @@
+import { CanvasContextMenu } from "@/components/canvas.contextmenu";
+import { Nodes } from "@/components/nodes";
+import { Streams } from "@/components/streams";
+import { useCanvas, useCanvasDispatch } from "@/hooks/canvas.context";
+import styles from "@/styles/canvas.module.css";
+import { CanvasActionType } from "@/types/canvas.reducer.types";
 import type { MouseEvent, PointerEvent } from "react";
 import { useState } from "react";
-import { Menu, Nodes, Streams } from "../components";
-import { useCanvas, useCanvasDispatch } from "../hooks";
-import styles from "../styles/canvas.module.css";
-import { CanvasActionType } from "../types";
 
 export function Canvas() {
   const { nodes } = useCanvas();
@@ -59,11 +61,13 @@ export function Canvas() {
       onContextMenu={handleContextMenu}
       onClick={() => setContextMenuOpen(false)}
     >
-      {nodes.length === 0 && <GettingStarted />}
+      {nodes.length === 0 && (
+        <p className={styles.gettingStartedText}>Right click to add a node</p>
+      )}
       <Nodes />
       <Streams />
       {contextMenuOpen && (
-        <Menu
+        <CanvasContextMenu
           contextMenuPosition={contextMenuPosition}
           onNumberNodeClick={handleNumberNodeClick}
           onOperatorNodeClick={handleOperatorNodeClick}
@@ -71,8 +75,4 @@ export function Canvas() {
       )}
     </main>
   );
-}
-
-function GettingStarted() {
-  return <p className={styles.gettingStartedText}>Right click to add a node</p>;
 }

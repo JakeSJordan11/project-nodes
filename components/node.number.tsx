@@ -1,8 +1,10 @@
+import { NodeContextMenu } from "@/components/node.contextmenu";
+import { Port } from "@/components/port";
+import { useCanvasDispatch } from "@/hooks/canvas.context";
+import styles from "@/styles/node.number.module.css";
+import { CanvasActionType } from "@/types/canvas.reducer.types";
+import type { NodeProps } from "@/types/node.types";
 import { useState } from "react";
-import { NodeMenu, Port } from "../components";
-import { useCanvasDispatch } from "../hooks";
-import styles from "../styles/node.number.module.css";
-import { CanvasActionType, type NodeProps } from "../types";
 
 export function NumberNode({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch();
@@ -49,20 +51,14 @@ export function NumberNode({ ...node }: NodeProps) {
       />
       {node.outputs && (
         <div className={styles.outputContainer}>
-          {node.outputs &&
-            node.outputs.map((output) => (
-              <Port
-                key={output.id}
-                {...output}
-                id={output.id}
-                nodeId={node.id}
-              />
-            ))}
+          {node.outputs.map((output) => (
+            <Port key={output.id} {...output} />
+          ))}
         </div>
       )}
       {nodeContextMenuOpen && (
-        <NodeMenu
-          nodeMenuPosition={nodeContextMenuPosition}
+        <NodeContextMenu
+          nodeContextMenuPosition={nodeContextMenuPosition}
           onRemoveNodeClick={() => {
             setNodeContextMenuOpen(false);
             dispatch({

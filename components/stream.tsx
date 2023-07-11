@@ -1,5 +1,5 @@
-import styles from "../styles/stream.module.css";
-import type { StreamProps } from "../types";
+import type { StreamProps } from "@/types/stream.types";
+import styles from "@/styles/stream.module.css";
 
 export function Stream({ ...stream }: StreamProps) {
   return (

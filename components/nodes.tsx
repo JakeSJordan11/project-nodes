@@ -1,5 +1,6 @@
-import { NumberNode, OperatorNode } from "../components";
-import { useCanvas } from "../hooks";
+import { NumberNode } from "@/components/node.number";
+import { OperatorNode } from "@/components/node.operator";
+import { useCanvas } from "@/hooks/canvas.context";
 
 export function Nodes() {
   const { nodes } = useCanvas();
@@ -8,9 +9,9 @@ export function Nodes() {
       {nodes.map((node) => {
         switch (node.type) {
           case "number":
-            return <Node.Number key={node.id} {...node} />;
+            return <NumberNode key={node.id} {...node} />;
           case "operator":
-            return <Node.Operator key={node.id} {...node} />;
+            return <OperatorNode key={node.id} {...node} />;
           default:
             return null;
         }
@@ -18,8 +19,3 @@ export function Nodes() {
     </>
   );
 }
-
-export const Node = {
-  Number: NumberNode,
-  Operator: OperatorNode,
-};

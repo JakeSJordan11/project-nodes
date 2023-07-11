@@ -1,7 +1,7 @@
+import { canvasReducer } from "@/hooks/canvas.reducer";
+import type { CanvasAction, CanvasState } from "@/types/canvas.reducer.types";
 import type { Dispatch, ReactNode } from "react";
 import { createContext, useContext, useReducer } from "react";
-import { canvasReducer } from "../hooks";
-import type { CanvasAction, CanvasState } from "../types";
 
 const initialState: CanvasState = {
   nodes: [],

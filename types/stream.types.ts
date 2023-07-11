@@ -1,4 +1,4 @@
-import type { PortProps } from "../types";
+import type { PortProps } from "@/types/port.types";
 
 export interface StreamProps {
   id: string;

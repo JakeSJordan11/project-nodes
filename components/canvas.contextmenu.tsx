@@ -1,7 +1,7 @@
 import type { MouseEventHandler } from "react";
-import styles from "../styles/canvas.contextmenu.module.css";
+import styles from "@/styles/canvas.contextmenu.module.css";
 
-export function Menu({
+export function CanvasContextMenu({
   onNumberNodeClick,
   onOperatorNodeClick,
   contextMenuPosition,

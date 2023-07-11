@@ -1,17 +1,20 @@
 import type { MouseEventHandler } from "react";
-import styles from "../styles/node.contextmenu.module.css";
+import styles from "@/styles/node.contextmenu.module.css";
 
-export function NodeMenu({
+export function NodeContextMenu({
   onRemoveNodeClick: onRemoveNodeClick,
-  nodeMenuPosition: nodeMenuPosition,
+  nodeContextMenuPosition: nodeContextMenuPosition,
 }: {
   onRemoveNodeClick: MouseEventHandler<HTMLButtonElement>;
-  nodeMenuPosition: { x: number; y: number };
+  nodeContextMenuPosition: { x: number; y: number };
 }) {
   return (
     <div
       className={styles.menuContainer}
-      style={{ top: nodeMenuPosition.y, left: nodeMenuPosition.x }}
+      style={{
+        top: nodeContextMenuPosition.y,
+        left: nodeContextMenuPosition.x,
+      }}
     >
       <button className={styles.item} onClick={onRemoveNodeClick}>
         Remove

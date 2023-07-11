@@ -1,9 +1,6 @@
-import type {
-  CanvasAction,
-  CanvasState,
-  NodeProps,
-  StreamProps,
-} from "../types";
+import type { CanvasAction, CanvasState } from "@/types/canvas.reducer.types";
+import type { NodeProps } from "@/types/node.types";
+import type { StreamProps } from "@/types/stream.types";
 
 export function canvasReducer(
   state: CanvasState,
