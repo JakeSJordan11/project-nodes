@@ -8,4 +8,5 @@ export interface PortProps extends PropsWithRef<HTMLButtonElement> {
   isHovered: boolean;
   nodeId: string;
   linkedPortId: string;
+  linkedPort: PortProps | null;
 }

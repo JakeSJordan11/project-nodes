@@ -1,5 +1,5 @@
-import type { NodeProps } from "@/types/node.types";
-import type { StreamProps } from "@/types/stream.types";
+import type { NodeProps } from "src/types/node.types";
+import type { StreamProps } from "src/types/stream.types";
 import type { ChangeEvent, MouseEvent, PointerEvent } from "react";
 
 export type CanvasState = {

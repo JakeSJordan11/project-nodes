@@ -1,4 +1,4 @@
-import type { PortProps } from "@/types/port.types";
+import type { PortProps } from "src/types/port.types";
 import type { PropsWithRef } from "react";
 
 export interface NodeProps extends PropsWithRef<HTMLDivElement> {

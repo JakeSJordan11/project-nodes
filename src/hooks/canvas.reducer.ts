@@ -1,6 +1,7 @@
 import type { CanvasAction, CanvasState } from "@/types/canvas.reducer.types";
 import type { NodeProps } from "@/types/node.types";
 import type { StreamProps } from "@/types/stream.types";
+import { stat } from "fs";
 
 export function canvasReducer(
   state: CanvasState,
@@ -108,6 +109,7 @@ export function canvasReducer(
           stream.sourcePort.parentElement?.parentElement?.id ===
             action.payload.currentTarget.parentElement?.id && stream.isLinked
       );
+
       return {
         ...state,
         streams: state.streams.map((stream) => {
@@ -156,15 +158,20 @@ export function canvasReducer(
                     return {
                       ...input,
                       portValue:
-                        linkedStream?.targetPort.id === input.id
-                          ? parseInt(action.payload.currentTarget.value)
-                          : input.portValue,
+                        input.isLinked &&
+                        Number(
+                          state.streams.find(
+                            (stream) =>
+                              stream.isLinked &&
+                              stream.targetPort.id === input.id
+                          )?.sourcePort.value
+                        ),
                     };
                   }),
               };
             }
           } else return node;
-        }),
+        }) as NodeProps[],
       };
 
     case "DRAG_SELECTION":
@@ -383,6 +390,7 @@ export function canvasReducer(
                     isHovered: false,
                     isLinked: activeStream ? true : false,
                     portValue: activeStream?.streamValue,
+                    linkedPort: activeStream?.sourcePort,
                   };
                 } else return input;
               }),

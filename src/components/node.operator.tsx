@@ -4,7 +4,7 @@ import { useCanvasDispatch } from "@/hooks/canvas.context";
 import styles from "@/styles/node.operator.module.css";
 import { CanvasActionType } from "@/types/canvas.reducer.types";
 import type { NodeProps } from "@/types/node.types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export function OperatorNode({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch();
@@ -13,6 +13,7 @@ export function OperatorNode({ ...node }: NodeProps) {
     x: 0,
     y: 0,
   });
+
   return (
     <article
       id={node.id}
@@ -32,21 +33,26 @@ export function OperatorNode({ ...node }: NodeProps) {
         dispatch({ type: CanvasActionType.SELECT_NODE, payload: { ...event } })
       }
     >
-      {node.inputs && (
-        <div className={styles.inputContainer}>
-          {node.inputs.map((input) => (
-            <Port key={input.id} {...input} />
-          ))}
-        </div>
-      )}
+      <div className={styles.inputContainer}>
+        {node.inputs.map((input) => (
+          <Port key={input.id} {...input} />
+        ))}
+      </div>
       <div className={styles.contentContainer}>
-        {node.inputs[0].portValue + node.inputs[1].portValue || 0}
+        {node.inputs.reduce((acc, input) => acc + input.portValue, 0)}
       </div>
       <div className={styles.selector}>Addition</div>
       {node.outputs && (
         <div className={styles.outputContainer}>
           {node.outputs.map((output) => (
-            <Port key={output.id} {...output} />
+            <Port
+              key={output.id}
+              {...output}
+              portValue={node.inputs.reduce(
+                (acc, input) => acc + input.portValue,
+                0
+              )}
+            />
           ))}
         </div>
       )}
