@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
+import "@/styles/global.module.css";
 import { inter } from "@/app/fonts";
-import "@/styles/global.css";
 
 export const metadata = {
   title: "Project Nodes",

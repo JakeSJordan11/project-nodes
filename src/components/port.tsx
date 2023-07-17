@@ -1,43 +1,49 @@
+import { CanvasActionTypes } from "@/constants/canvas.reducer";
+import { portTypes } from "@/constants/port";
 import { useCanvasDispatch } from "@/hooks/canvas.context";
 import styles from "@/styles/port.module.css";
-import { CanvasActionType } from "@/types/canvas.reducer.types";
-import type { PortProps } from "@/types/port.types";
+import type { PortProps } from "@/types/port";
+import { PointerEvent, useEffect, useRef } from "react";
 
 export function Port({ ...port }: PortProps) {
   const dispatch = useCanvasDispatch();
+  const portRef = useRef<HTMLButtonElement>(null);
+
+  function handlePortPointerDown(event: PointerEvent<HTMLButtonElement>) {
+    dispatch({
+      type: CanvasActionTypes.CreateStream,
+      payload: {
+        portRef: portRef,
+        portType: port.type,
+        portStatus: port.status,
+        id: port.id,
+        nodeId: port.nodeId,
+        fromValue: port.value,
+      },
+    });
+    event.stopPropagation();
+  }
+
+  function handlePortPointerUp(event: PointerEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    dispatch({
+      type: CanvasActionTypes.AttemptLink,
+      payload: {
+        portRef: portRef,
+        id: port.id,
+        nodeId: port.nodeId,
+        portType: port.type,
+        portStatus: port.status,
+      },
+    });
+  }
+
   return (
     <button
-      id={port.id}
-      value={port.portValue || 0}
+      ref={portRef}
       className={styles.port}
-      onPointerDown={(event) => {
-        event.stopPropagation();
-        dispatch({
-          type: CanvasActionType.CREATE_STREAM,
-          payload: { ...event },
-        });
-      }}
-      onPointerUp={(event) =>
-        dispatch({ type: CanvasActionType.LINK_STREAM, payload: { ...event } })
-      }
-      onPointerEnter={(event) =>
-        dispatch({
-          type: CanvasActionType.ENTER_PORT,
-          payload: { ...event },
-        })
-      }
-      onPointerLeave={(event) =>
-        dispatch({
-          type: CanvasActionType.LEAVE_PORT,
-          payload: { ...event },
-        })
-      }
-      onDoubleClick={(event) => {
-        dispatch({
-          type: CanvasActionType.UNLINK_STREAM,
-          payload: { ...event },
-        });
-      }}
+      onPointerDown={handlePortPointerDown}
+      onPointerUp={handlePortPointerUp}
     />
   );
 }

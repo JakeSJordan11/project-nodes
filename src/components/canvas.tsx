@@ -1,14 +1,16 @@
 import { CanvasContextMenu } from "@/components/canvas.contextmenu";
-import { Nodes } from "@/components/nodes";
-import { Streams } from "@/components/streams";
+import { NumberNode } from "@/components/number.node";
+import { OperatorNode } from "@/components/operator.node";
+import { Stream } from "@/components/stream";
+import { CanvasActionTypes } from "@/constants/canvas.reducer";
+import { nodeTypes } from "@/constants/node";
 import { useCanvas, useCanvasDispatch } from "@/hooks/canvas.context";
 import styles from "@/styles/canvas.module.css";
-import { CanvasActionType } from "@/types/canvas.reducer.types";
 import type { MouseEvent, PointerEvent } from "react";
 import { useState } from "react";
 
 export function Canvas() {
-  const { nodes } = useCanvas();
+  const { nodes, streams } = useCanvas();
   const dispatch = useCanvasDispatch();
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({
@@ -18,37 +20,57 @@ export function Canvas() {
 
   function handleContextMenu(event: PointerEvent<HTMLElement>) {
     event.preventDefault();
-    !nodes.find((node) => node.isActive) && setContextMenuOpen(true),
-      setContextMenuPosition({ x: event.clientX, y: event.clientY });
+    setContextMenuOpen(true);
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
   }
 
-  function handleNumberNodeClick(event: MouseEvent<HTMLButtonElement>) {
-    setContextMenuOpen(false);
+  function handleCreateNumberNode(event: MouseEvent<HTMLElement>) {
     dispatch({
-      type: CanvasActionType.CREATE_NUMBER_NODE,
-      payload: { ...event },
+      type: CanvasActionTypes.CreateNode,
+      payload: {
+        type: nodeTypes.number,
+        x:
+          event.clientX - event.currentTarget.getBoundingClientRect().width / 2,
+        y:
+          event.clientY -
+          event.currentTarget.getBoundingClientRect().height / 2,
+      },
     });
   }
 
-  function handleOperatorNodeClick(event: MouseEvent<HTMLButtonElement>) {
-    setContextMenuOpen(false);
+  function handleCreateOperatorNode(event: MouseEvent<HTMLElement>) {
     dispatch({
-      type: CanvasActionType.CREATE_OPERATOR_NODE,
-      payload: { ...event },
+      type: CanvasActionTypes.CreateNode,
+      payload: {
+        type: nodeTypes.operator,
+        x:
+          event.clientX - event.currentTarget.getBoundingClientRect().width / 2,
+        y:
+          event.clientY -
+          event.currentTarget.getBoundingClientRect().height / 2,
+      },
     });
   }
 
   function handlePointerMove(event: PointerEvent<HTMLElement>) {
     dispatch({
-      type: CanvasActionType.DRAG_SELECTION,
-      payload: { ...event },
+      type: CanvasActionTypes.DragSelection,
+      payload: {
+        id: event.currentTarget.id,
+        x: event.clientX,
+        y: event.clientY,
+      },
     });
   }
 
   function handlePointerUp(event: PointerEvent<HTMLElement>) {
     dispatch({
-      type: CanvasActionType.DROP_SELECTION,
-      payload: { ...event },
+      type: CanvasActionTypes.DropSelection,
+      payload: {
+        id: event.currentTarget.id,
+        x: event.clientX,
+        y: event.clientY,
+      },
     });
   }
 
@@ -57,20 +79,34 @@ export function Canvas() {
       className={styles.main}
       onPointerUp={handlePointerUp}
       onPointerMove={handlePointerMove}
-      onPointerLeave={() => dispatch({ type: CanvasActionType.LEAVE_CANVAS })}
       onContextMenu={handleContextMenu}
       onClick={() => setContextMenuOpen(false)}
     >
       {nodes.length === 0 && (
         <p className={styles.gettingStartedText}>Right click to add a node</p>
       )}
-      <Nodes />
-      <Streams />
+      <>
+        {nodes.map((node) => {
+          switch (node.type) {
+            case "number":
+              return <NumberNode key={node.id} {...node} />;
+            case "operator":
+              return <OperatorNode key={node.id} {...node} />;
+            default:
+              break;
+          }
+        })}
+      </>
+      <svg className={styles.svg} preserveAspectRatio="xMinYMin meet">
+        {streams.map((stream) => (
+          <Stream key={stream.id} {...stream} />
+        ))}
+      </svg>
       {contextMenuOpen && (
         <CanvasContextMenu
           contextMenuPosition={contextMenuPosition}
-          onNumberNodeClick={handleNumberNodeClick}
-          onOperatorNodeClick={handleOperatorNodeClick}
+          onNumberNodeClick={handleCreateNumberNode}
+          onOperatorNodeClick={handleCreateOperatorNode}
         />
       )}
     </main>
