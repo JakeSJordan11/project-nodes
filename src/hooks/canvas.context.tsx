@@ -4,115 +4,115 @@ import type {
   MouseEvent,
   PointerEvent,
   ReactNode,
-} from "react";
-import { createContext, useContext, useReducer } from "react";
-import type { NodeProps, StreamProps } from "../components";
+} from 'react'
+import { createContext, useContext, useReducer } from 'react'
+import type { NodeProps, StreamProps } from '../components'
 
 export type CanvasState = {
-  nodes: NodeProps[];
-  streams: StreamProps[];
-};
+  nodes: NodeProps[]
+  streams: StreamProps[]
+}
 const initialState: CanvasState = {
   nodes: [],
   streams: [],
-};
+}
 
-export const CanvasContext = createContext<CanvasState>(initialState);
+export const CanvasContext = createContext<CanvasState>(initialState)
 
 export const CanvasDispatchContext = createContext<Dispatch<CanvasAction>>(
   () => null
-);
+)
 
 export function CanvasProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(canvasReducer, initialState);
+  const [state, dispatch] = useReducer(canvasReducer, initialState)
   return (
     <CanvasContext.Provider value={state}>
       <CanvasDispatchContext.Provider value={dispatch}>
         {children}
       </CanvasDispatchContext.Provider>
     </CanvasContext.Provider>
-  );
+  )
 }
 
 export function useCanvas() {
-  return useContext(CanvasContext);
+  return useContext(CanvasContext)
 }
 
 export function useCanvasDispatch() {
-  return useContext(CanvasDispatchContext);
+  return useContext(CanvasDispatchContext)
 }
 
 export enum CanvasActionType {
-  SELECT_NODE = "SELECT_NODE",
-  CREATE_NUMBER_NODE = "CREATE_NUMBER_NODE",
-  CREATE_OPERATOR_NODE = "CREATE_OPERATOR_NODE",
-  CHANGE_VALUE_SLIDER = "CHANGE_VALUE_SLIDER",
-  DRAG_SELECTION = "DRAG_SELECTION",
-  DROP_SELECTION = "DROP_SELECTION",
-  CREATE_STREAM = "CREATE_STREAM",
-  LINK_STREAM = "LINK_STREAM",
-  UNLINK_STREAM = "UNLINK_STREAM",
-  ENTER_PORT = "ENTER_PORT",
-  LEAVE_PORT = "LEAVE_PORT",
-  LEAVE_CANVAS = "LEAVE_CANVAS",
+  SELECT_NODE = 'SELECT_NODE',
+  CREATE_NUMBER_NODE = 'CREATE_NUMBER_NODE',
+  CREATE_OPERATOR_NODE = 'CREATE_OPERATOR_NODE',
+  CHANGE_VALUE_SLIDER = 'CHANGE_VALUE_SLIDER',
+  DRAG_SELECTION = 'DRAG_SELECTION',
+  DROP_SELECTION = 'DROP_SELECTION',
+  CREATE_STREAM = 'CREATE_STREAM',
+  LINK_STREAM = 'LINK_STREAM',
+  UNLINK_STREAM = 'UNLINK_STREAM',
+  ENTER_PORT = 'ENTER_PORT',
+  LEAVE_PORT = 'LEAVE_PORT',
+  LEAVE_CANVAS = 'LEAVE_CANVAS',
 }
 
 type SelectNode = {
-  type: CanvasActionType.SELECT_NODE;
-  payload: PointerEvent<HTMLElement>;
-};
+  type: CanvasActionType.SELECT_NODE
+  payload: PointerEvent<HTMLElement>
+}
 
 type CreateNumberNode = {
-  type: CanvasActionType.CREATE_NUMBER_NODE;
-  payload: MouseEvent<HTMLButtonElement>;
-};
+  type: CanvasActionType.CREATE_NUMBER_NODE
+  payload: MouseEvent<HTMLButtonElement>
+}
 
 type CreateOperatorNode = {
-  type: CanvasActionType.CREATE_OPERATOR_NODE;
-  payload: MouseEvent<HTMLButtonElement>;
-};
+  type: CanvasActionType.CREATE_OPERATOR_NODE
+  payload: MouseEvent<HTMLButtonElement>
+}
 
 type ChangeNumberNodeValue = {
-  type: CanvasActionType.CHANGE_VALUE_SLIDER;
-  payload: ChangeEvent<HTMLInputElement>;
-};
+  type: CanvasActionType.CHANGE_VALUE_SLIDER
+  payload: ChangeEvent<HTMLInputElement>
+}
 
 type DragSelection = {
-  type: CanvasActionType.DRAG_SELECTION;
-  payload: PointerEvent<HTMLElement>;
-};
+  type: CanvasActionType.DRAG_SELECTION
+  payload: PointerEvent<HTMLElement>
+}
 
 type DropSelection = {
-  type: CanvasActionType.DROP_SELECTION;
-  payload?: PointerEvent<HTMLElement>;
-};
+  type: CanvasActionType.DROP_SELECTION
+  payload?: PointerEvent<HTMLElement>
+}
 
 type CreateStream = {
-  type: CanvasActionType.CREATE_STREAM;
-  payload: PointerEvent<HTMLButtonElement>;
-};
+  type: CanvasActionType.CREATE_STREAM
+  payload: PointerEvent<HTMLButtonElement>
+}
 
 type LinkStream = {
-  type: CanvasActionType.LINK_STREAM;
-  payload: PointerEvent<HTMLButtonElement>;
-};
+  type: CanvasActionType.LINK_STREAM
+  payload: PointerEvent<HTMLButtonElement>
+}
 
 type UnlinkStream = {
-  type: CanvasActionType.UNLINK_STREAM;
-  payload: MouseEvent<HTMLButtonElement>;
-};
+  type: CanvasActionType.UNLINK_STREAM
+  payload: MouseEvent<HTMLButtonElement>
+}
 
 type EnterPort = {
-  type: CanvasActionType.ENTER_PORT;
-  payload: PointerEvent<HTMLButtonElement>;
-};
+  type: CanvasActionType.ENTER_PORT
+  payload: PointerEvent<HTMLButtonElement>
+}
 
 type LeavePort = {
-  type: CanvasActionType.LEAVE_PORT;
-  payload: PointerEvent<HTMLButtonElement>;
-};
+  type: CanvasActionType.LEAVE_PORT
+  payload: PointerEvent<HTMLButtonElement>
+}
 
-type LeaveCanvas = { type: CanvasActionType.LEAVE_CANVAS };
+type LeaveCanvas = { type: CanvasActionType.LEAVE_CANVAS }
 
 export type CanvasAction =
   | SelectNode
@@ -126,15 +126,15 @@ export type CanvasAction =
   | EnterPort
   | LeavePort
   | LeaveCanvas
-  | UnlinkStream;
+  | UnlinkStream
 
 export function canvasReducer(state: CanvasState, action: CanvasAction) {
-  const STREAM_ALIGNMENT = 10;
-  const CENTER_NODE_X = 65;
-  const CENTER_NODE_Y = 25;
+  const STREAM_ALIGNMENT = 10
+  const CENTER_NODE_X = 65
+  const CENTER_NODE_Y = 25
 
   switch (action.type) {
-    case "SELECT_NODE":
+    case 'SELECT_NODE':
       return {
         ...state,
         nodes: state.nodes.map((node) => {
@@ -150,20 +150,20 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   action.payload.clientY -
                   action.payload.currentTarget.getBoundingClientRect().y,
               },
-            };
-          } else return node;
+            }
+          } else return node
         }),
-      };
+      }
 
-    case "CREATE_NUMBER_NODE":
+    case 'CREATE_NUMBER_NODE':
       return {
         ...state,
         nodes: [
           ...state.nodes,
           {
             id: crypto.randomUUID(),
-            title: "Number",
-            type: "number",
+            title: 'Number',
+            type: 'number',
             isActive: false,
             value: null,
             position: {
@@ -176,35 +176,35 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                 value: null,
                 isHovered: false,
                 isLinked: false,
-                type: "output",
+                type: 'output',
               },
             ],
           },
         ] as NodeProps[],
-      };
+      }
 
-    case "CREATE_OPERATOR_NODE":
+    case 'CREATE_OPERATOR_NODE':
       return {
         ...state,
         nodes: [
           ...state.nodes,
           {
             id: crypto.randomUUID(),
-            title: "Operator",
-            type: "operator",
+            title: 'Operator',
+            type: 'operator',
             position: {
               x: action.payload.clientX - CENTER_NODE_X,
               y: action.payload.clientY - CENTER_NODE_Y,
             },
             inputs: [
-              { id: crypto.randomUUID(), value: null, type: "input" },
-              { id: crypto.randomUUID(), value: null, type: "input" },
+              { id: crypto.randomUUID(), value: null, type: 'input' },
+              { id: crypto.randomUUID(), value: null, type: 'input' },
             ],
           },
         ] as NodeProps[],
-      };
+      }
 
-    case "CHANGE_VALUE_SLIDER":
+    case 'CHANGE_VALUE_SLIDER':
       return {
         ...state,
         nodes: state.nodes.map((node) => {
@@ -218,10 +218,10 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...output,
                     value: parseInt(action.payload.currentTarget.value),
-                  };
+                  }
                 }),
-            };
-          } else return node;
+            }
+          } else return node
         }),
         streams: state.streams.map((stream) => {
           if (
@@ -234,12 +234,12 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
             return {
               ...stream,
               value: parseInt(action.payload.currentTarget.value),
-            };
-          } else return stream;
+            }
+          } else return stream
         }),
-      };
+      }
 
-    case "DRAG_SELECTION":
+    case 'DRAG_SELECTION':
       return {
         ...state,
         nodes: state.nodes.map((node) => {
@@ -250,15 +250,15 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                 x: action.payload.clientX - node.offset.x,
                 y: action.payload.clientY - node.offset.y,
               },
-            };
-          } else return node;
+            }
+          } else return node
         }),
         streams: state.streams.map((stream) => {
           if (stream.isActive) {
             return {
               ...stream,
               l: `L${action.payload.clientX} ${action.payload.clientY}`,
-            };
+            }
           } else if (stream.isLinked) {
             return {
               ...stream,
@@ -268,12 +268,12 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
               l: `L${
                 stream.target.getBoundingClientRect().x + STREAM_ALIGNMENT
               } ${stream.target.getBoundingClientRect().y + STREAM_ALIGNMENT}`,
-            };
-          } else return stream;
+            }
+          } else return stream
         }),
-      };
+      }
 
-    case "LEAVE_CANVAS":
+    case 'LEAVE_CANVAS':
       return {
         ...state,
         nodes: state.nodes.map((node) => {
@@ -287,7 +287,7 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...input,
                     isLinked: false,
-                  };
+                  }
                 }),
               outputs:
                 node.outputs &&
@@ -295,10 +295,10 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...output,
                     isLinked: false,
-                  };
+                  }
                 }),
-            };
-          } else return node;
+            }
+          } else return node
         }),
         streams: state.streams
           .map((stream) => {
@@ -306,13 +306,13 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
               return {
                 ...stream,
                 isActive: false,
-              };
-            } else return stream;
+              }
+            } else return stream
           })
           .filter((stream) => stream.isLinked),
-      };
+      }
 
-    case "DROP_SELECTION": {
+    case 'DROP_SELECTION': {
       return {
         ...state,
         nodes: state.nodes.map((node) => {
@@ -327,8 +327,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                     ...input,
                     isLinked: false,
                     isHovered: false,
-                  };
-                } else return input;
+                  }
+                } else return input
               }),
             outputs:
               node.outputs &&
@@ -338,10 +338,10 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                     ...output,
                     isLinked: false,
                     isHovered: false,
-                  };
-                } else return output;
+                  }
+                } else return output
               }),
-          };
+          }
         }),
         streams: state.streams
           .map((stream) => {
@@ -349,14 +349,14 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
               return {
                 ...stream,
                 isActive: false,
-              };
-            } else return stream;
+              }
+            } else return stream
           })
           .filter((stream) => stream.isLinked),
-      };
+      }
     }
 
-    case "CREATE_STREAM":
+    case 'CREATE_STREAM':
       return {
         ...state,
         streams: [
@@ -402,8 +402,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                       ...output,
                       value: node.value,
                       isLinked: true,
-                    };
-                  } else return output;
+                    }
+                  } else return output
                 }),
               inputs:
                 node.inputs &&
@@ -416,15 +416,15 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                       ...input,
                       value: node.value,
                       isLinked: true,
-                    };
-                  } else return input;
+                    }
+                  } else return input
                 }),
-            };
-          } else return node;
+            }
+          } else return node
         }),
-      };
+      }
 
-    case "LINK_STREAM":
+    case 'LINK_STREAM':
       return {
         ...state,
         streams: state.streams.map((stream) => {
@@ -446,8 +446,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                 action.payload.currentTarget.getBoundingClientRect().y +
                 STREAM_ALIGNMENT
               }`,
-            };
-          } else return stream;
+            }
+          } else return stream
         }),
         nodes: state.nodes.map((node) => {
           if (state.streams.find((stream) => stream.isActive)) {
@@ -461,8 +461,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                       ...input,
                       value: input.value,
                       isLinked: true,
-                    };
-                  } else return input;
+                    }
+                  } else return input
                 }),
               outputs:
                 node.outputs &&
@@ -472,24 +472,24 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                       ...output,
                       value: output.value,
                       isLinked: true,
-                    };
-                  } else return output;
+                    }
+                  } else return output
                 }),
-            };
-          } else return node;
+            }
+          } else return node
         }),
-      };
+      }
 
-    case "ENTER_PORT":
+    case 'ENTER_PORT':
       return {
         ...state,
         streams: state.streams.map((stream) => {
           if (stream.isActive) {
             return {
               ...stream,
-              stroke: "deeppink",
-            };
-          } else return stream;
+              stroke: 'deeppink',
+            }
+          } else return stream
         }),
         nodes: state.nodes.map((node) => {
           return {
@@ -501,8 +501,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...input,
                     isHovered: true,
-                  };
-                } else return input;
+                  }
+                } else return input
               }),
             outputs:
               node.outputs &&
@@ -511,21 +511,21 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...output,
                     isHovered: true,
-                  };
-                } else return output;
+                  }
+                } else return output
               }),
-          };
+          }
         }),
-      };
+      }
 
-    case "LEAVE_PORT":
+    case 'LEAVE_PORT':
       return {
         ...state,
         streams: state.streams.map((stream) => {
           return {
             ...stream,
-            stroke: stream.isLinked ? "deeppink" : "",
-          };
+            stroke: stream.isLinked ? 'deeppink' : '',
+          }
         }),
         nodes: state.nodes.map((node) => {
           return {
@@ -537,8 +537,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...input,
                     isHovered: false,
-                  };
-                } else return input;
+                  }
+                } else return input
               }),
             outputs:
               node.outputs &&
@@ -547,19 +547,19 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...output,
                     isHovered: false,
-                  };
-                } else return output;
+                  }
+                } else return output
               }),
-          };
+          }
         }),
-      };
+      }
 
-    case "UNLINK_STREAM": {
+    case 'UNLINK_STREAM': {
       const stream = state.streams.find(
         (stream) =>
           stream.source.id === action.payload.currentTarget.id ||
           stream.target.id === action.payload.currentTarget.id
-      );
+      )
 
       return {
         ...state,
@@ -576,8 +576,8 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...output,
                     isLinked: false,
-                  };
-                } else return output;
+                  }
+                } else return output
               }),
             inputs:
               node.inputs &&
@@ -589,10 +589,10 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
                   return {
                     ...input,
                     isLinked: false,
-                  };
-                } else return input;
+                  }
+                } else return input
               }),
-          };
+          }
         }),
         streams: state.streams
           .map((stream) => {
@@ -603,14 +603,14 @@ export function canvasReducer(state: CanvasState, action: CanvasAction) {
               return {
                 ...stream,
                 isLinked: false,
-              };
-            } else return stream;
+              }
+            } else return stream
           })
           .filter((stream) => stream.isLinked),
-      };
+      }
     }
 
     default:
-      throw Error("Unknown action: " + action.type);
+      throw Error('Unknown action: ' + action.type)
   }
 }

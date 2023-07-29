@@ -1,19 +1,19 @@
-import { CanvasActionType, useCanvasDispatch } from "../../../../hooks";
-import styles from "./port.module.css";
-import { PortProps } from "./port.types";
+import { CanvasActionType, useCanvasDispatch } from '../../../../hooks'
+import styles from './port.module.css'
+import { PortProps } from './port.types'
 
 export function Port({ ...port }: PortProps) {
-  const dispatch = useCanvasDispatch();
+  const dispatch = useCanvasDispatch()
   return (
     <button
       id={port.id}
       className={styles.port}
       onPointerDown={(event) => {
-        event.stopPropagation();
+        event.stopPropagation()
         dispatch({
           type: CanvasActionType.CREATE_STREAM,
           payload: { ...event },
-        });
+        })
       }}
       onPointerUp={(event) =>
         dispatch({ type: CanvasActionType.LINK_STREAM, payload: { ...event } })
@@ -34,8 +34,8 @@ export function Port({ ...port }: PortProps) {
         dispatch({
           type: CanvasActionType.UNLINK_STREAM,
           payload: { ...event },
-        });
+        })
       }}
     />
-  );
+  )
 }

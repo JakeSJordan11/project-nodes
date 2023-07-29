@@ -1,10 +1,10 @@
-import { CanvasActionType, useCanvasDispatch } from "../../../hooks";
-import { Content } from "./content/content.component";
-import styles from "./node.module.css";
-import type { NodeProps } from "./node.types";
+import { CanvasActionType, useCanvasDispatch } from '../../../hooks'
+import { Content } from './content/content.component'
+import styles from './node.module.css'
+import type { NodeProps } from './node.types'
 
 export function Node({ ...node }: NodeProps) {
-  const dispatch = useCanvasDispatch();
+  const dispatch = useCanvasDispatch()
   return (
     <article
       id={node.id}
@@ -17,5 +17,5 @@ export function Node({ ...node }: NodeProps) {
     >
       <Content {...node} />
     </article>
-  );
+  )
 }
