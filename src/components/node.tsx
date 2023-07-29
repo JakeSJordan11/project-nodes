@@ -1,32 +1,22 @@
-import { Port } from '@/components/port'
-import { useCanvasDispatch } from '@/hooks/canvas.context'
+import { useNodesDispatch } from '@/hooks/nodes.context'
 import styles from '@/styles/node.module.css'
-import { CanvasActionType } from '@/types/canvas.context'
-import type { NodeProps } from '@/types/node'
+import { NodeVariant, type NodeProps } from '@/types/node'
 
-export function Node({ ...node }: NodeProps) {
-  const dispatch = useCanvasDispatch()
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    dispatch({
-      type: CanvasActionType.CHANGE_VALUE_SLIDER,
-      payload: { ...event },
-    })
+export default function Node({ ...node }: NodeProps) {
+  const dispatch = useNodesDispatch()
+  function handleChange() {
+    dispatch
   }
   return (
     <article
       className={styles.node}
       style={{ top: node.position.y, left: node.position.x }}
-      onPointerUp={() => dispatch({ type: CanvasActionType.DROP_SELECTION })}
-      onPointerDown={(event) =>
-        dispatch({ type: CanvasActionType.SELECT_NODE, payload: { ...event } })
-      }
+      onPointerUp={() => dispatch}
+      onPointerDown={() => dispatch}
     >
-      <div className={styles.inputs}>
-        {node.inputs &&
-          node.inputs.map((input) => <Port key={input.id} {...input} />)}
-      </div>
+      <div className={styles.inputs}></div>
       <output className={styles.value}>{node.value}</output>
-      {node.type === 'number' ? (
+      {node.variant === NodeVariant.Number ? (
         <input
           className={styles.slider}
           type='range'
@@ -36,7 +26,7 @@ export function Node({ ...node }: NodeProps) {
           onPointerDown={(event) => event.stopPropagation()}
           onChange={handleChange}
         />
-      ) : node.type === 'operator' ? (
+      ) : node.variant === NodeVariant.Operator ? (
         <select className={styles.selector}>
           <option value='addition'>Addition</option>
           <option value='subtraction'>Subtraction</option>
@@ -44,10 +34,7 @@ export function Node({ ...node }: NodeProps) {
           <option value='division'>Division</option>
         </select>
       ) : null}
-      <div className={styles.outputs}>
-        {node.outputs &&
-          node.outputs.map((output) => <Port key={output.id} {...output} />)}
-      </div>
+      <div className={styles.outputs}></div>
     </article>
   )
 }

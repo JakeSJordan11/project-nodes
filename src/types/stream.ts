@@ -1,11 +1,22 @@
 export interface StreamProps {
   id: string
-  value: number
-  isActive: boolean
-  isLinked: boolean
-  m: string
-  l: string
-  stroke: string
-  source: HTMLButtonElement
-  target: HTMLButtonElement
+  from: string
+  to: string
+  status: StreamStatus
 }
+
+export enum StreamStatus {
+  Active = 'ACTIVE',
+  Inactive = 'INACTIVE',
+  Linked = 'LINKED',
+}
+
+export type StreamState = StreamProps[]
+
+export enum StreamActionType {
+  CreateStream = 'CREATE_STREAM',
+}
+
+type CreateStream = { type: StreamActionType.CreateStream }
+
+export type StreamAction = CreateStream

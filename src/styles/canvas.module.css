@@ -1,5 +1,4 @@
 .main {
-  background-color: var(--page-background-color);
   height: 100%;
 }
 
@@ -11,14 +10,11 @@
   text-align: center;
   padding: 2rem;
   margin-top: 0;
-  color: var(--retro-constant-other);
+  color: var(--node-title-color);
   font-size: larger;
   font-style: italic;
   cursor: default;
   user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
 }
 
 .svg {

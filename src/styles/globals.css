@@ -32,7 +32,7 @@
   --retro-badge-foreground: #d7dae0;
 
   color-scheme: light dark;
-  accent-color: var(--retro-error);
+  accent-color: var(--retro-badge-background);
 
   --node-height: 8rem;
   --node-width: 8rem;
@@ -57,6 +57,36 @@
   --content-border-color: var(--retro-ansci-bright-black);
   --content-background-color: var(--retro-editor-bracket-background);
   --focus-outline-color: var(--retro-debug);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --node-background-color: var(--retro-ansci-black);
+    --node-border-color: var(--retro-ansci-bright-black);
+    --node-title-color: var(--retro-constant-other);
+    --port-background-color: var(--retro-comment2);
+    --port-border-color: var(--retro-background);
+    --port-border-color-active: var(--retro-constant-other);
+    --content-font-color: var(--retro-markup-heading);
+    --content-border-color: var(--retro-ansci-bright-black);
+    --content-background-color: var(--retro-editor-bracket-background);
+    --focus-outline-color: var(--retro-debug);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --node-background-color: var(--retro-ansci-black);
+    --node-border-color: var(--retro-ansci-bright-black);
+    --node-title-color: var(--retro-constant-other);
+    --port-background-color: var(--retro-comment2);
+    --port-border-color: var(--retro-background);
+    --port-border-color-active: var(--retro-constant-other);
+    --content-font-color: var(--retro-markup-heading);
+    --content-border-color: var(--retro-ansci-bright-black);
+    --content-background-color: var(--retro-editor-bracket-background);
+    --focus-outline-color: var(--retro-debug);
+  }
 }
 
 html,
