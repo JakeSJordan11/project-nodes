@@ -5,13 +5,6 @@ import { useNodes, useNodesDispatch } from '@/hooks/nodes.context'
 import { useStreams } from '@/hooks/streams.context'
 import styles from '@/styles/canvas.module.css'
 import { NodeActionType, NodeVariant } from '@/types/node'
-import { assert } from 'console'
-import { hkdf } from 'crypto'
-import {
-  Familjen_Grotesk,
-  Fanwood_Text,
-  Noto_Sans_Medefaidrin,
-} from 'next/font/google'
 import { MouseEvent, useState, type PointerEvent } from 'react'
 
 export default function Canvas() {
