@@ -1,20 +1,29 @@
+import Port from '@/components/port'
 import { useNodesDispatch } from '@/hooks/nodes.context'
 import styles from '@/styles/node.module.css'
 import { NodeVariant, type NodeProps } from '@/types/node'
+import { PortVariant } from '@/types/port'
 
 export default function Node({ ...node }: NodeProps) {
-  const dispatch = useNodesDispatch()
+  const nodesDispatch = useNodesDispatch()
+
   function handleChange() {
-    dispatch
+    nodesDispatch
   }
   return (
     <article
       className={styles.node}
       style={{ top: node.position.y, left: node.position.x }}
-      onPointerUp={() => dispatch}
-      onPointerDown={() => dispatch}
+      onPointerUp={() => nodesDispatch}
+      onPointerDown={() => nodesDispatch}
     >
-      <div className={styles.inputs}></div>
+      <div className={styles.inputs}>
+        {node.ports.map((port) =>
+          port.variant === PortVariant.Input ? (
+            <Port key={port.id} {...port} />
+          ) : null
+        )}
+      </div>
       <output className={styles.value}>{node.value}</output>
       {node.variant === NodeVariant.Number ? (
         <input
@@ -34,7 +43,13 @@ export default function Node({ ...node }: NodeProps) {
           <option value='division'>Division</option>
         </select>
       ) : null}
-      <div className={styles.outputs}></div>
+      <div className={styles.outputs}>
+        {node.ports.map((port) =>
+          port.variant === PortVariant.Output ? (
+            <Port key={port.id} {...port} />
+          ) : null
+        )}
+      </div>
     </article>
   )
 }

@@ -1,4 +1,5 @@
-import { Coordinate } from '@/types/utility'
+import type { PortProps } from '@/types/port'
+import type { Coordinate } from '@/types/utility'
 
 export interface NodeProps {
   id: string
@@ -7,6 +8,7 @@ export interface NodeProps {
   status: NodeStatus
   offset: Coordinate
   position: Coordinate
+  ports: PortProps[]
 }
 
 export enum NodeVariant {
@@ -26,6 +28,9 @@ export enum NodeActionType {
   CreateNode = 'CREATE_NODE',
 }
 
-type SelectNode = { type: NodeActionType.CreateNode; payload: NodeVariant }
+type SelectNode = {
+  type: NodeActionType.CreateNode
+  payload: { variant: NodeVariant; position: Coordinate }
+}
 
 export type NodeAction = SelectNode

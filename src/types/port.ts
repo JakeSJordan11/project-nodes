@@ -14,13 +14,3 @@ export enum PortStatus {
   Inactive = 'INACTIVE',
   Linked = 'LINKED',
 }
-
-export type PortState = PortProps[]
-
-export enum PortActionType {
-  PortPointerDown = 'PORT_POINTER_DOWN',
-}
-
-type SelectPort = { type: PortActionType.PortPointerDown }
-
-export type PortAction = SelectPort
