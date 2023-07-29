@@ -1,24 +1,97 @@
 .node {
-  position: absolute;
   display: flex;
+  position: absolute;
   flex-direction: column;
   align-items: center;
+  cursor: grab;
+  box-shadow: var(--node-box-shadow);
+  border-width: var(--node-border-width);
+  border-style: solid;
+  border-color: var(--node-border-color);
+  border-radius: var(--node-border-radius);
+  background-color: var(--node-background-color);
   padding: 0.75rem;
   width: var(--node-width);
   height: var(--node-height);
-  border-style: solid;
-  border-radius: var(--node-border-radius);
-  border-width: var(--node-border-width);
-  border-color: var(--node-border-color);
-  background-color: var(--node-background-color);
-  box-shadow: var(--node-box-shadow);
-  cursor: grab;
   user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
 }
 
 .node:active {
   cursor: grabbing;
+}
+
+.value {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+  border-width: var(--content-border-width);
+  border-style: solid;
+  border-color: var(--content-border-color);
+  border-radius: var(--content-border-radius);
+  background-color: var(--content-background-color);
+  width: 100%;
+  height: 100%;
+  color: var(--content-font-color);
+  font-weight: 800;
+  font-size: x-large;
+  user-select: none;
+}
+
+.value:active {
+  cursor: grabbing;
+}
+
+.value:focus {
+  outline-color: var(--focus-outline-color);
+}
+
+.slider {
+  cursor: pointer;
+  width: 100%;
+}
+
+.slider:focus {
+  outline-color: var(--focus-outline-color);
+}
+
+.slider:active {
+  cursor: move;
+}
+
+.selector {
+  appearance: none;
+  margin-top: 0.5rem;
+  border-radius: var(--content-border-radius);
+  background-color: var(--content-background-color);
+  padding-block: 0.15rem;
+  width: 100%;
+  color: var(--node-title-color);
+  font-weight: 800;
+  font-size: medium;
+  text-align-last: center;
+}
+
+.inputs {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  justify-content: space-evenly;
+  align-items: center;
+  width: '100%';
+  height: 0;
+}
+
+.outputs {
+  display: flex;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  justify-content: space-evenly;
+  align-items: center;
+  width: '100%';
+  height: 0;
 }

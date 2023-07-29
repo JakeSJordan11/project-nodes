@@ -1,12 +1,12 @@
-import type { MouseEventHandler } from "react";
-import styles from "./nodeContextMenu.module.css";
+import styles from '@/styles/node.context.menu.module.css'
+import type { MouseEventHandler } from 'react'
 
-export function NodeMenu({
+export function NodeContextMenu({
   onRemoveNodeClick: onRemoveNodeClick,
   nodeMenuPosition: nodeMenuPosition,
 }: {
-  onRemoveNodeClick: MouseEventHandler<HTMLButtonElement>;
-  nodeMenuPosition: { x: number; y: number };
+  onRemoveNodeClick: MouseEventHandler<HTMLButtonElement>
+  nodeMenuPosition: { x: number; y: number }
 }) {
   return (
     <div
@@ -17,5 +17,5 @@ export function NodeMenu({
         Remove
       </button>
     </div>
-  );
+  )
 }

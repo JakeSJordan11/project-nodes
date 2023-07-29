@@ -1,46 +1,26 @@
 .port {
-  padding: 0.5rem;
-  border-style: solid;
-  border-radius: var(--port-border-radius);
-  border-width: var(--port-border-width);
-  border-color: var(--port-border-color);
-  background-color: var(--port-background-color);
   cursor: pointer;
-  overflow: visible;
+  border-width: var(--port-border-width);
+  border-style: solid;
+  border-color: var(--port-border-color);
+  border-radius: var(--port-border-radius);
+  background-color: var(--port-background-color);
+  width: var(--port-width);
+  height: var(--port-height);
 }
 
 .port:hover {
   cursor: pointer;
 }
 
+.port:focus {
+  outline-color: var(--focus-outline-color);
+}
+
 .port:active {
   cursor: move;
   border-color: var(--port-border-color-active);
   animation: pulse 1.4s infinite ease-in-out;
-}
-
-.inputContainer {
-  position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 0;
-  width: '100%';
-}
-
-.outputContainer {
-  position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 0;
-  width: '100%';
 }
 
 @keyframes pulse {
