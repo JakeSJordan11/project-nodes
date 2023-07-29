@@ -1,16 +1,15 @@
-import type { ReactNode } from "react";
-import { inter } from "./fonts";
-import "./global.css";
+import type { ReactNode } from 'react'
+import { inter } from '@/app/fonts'
+import '@/styles/globals.css'
 
 export const metadata = {
-  title: "Project Nodes",
-};
+  title: 'Project Nodes',
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={inter.className}>
-      <script async src="http://localhost:8097" />
+    <html lang='en' className={inter.className}>
       <body>{children}</body>
     </html>
-  );
+  )
 }

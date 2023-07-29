@@ -28,7 +28,7 @@
   left: 0;
   right: 0;
   height: 0;
-  width: "100%";
+  width: '100%';
 }
 
 .outputContainer {
@@ -40,7 +40,7 @@
   left: 0;
   right: 0;
   height: 0;
-  width: "100%";
+  width: '100%';
 }
 
 @keyframes pulse {

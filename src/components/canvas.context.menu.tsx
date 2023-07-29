@@ -1,14 +1,14 @@
-import type { MouseEventHandler } from "react";
-import styles from "./menu.module.css";
+import type { MouseEventHandler } from 'react'
+import styles from '@/styles/canvas.context.menu.module.css'
 
-export function Menu({
+export function CanvasContextMenu({
   onNumberNodeClick,
   onOperatorNodeClick,
   contextMenuPosition,
 }: {
-  onNumberNodeClick: MouseEventHandler<HTMLButtonElement>;
-  onOperatorNodeClick: MouseEventHandler<HTMLButtonElement>;
-  contextMenuPosition: { x: number; y: number };
+  onNumberNodeClick: MouseEventHandler<HTMLButtonElement>
+  onOperatorNodeClick: MouseEventHandler<HTMLButtonElement>
+  contextMenuPosition: { x: number; y: number }
 }) {
   return (
     <div
@@ -23,5 +23,5 @@ export function Menu({
         Operator Node
       </button>
     </div>
-  );
+  )
 }

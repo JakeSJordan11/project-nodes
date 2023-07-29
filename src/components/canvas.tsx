@@ -1,13 +1,14 @@
-import type { MouseEvent, PointerEvent } from 'react'
-import { useState } from 'react'
-import { CanvasActionType, useCanvas, useCanvasDispatch } from '../../hooks'
-import styles from './canvas.module.css'
-import { Menu } from './menu'
-import { Nodes } from './node'
-import { Streams } from './stream'
+import { CanvasContextMenu } from '@/components/canvas.context.menu'
+import { Node } from '@/components/node'
+import { Stream } from '@/components/stream'
+import { useCanvas, useCanvasDispatch } from '@/hooks/canvas.context'
+import styles from '@/styles/canvas.module.css'
+import { CanvasActionType } from '@/types/canvas.context'
+import { useState, type MouseEvent, type PointerEvent } from 'react'
 
 export function Canvas() {
   const { nodes } = useCanvas()
+  const { streams } = useCanvas()
   const dispatch = useCanvasDispatch()
   const [contextMenuOpen, setContextMenuOpen] = useState(false)
   const [contextMenuPosition, setContextMenuPosition] = useState({
@@ -60,20 +61,24 @@ export function Canvas() {
       onContextMenu={handleContextMenu}
       onClick={() => setContextMenuOpen(false)}
     >
-      {nodes.length === 0 && <GettingStarted />}
-      <Nodes />
-      <Streams />
-      {contextMenuOpen && (
-        <Menu
+      {nodes.length === 0 ? (
+        <p className={styles.gettingStartedText}>Right click to add a node</p>
+      ) : null}
+      {nodes.map((node) => (
+        <Node key={node.id} {...node} />
+      ))}
+      <svg className={styles.svg} preserveAspectRatio='xMinYMin meet'>
+        {streams.map((stream) => (
+          <Stream key={stream.id} {...stream} />
+        ))}
+      </svg>
+      {contextMenuOpen ? (
+        <CanvasContextMenu
           contextMenuPosition={contextMenuPosition}
           onNumberNodeClick={handleNumberNodeClick}
           onOperatorNodeClick={handleOperatorNodeClick}
         />
-      )}
+      ) : null}
     </main>
   )
-}
-
-function GettingStarted() {
-  return <p className={styles.gettingStartedText}>Right click to add a node</p>
 }

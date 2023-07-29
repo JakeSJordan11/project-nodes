@@ -1,6 +1,7 @@
-import { CanvasActionType, useCanvasDispatch } from '../../../../hooks'
-import styles from './port.module.css'
-import { PortProps } from './port.types'
+import { useCanvasDispatch } from '@/hooks/canvas.context'
+import styles from '@/styles/port.module.css'
+import { CanvasActionType } from '@/types/canvas.context'
+import { PortProps } from '@/types/port'
 
 export function Port({ ...port }: PortProps) {
   const dispatch = useCanvasDispatch()

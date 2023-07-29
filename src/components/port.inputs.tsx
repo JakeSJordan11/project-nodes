@@ -1,6 +1,6 @@
-import type { NodeProps } from "../node.types";
-import { Port } from "./port.component";
-import styles from "./port.module.css";
+import { Port } from '@/components/port'
+import styles from '@/styles/port.module.css'
+import type { NodeProps } from '@/types/node'
 
 export function Inputs({ ...node }: NodeProps) {
   return (
@@ -8,5 +8,5 @@ export function Inputs({ ...node }: NodeProps) {
       {node.inputs &&
         node.inputs.map((input) => <Port key={input.id} {...input} />)}
     </div>
-  );
+  )
 }

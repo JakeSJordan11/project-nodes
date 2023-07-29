@@ -1,7 +1,8 @@
-import { CanvasActionType, useCanvasDispatch } from '../../../hooks'
-import { Content } from './content/content.component'
-import styles from './node.module.css'
-import type { NodeProps } from './node.types'
+import { Content } from '@/components/content'
+import { useCanvasDispatch } from '@/hooks/canvas.context'
+import styles from '@/styles/node.module.css'
+import { CanvasActionType } from '@/types/canvas.context'
+import type { NodeProps } from '@/types/node'
 
 export function Node({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch()

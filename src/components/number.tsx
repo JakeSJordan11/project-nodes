@@ -1,6 +1,7 @@
-import { CanvasActionType, useCanvasDispatch } from '../../../../hooks'
-import type { NodeProps } from '../node.types'
-import styles from './number.module.css'
+import { useCanvasDispatch } from '@/hooks/canvas.context'
+import styles from '@/styles/number.module.css'
+import { CanvasActionType } from '@/types/canvas.context'
+import type { NodeProps } from '@/types/node'
 
 export function Number({ ...node }: NodeProps) {
   const dispatch = useCanvasDispatch()
@@ -13,9 +14,7 @@ export function Number({ ...node }: NodeProps) {
   }
   return (
     <>
-      <div className={styles.contentContainer}>
-        <div className={styles.value}>{node.value || 0}</div>
-      </div>
+      <output className={styles.contentContainer}>{node.value || 0}</output>
       <input
         className={styles.slider}
         type='range'
