@@ -21,16 +21,3 @@ export enum NodeStatus {
   Inactive = 'INACTIVE',
   Linked = 'LINKED',
 }
-
-export type NodeState = NodeProps[]
-
-export enum NodeActionType {
-  CreateNode = 'CREATE_NODE',
-}
-
-type SelectNode = {
-  type: NodeActionType.CreateNode
-  payload: { variant: NodeVariant; position: Coordinate }
-}
-
-export type NodeAction = SelectNode

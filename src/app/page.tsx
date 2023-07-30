@@ -1,15 +1,12 @@
 'use client'
 
 import Canvas from '@/components/canvas'
-import NodeProvider from '@/hooks/nodes.context'
-import StreamProvider from '@/hooks/streams.context'
+import CanvasProvider from '@/hooks/canvas.context'
 
 export default function Home() {
   return (
-    <NodeProvider>
-      <StreamProvider>
-        <Canvas />
-      </StreamProvider>
-    </NodeProvider>
+    <CanvasProvider>
+      <Canvas />
+    </CanvasProvider>
   )
 }
