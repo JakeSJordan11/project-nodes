@@ -32,60 +32,54 @@
   --retro-badge-foreground: #d7dae0;
 
   color-scheme: light dark;
-  accent-color: var(--retro-badge-background);
 
   --node-height: 8rem;
   --node-width: 8rem;
+  --node-padding: 0.75rem;
   --node-border-width: 0.125rem;
   --node-border-radius: 0.35rem;
-  --node-box-shadow: 0 0.125rem 0.25rem var(--retro-editor-bracket-background);
-  --port-height: 1.5rem;
-  --port-width: 1.5rem;
+  --port-height: 1.25rem;
+  --port-width: 1.25rem;
   --port-border-radius: 50%;
   --port-border-width: 0.15rem;
   --content-border-radius: 0.25rem;
   --content-border-width: 0.15rem;
-  --stream-color: var(--neutral-500);
-  --page-background-color: var(--retro-background);
-  --node-background-color: var(--retro-ansci-black);
-  --node-border-color: var(--retro-ansci-bright-black);
-  --node-title-color: var(--retro-constant-other);
-  --port-background-color: var(--retro-comment2);
-  --port-border-color: var(--retro-background);
-  --port-border-color-active: var(--retro-constant-other);
-  --content-font-color: var(--retro-markup-heading);
-  --content-border-color: var(--retro-ansci-bright-black);
-  --content-background-color: var(--retro-editor-bracket-background);
-  --focus-outline-color: var(--retro-debug);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    background-color: var(--retro-background);
+    accent-color: var(--retro-error);
     --node-background-color: var(--retro-ansci-black);
     --node-border-color: var(--retro-ansci-bright-black);
     --node-title-color: var(--retro-constant-other);
-    --port-background-color: var(--retro-comment2);
+    --node-box-shadow: 0.35rem 0.35rem 0.25rem 0rem
+      var(--retro-editor-bracket-background);
+    --port-background-color: var(--retro-ansci-black);
     --port-border-color: var(--retro-background);
-    --port-border-color-active: var(--retro-constant-other);
     --content-font-color: var(--retro-markup-heading);
     --content-border-color: var(--retro-ansci-bright-black);
     --content-background-color: var(--retro-editor-bracket-background);
-    --focus-outline-color: var(--retro-debug);
+    --focus-outline-color: var(--retro-error);
+    --path-color: var(--retro-debug);
   }
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --node-background-color: var(--retro-ansci-black);
-    --node-border-color: var(--retro-ansci-bright-black);
+    background-color: var(--retro-editor-forground);
+    accent-color: var(--retro-debug);
+    --node-background-color: var(--retro-comment);
+    --node-border-color: var(--retro-comment2);
     --node-title-color: var(--retro-constant-other);
-    --port-background-color: var(--retro-comment2);
-    --port-border-color: var(--retro-background);
-    --port-border-color-active: var(--retro-constant-other);
+    --node-box-shadow: 0.35rem 0.35rem 0rem 0rem var(--retro-background);
+    --port-background-color: var(--retro-editor-forground);
+    --port-border-color: var(--retro-ansci-bright-black);
     --content-font-color: var(--retro-markup-heading);
-    --content-border-color: var(--retro-ansci-bright-black);
-    --content-background-color: var(--retro-editor-bracket-background);
+    --content-border-color: var(--retro-comment2);
+    --content-background-color: var(--retro-background);
     --focus-outline-color: var(--retro-debug);
+    --path-color: var(--retro-badge-background);
   }
 }
 
