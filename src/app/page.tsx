@@ -4,7 +4,7 @@ import styles from '@/styles/app.module.css'
 import { useState, type ChangeEvent } from 'react'
 
 export default function Home() {
-  const [nodes, setNodes] = useState(Array(7).fill(0))
+  const [nodes, setNodes] = useState<number[]>(Array(7).fill(0))
   enum Operator {
     Addition = 'addition',
     Subtraction = 'subtraction',
@@ -44,8 +44,9 @@ export default function Home() {
   }
 
   function calculateValues(left: number, right: number, operator: Operator) {
-    if (Number.isNaN(operations[operator](left, right))) return 'NaN'
-    return operations[operator](left, right)
+    const result = operations[operator](left, right)
+    if (isNaN(result)) return 0
+    return result
   }
 
   return (
