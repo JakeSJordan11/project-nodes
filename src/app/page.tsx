@@ -4,8 +4,8 @@ import styles from '@/styles/app.module.css'
 import { useState, type ChangeEvent } from 'react'
 
 export default function Home() {
-  const [nodes, setNodes] = useState<number[]>(Array(7).fill(0))
-  enum Operators {
+  const [nodes, setNodes] = useState(Array(7).fill(0))
+  enum Operator {
     Addition = 'addition',
     Subtraction = 'subtraction',
     Multiplication = 'multiplication',
@@ -13,8 +13,8 @@ export default function Home() {
     Modulo = 'modulo',
     Exponentiation = 'exponentiation',
   }
-  const [operators, setOperators] = useState<Operators[]>(
-    Array(3).fill(Operators.Addition)
+  const [operators, setOperators] = useState<Operator[]>(
+    Array(3).fill(Operator.Addition)
   )
 
   function handleChange(event: ChangeEvent<HTMLInputElement>, index: number) {
@@ -28,40 +28,24 @@ export default function Home() {
     event: ChangeEvent<HTMLSelectElement>,
     index: number
   ) {
-    const value = event.currentTarget.value as Operators
+    const value = event.currentTarget.value as Operator
     const newOperators = [...operators]
     newOperators[index] = value
     setOperators(newOperators)
   }
 
-  function calculateNodes(
-    nodeIndex: number,
-    linkedNodeIndecies: number[],
-    operatorIndex: number
-  ) {
-    switch (operators[operatorIndex]) {
-      case Operators.Addition:
-        return (nodes[nodeIndex] =
-          nodes[linkedNodeIndecies[0]] + nodes[linkedNodeIndecies[1]])
-      case Operators.Subtraction:
-        return (nodes[nodeIndex] =
-          nodes[linkedNodeIndecies[0]] - nodes[linkedNodeIndecies[1]])
-      case Operators.Multiplication:
-        return (nodes[nodeIndex] =
-          nodes[linkedNodeIndecies[0]] * nodes[linkedNodeIndecies[1]])
-      case Operators.Division:
-        return (nodes[nodeIndex] =
-          nodes[linkedNodeIndecies[0]] / nodes[linkedNodeIndecies[1]])
-      case Operators.Exponentiation:
-        return (nodes[nodeIndex] =
-          nodes[linkedNodeIndecies[0]] ** nodes[linkedNodeIndecies[1]])
-      case Operators.Modulo:
-        return (nodes[nodeIndex] =
-          nodes[linkedNodeIndecies[0]] % nodes[linkedNodeIndecies[1]])
-      default:
-        return (nodes[nodeIndex] =
-          nodes[linkedNodeIndecies[0]] + nodes[linkedNodeIndecies[1]])
-    }
+  const operations = {
+    addition: (a: number, b: number) => a + b,
+    subtraction: (a: number, b: number) => a - b,
+    multiplication: (a: number, b: number) => a * b,
+    division: (a: number, b: number) => a / b,
+    exponentiation: (a: number, b: number) => a ** b,
+    modulo: (a: number, b: number) => a % b,
+  }
+
+  function calculateValues(left: number, right: number, operator: Operator) {
+    if (Number.isNaN(operations[operator](left, right))) return 'NaN'
+    return operations[operator](left, right)
   }
 
   return (
@@ -120,19 +104,19 @@ export default function Home() {
           <button className={styles.port} />
         </div>
         <output className={styles.value} tabIndex={0}>
-          {calculateNodes(3, [0, 1], 0).toPrecision(3)}
+          {(nodes[3] = calculateValues(nodes[0], nodes[1], operators[0]))}
         </output>
         <select
           className={styles.selector}
           value={operators[0]}
           onChange={(event) => handleOperatorChange(event, 0)}
         >
-          <option value={Operators.Addition}>Addition</option>
-          <option value={Operators.Subtraction}>Subtraction</option>
-          <option value={Operators.Multiplication}>Multiplication</option>
-          <option value={Operators.Division}>Division</option>
-          <option value={Operators.Exponentiation}>Exponentiation</option>
-          <option value={Operators.Modulo}>Modulo</option>
+          <option value={Operator.Addition}>Addition</option>
+          <option value={Operator.Subtraction}>Subtraction</option>
+          <option value={Operator.Multiplication}>Multiplication</option>
+          <option value={Operator.Division}>Division</option>
+          <option value={Operator.Exponentiation}>Exponentiation</option>
+          <option value={Operator.Modulo}>Modulo</option>
         </select>
         <div className={styles.outputs}>
           <button className={styles.port} />
@@ -144,19 +128,19 @@ export default function Home() {
           <button className={styles.port} />
         </div>
         <output className={styles.value} tabIndex={0}>
-          {calculateNodes(4, [1, 2], 1).toPrecision(3)}
+          {(nodes[4] = calculateValues(nodes[1], nodes[2], operators[1]))}
         </output>
         <select
           className={styles.selector}
           value={operators[1]}
           onChange={(event) => handleOperatorChange(event, 1)}
         >
-          <option value={Operators.Addition}>Addition</option>
-          <option value={Operators.Subtraction}>Subtraction</option>
-          <option value={Operators.Multiplication}>Multiplication</option>
-          <option value={Operators.Division}>Division</option>
-          <option value={Operators.Exponentiation}>Exponentiation</option>
-          <option value={Operators.Modulo}>Modulo</option>
+          <option value={Operator.Addition}>Addition</option>
+          <option value={Operator.Subtraction}>Subtraction</option>
+          <option value={Operator.Multiplication}>Multiplication</option>
+          <option value={Operator.Division}>Division</option>
+          <option value={Operator.Exponentiation}>Exponentiation</option>
+          <option value={Operator.Modulo}>Modulo</option>
         </select>
         <div className={styles.outputs}>
           <button className={styles.port} />
@@ -168,19 +152,19 @@ export default function Home() {
           <button className={styles.port} />
         </div>
         <output className={styles.value} tabIndex={0}>
-          {calculateNodes(5, [3, 4], 2).toPrecision(3)}
+          {(nodes[5] = calculateValues(nodes[3], nodes[4], operators[2]))}
         </output>
         <select
           className={styles.selector}
           value={operators[2]}
           onChange={(event) => handleOperatorChange(event, 2)}
         >
-          <option value={Operators.Addition}>Addition</option>
-          <option value={Operators.Subtraction}>Subtraction</option>
-          <option value={Operators.Multiplication}>Multiplication</option>
-          <option value={Operators.Division}>Division</option>
-          <option value={Operators.Exponentiation}>Exponentiation</option>
-          <option value={Operators.Modulo}>Modulo</option>
+          <option value={Operator.Addition}>Addition</option>
+          <option value={Operator.Subtraction}>Subtraction</option>
+          <option value={Operator.Multiplication}>Multiplication</option>
+          <option value={Operator.Division}>Division</option>
+          <option value={Operator.Exponentiation}>Exponentiation</option>
+          <option value={Operator.Modulo}>Modulo</option>
         </select>
         <div className={styles.outputs}>
           <button className={styles.port} />
@@ -191,7 +175,7 @@ export default function Home() {
           <button className={styles.port} />
         </div>
         <output className={styles.value} tabIndex={0}>
-          {(nodes[6] = nodes[5]).toPrecision(3)}
+          {(nodes[6] = nodes[5])}
         </output>
       </article>
       <svg className={styles.svg}>
