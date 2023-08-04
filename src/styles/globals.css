@@ -1,37 +1,12 @@
 :root {
-  --retro-background: #25272e;
-  --retro-error: #f44747;
-  --retro-debug: #b267e6;
-  --retro-warn: #cd9731;
-  --retro-info: #6796e6;
-  --retro-comment: #bfc2ccb7;
-  --retro-markup-table: #eeffff;
-  --retro-meta-seperator: #65737e;
-  --retro-markup-raw: #c792ea;
-  --retro-constant-other: #ffcb6b;
-  --retro-string-other: #82aaff;
-  --retro-markup-quote: #65737e;
-  --retro-markup-underline: #f78c6c;
-  --retro-markup-bold: #f07178;
-  --retro-markup-heading: #c3e88d;
-  --retro-source-json: #c17e70;
-  --retro-source-dictionary: #ff5370;
-  --retro-comment2: #919b9e;
-  --retro-sidebar-background: #272727;
-  --retro-diff-border: #444444;
-  --retro-editor-forground: #b3b9c5;
-  --retro-editor-bracket-background: #101010;
-  --retro-hover-background: #383838;
-  --retro-status-foreground: #909090;
-  --retro-ansci-black: #666666;
-  --retro-ansci-bright-black: #777777;
-  --retro-ansci-yellow: #ffd479;
-  --retro-ansci-red: #f2777a;
-  --retro-ansci-blue: #6ab0f3;
-  --retro-badge-background: #4a7baa;
-  --retro-badge-foreground: #d7dae0;
-
-  color-scheme: light dark;
+  --background: #25272e;
+  --red: #f44747;
+  --purple: #b267e6;
+  --yellow: #ffcb6b;
+  --green: #c3e88d;
+  --black: #101010;
+  --gray: #666666;
+  --light-gray: #777777;
 
   --node-height: 8rem;
   --node-width: 8rem;
@@ -46,41 +21,20 @@
   --content-border-width: 0.15rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    background-color: var(--retro-background);
-    accent-color: var(--retro-error);
-    --node-background-color: var(--retro-ansci-black);
-    --node-border-color: var(--retro-ansci-bright-black);
-    --node-title-color: var(--retro-constant-other);
-    --node-box-shadow: 0.35rem 0.35rem 0.25rem 0rem
-      var(--retro-editor-bracket-background);
-    --port-background-color: var(--retro-ansci-black);
-    --port-border-color: var(--retro-background);
-    --content-font-color: var(--retro-markup-heading);
-    --content-border-color: var(--retro-ansci-bright-black);
-    --content-background-color: var(--retro-editor-bracket-background);
-    --focus-outline-color: var(--retro-error);
-    --path-color: var(--retro-debug);
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    background-color: var(--retro-editor-forground);
-    accent-color: var(--retro-debug);
-    --node-background-color: var(--retro-comment);
-    --node-border-color: var(--retro-comment2);
-    --node-title-color: var(--retro-constant-other);
-    --node-box-shadow: 0.35rem 0.35rem 0rem 0rem var(--retro-background);
-    --port-background-color: var(--retro-editor-forground);
-    --port-border-color: var(--retro-ansci-bright-black);
-    --content-font-color: var(--retro-markup-heading);
-    --content-border-color: var(--retro-comment2);
-    --content-background-color: var(--retro-background);
-    --focus-outline-color: var(--retro-debug);
-    --path-color: var(--retro-badge-background);
-  }
+:root {
+  background-color: var(--background);
+  accent-color: var(--red);
+  --node-background-color: var(--gray);
+  --node-border-color: var(--light-gray);
+  --node-title-color: var(--yellow);
+  --node-box-shadow: 0.35rem 0.35rem 0.25rem 0rem var(--black);
+  --port-background-color: var(--gray);
+  --port-border-color: var(--background);
+  --content-font-color: var(--green);
+  --content-border-color: var(--light-gray);
+  --content-background-color: var(--black);
+  --focus-outline-color: var(--red);
+  --path-color: var(--purple);
 }
 
 html,
