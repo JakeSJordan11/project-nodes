@@ -1,5 +1,6 @@
 import { inter } from '@/app/fonts'
 import '@/styles/globals.css'
+import styles from '@/styles/layout.module.css'
 import type { ReactNode } from 'react'
 
 export const metadata = {
@@ -8,8 +9,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang='en' className={inter.className}>
-      <body>{children}</body>
+    <html lang='en' className={`${styles.html} ${inter.className}`}>
+      <body className={styles.body}>{children}</body>
     </html>
   )
 }
