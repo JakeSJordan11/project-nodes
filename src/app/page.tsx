@@ -4,95 +4,66 @@ import styles from '@/styles/app.module.css'
 import { useState, type ChangeEvent, type PointerEvent } from 'react'
 
 export default function Home() {
-  const [nodes, setNodes] = useState<NodeProps[]>(
-    Array(7)
-      .fill({ value: 0, linkedNodes: [] })
-      .map((node) => ({ ...node, id: crypto.randomUUID() }))
-  )
-  const [operators, setOperators] = useState<OperatorVariants[]>(
-    Array(3).fill(OperatorVariants.Addition)
-  )
+  const [nodes, setNodes] = useState<NodeProps[]>(initialNodes)
   const [streams, setStreams] = useState<StreamProps[]>([])
+  const { activeStream, transmitter, reciever } = useStream(streams, nodes)
 
-  const operations = {
-    addition: (a: number, b: number) => a + b,
-    subtraction: (a: number, b: number) => a - b,
-    multiplication: (a: number, b: number) => a * b,
-    division: (a: number, b: number) => a / b,
-    exponentiation: (a: number, b: number) => a ** b,
-    modulo: (a: number, b: number) => a % b,
+  function handleCalculatedValues(operators: OperatorVariants) {
+    if (!transmitter || !reciever) return
+    return operations[operators](transmitter.value, reciever.value)
   }
 
-  function calculateValues(sourceNode: NodeProps, operators: OperatorVariants) {
-    return sourceNode.linkedNodes.reduce(
-      (acc, node) => operations[operators](acc, node.value),
-      sourceNode.value
-    )
+  function handleInputValueChange(event: ChangeEvent<HTMLInputElement>, nodeId: string) {
+    const newNodeValues = nodes.map((node) => {
+      if (node.id !== nodeId) return node
+      return { ...node, value: Number(event.currentTarget.value) }
+    })
+    setNodes(newNodeValues)
   }
 
-  function handleInputValueChange(
-    event: ChangeEvent<HTMLInputElement>,
-    nodeId: string
-  ) {
-    const newNodes = [...nodes]
-    const nodeIndex = newNodes.findIndex((node) => node.id === nodeId)
-    newNodes[nodeIndex].value = Number(event.currentTarget.value)
-    setNodes(newNodes)
-  }
-
-  function handleOperatorChange(
-    event: ChangeEvent<HTMLSelectElement>,
-    index: number
-  ) {
-    const newOperators = [...operators]
-    newOperators[index] = event.currentTarget.value as OperatorVariants
-    setOperators(newOperators)
-  }
-
-  function handleOutputPortPointerDown(
-    event: PointerEvent<HTMLButtonElement>,
-    nodeId: string
-  ) {
-    const newNodes = [...nodes]
-    const nodeIndex = newNodes.findIndex((node) => node.id === nodeId)
-    newNodes[nodeIndex].status = NodeStatus.Linking
+  function handleOutputPointerDown(event: PointerEvent<HTMLButtonElement>, nodeId: string) {
+    const newNodeStatus = nodes.map((node) => {
+      if (node.id !== nodeId) return node
+      return { ...node, status: NodeStatus.Searching }
+    })
+    setNodes(newNodeStatus)
     const { x, y, width, height } = event.currentTarget.getBoundingClientRect()
     const newStreams = [
       ...streams,
       {
+        id: crypto.randomUUID(),
         from: `${x + width / 2} ${y + height / 2}`,
         to: `${x + width / 2} ${y + height / 2}`,
         status: StreamStatus.Active,
+        transmitterId: nodeId,
       },
-    ]
-    setNodes(newNodes)
+    ] as StreamProps[]
     setStreams(newStreams)
   }
 
-  function handleInputPortPointerUp(
-    event: PointerEvent<HTMLButtonElement>,
-    sourceNode: NodeProps
-  ) {
+  function handleInputPointerUp(event: PointerEvent<HTMLButtonElement>, sourceNode: NodeProps) {
     event.stopPropagation()
-    const { x, y, width, height } = event.currentTarget.getBoundingClientRect()
-    const newStreams = [...streams]
-    const lastStream = newStreams[newStreams.length - 1]
-    lastStream.to = `${x + width / 2} ${y + height / 2}`
-    lastStream.status = StreamStatus.Linked
-    setStreams(newStreams)
-    const newNodes = [...nodes]
-    const nodeIndex = newNodes.findIndex((node) => node.id === sourceNode.id)
-    newNodes[nodeIndex].status = NodeStatus.Active
-    const targetNode = newNodes.find(
-      (node) =>
-        node.status === NodeStatus.Linking &&
-        node.id !== sourceNode.id &&
-        node.type !== NodeVariants.Output
-    )
-    if (targetNode) {
-      targetNode.linkedNodes.push(sourceNode)
-    }
+    const newNodes = nodes.map((node) => {
+      if (activeStream?.status === StreamStatus.Active) {
+        return {
+          ...node,
+          status: transmitter?.id === node.id ? NodeStatus.Transmitting : NodeStatus.Recieving,
+          linkedIds: [...node.linkedIds, transmitter?.id === node.id ? sourceNode.id : transmitter?.id],
+        }
+      }
+    }) as NodeProps[]
     setNodes(newNodes)
+    const { x, y, width, height } = event.currentTarget.getBoundingClientRect()
+    const LinkActiveStream = streams.map((stream) => {
+      if (stream.status !== StreamStatus.Active) return stream
+      return {
+        ...stream,
+        status: StreamStatus.Linked,
+        to: `${x + width / 2} ${y + height / 2}`,
+        recieverId: sourceNode.id,
+      }
+    })
+    setStreams(LinkActiveStream)
   }
 
   function handleMainPointerMove(event: PointerEvent<HTMLElement>) {
@@ -105,227 +76,115 @@ export default function Home() {
   }
 
   function handleMainPointerUp() {
-    const newNodes = [...nodes].map((node) => {
-      if (node.status !== NodeStatus.Linking) return node
+    const newNodes = nodes.map((node) => {
+      if (node.status !== NodeStatus.Searching) return node
       return {
         ...node,
         status: NodeStatus.Inactive,
       }
     })
     if (streams.length === 0) return
-    const newStreams = [...streams].filter(
-      (stream) => stream.status === StreamStatus.Linked
-    )
+    const newStreams = streams.filter((stream) => stream.status === StreamStatus.Linked)
     setNodes(newNodes)
     setStreams(newStreams)
   }
   return (
-    <main
-      className={styles.main}
-      onPointerMove={handleMainPointerMove}
-      onPointerUp={handleMainPointerUp}
-    >
+    <main className={styles.main} onPointerMove={handleMainPointerMove} onPointerUp={handleMainPointerUp}>
       <Input
         {...nodes[0]}
-        value={nodes[0].value}
         position={{ x: 50, y: 50 }}
-        nodeId={nodes[0].id}
-        onInputValueChange={(event) =>
-          handleInputValueChange(event, nodes[0].id)
-        }
-        onOutputPortPointerDown={(event) =>
-          handleOutputPortPointerDown(event, nodes[0].id)
-        }
+        onInputValueChange={(event) => handleInputValueChange(event, nodes[0].id)}
+        onOutputPointerDown={(event) => handleOutputPointerDown(event, nodes[0].id)}
       />
       <Input
         {...nodes[1]}
-        value={nodes[1].value}
         position={{ x: 50, y: 250 }}
-        nodeId={nodes[1].id}
-        onInputValueChange={(event) =>
-          handleInputValueChange(event, nodes[1].id)
-        }
-        onOutputPortPointerDown={(event) =>
-          handleOutputPortPointerDown(event, nodes[1].id)
-        }
+        onInputValueChange={(event) => handleInputValueChange(event, nodes[1].id)}
+        onOutputPointerDown={(event) => handleOutputPointerDown(event, nodes[1].id)}
       />
       <Input
         {...nodes[2]}
-        value={nodes[2].value}
         position={{ x: 50, y: 450 }}
-        nodeId={nodes[2].id}
-        onInputValueChange={(event) =>
-          handleInputValueChange(event, nodes[2].id)
-        }
-        onOutputPortPointerDown={(event) =>
-          handleOutputPortPointerDown(event, nodes[2].id)
-        }
+        onInputValueChange={(event) => handleInputValueChange(event, nodes[2].id)}
+        onOutputPointerDown={(event) => handleOutputPointerDown(event, nodes[2].id)}
       />
       <Operator
         {...nodes[3]}
-        value={nodes[3].value}
         position={{ x: 250, y: 150 }}
-        nodeId={nodes[3].id}
-        operator={operators[0]}
-        sourceNode={nodes[3]}
-        handleOperatorChange={(event) => handleOperatorChange(event, 0)}
-        handleOutputPortPointerDown={(event) =>
-          handleOutputPortPointerDown(event, nodes[3].id)
-        }
-        calculateValues={calculateValues}
-        handleInputPortPointerUp={(event) =>
-          handleInputPortPointerUp(event, nodes[3])
-        }
+        onOutputPointerDown={(event) => handleOutputPointerDown(event, nodes[3].id)}
+        onInputPointerUp={(event) => handleInputPointerUp(event, nodes[3])}
       />
       <Operator
         {...nodes[4]}
-        value={nodes[4].value}
         position={{ x: 250, y: 350 }}
-        nodeId={nodes[4].id}
-        operator={operators[1]}
-        sourceNode={nodes[4]}
-        handleOperatorChange={(event) => handleOperatorChange(event, 1)}
-        handleOutputPortPointerDown={(event) =>
-          handleOutputPortPointerDown(event, nodes[4].id)
-        }
-        calculateValues={calculateValues}
-        handleInputPortPointerUp={(event) =>
-          handleInputPortPointerUp(event, nodes[4])
-        }
+        onOutputPointerDown={(event) => handleOutputPointerDown(event, nodes[4].id)}
+        onInputPointerUp={(event) => handleInputPointerUp(event, nodes[4])}
       />
       <Operator
         {...nodes[5]}
-        value={nodes[5].value}
         position={{ x: 450, y: 250 }}
-        nodeId={nodes[5].id}
-        operator={operators[2]}
-        sourceNode={nodes[5]}
-        handleOperatorChange={(event) => handleOperatorChange(event, 2)}
-        handleOutputPortPointerDown={(event) =>
-          handleOutputPortPointerDown(event, nodes[5].id)
-        }
-        calculateValues={calculateValues}
-        handleInputPortPointerUp={(event) =>
-          handleInputPortPointerUp(event, nodes[5])
-        }
+        onOutputPointerDown={(event) => handleOutputPointerDown(event, nodes[5].id)}
+        onInputPointerUp={(event) => handleInputPointerUp(event, nodes[5])}
       />
       <Output
-        nodeValue={nodes[6].value}
+        {...nodes[6]}
         position={{ x: 650, y: 250 }}
         targetValue={nodes[5].value}
-        handleInputPortPointerUp={(event) =>
-          handleInputPortPointerUp(event, nodes[6])
-        }
+        onInputPointerUp={(event) => handleInputPointerUp(event, nodes[6])}
       />
       <svg className={styles.svg} xmlns='http://www.w3.org/2000/svg'>
         {streams.map((stream) => (
-          <path
-            key={crypto.randomUUID()}
-            d={`M ${stream.from} L ${stream.to}`}
-          />
+          <Stream key={stream.id} {...stream} />
         ))}
       </svg>
     </main>
   )
 }
 export function Input({
-  position,
+  id,
   value,
-  nodeId,
+  position,
   onInputValueChange,
-  onOutputPortPointerDown,
-}: {
-  position: Coordinate
-  value: number
-  nodeId: string
-  onInputValueChange: (
-    event: ChangeEvent<HTMLInputElement>,
-    nodeId: string
-  ) => void
-  onOutputPortPointerDown: (
-    event: PointerEvent<HTMLButtonElement>,
-    nodeId: string
-  ) => void
+  onOutputPointerDown,
+}: NodeProps & {
+  onInputValueChange: (event: ChangeEvent<HTMLInputElement>, nodeId: string) => void
+  onOutputPointerDown: (event: PointerEvent<HTMLButtonElement>, nodeId: string) => void
 }) {
   return (
-    <article
-      className={styles.node}
-      style={{ left: position.x, top: position.y }}
-    >
+    <article className={styles.node} style={{ left: position.x, top: position.y }}>
       <output className={styles.value}>{value}</output>
       <input
         className={styles.slider}
         type='range'
         max={10}
         value={value}
-        onChange={(event) => onInputValueChange(event, nodeId)}
+        onChange={(event) => onInputValueChange(event, id)}
       />
       <div className={styles.outputs}>
-        <button
-          className={styles.port}
-          onPointerDown={(event) => onOutputPortPointerDown(event, nodeId)}
-        />
+        <button className={styles.port} onPointerDown={(event) => onOutputPointerDown(event, id)} />
       </div>
     </article>
   )
 }
 
 export function Operator({
+  id,
   value,
-  nodeId,
   position,
-  operator,
-  sourceNode,
-  handleOperatorChange,
-  handleOutputPortPointerDown,
-  calculateValues,
-  handleInputPortPointerUp,
-}: {
-  value: number
-  nodeId: string
-  position: Coordinate
-  operator: OperatorVariants
-  sourceNode: NodeProps
-  handleOperatorChange: (
-    event: ChangeEvent<HTMLSelectElement>,
-    index: number
-  ) => void
-  handleOutputPortPointerDown: (
-    event: PointerEvent<HTMLButtonElement>,
-    nodeId: string
-  ) => void
-  calculateValues: (
-    sourceNode: NodeProps,
-    operators: OperatorVariants
-  ) => number
-  handleInputPortPointerUp: (
-    event: PointerEvent<HTMLButtonElement>,
-    nodeValue: number
-  ) => void
+  onInputPointerUp,
+  onOutputPointerDown,
+}: NodeProps & {
+  onInputPointerUp: (event: PointerEvent<HTMLButtonElement>, nodeValue: number) => void
+  onOutputPointerDown: (event: PointerEvent<HTMLButtonElement>, nodeId: string) => void
 }) {
   return (
-    <article
-      className={styles.node}
-      style={{ left: position.x, top: position.y }}
-    >
+    <article className={styles.node} style={{ left: position.x, top: position.y }}>
       <div className={styles.inputs}>
-        <button
-          className={styles.port}
-          onPointerUp={(event) => handleInputPortPointerUp(event, value)}
-        />
-        <button
-          className={styles.port}
-          onPointerUp={(event) => handleInputPortPointerUp(event, value)}
-        />
+        <button className={styles.port} onPointerUp={(event) => onInputPointerUp(event, value)} />
+        <button className={styles.port} onPointerUp={(event) => onInputPointerUp(event, value)} />
       </div>
-      <output className={styles.value}>
-        {calculateValues(sourceNode, operator)}
-      </output>
-      <select
-        className={styles.selector}
-        value={operator}
-        onChange={(event) => handleOperatorChange(event, 2)}
-      >
+      <output className={styles.value}>{value}</output>
+      <select className={styles.selector} value={value}>
         <option value={OperatorVariants.Addition}>Addition</option>
         <option value={OperatorVariants.Subtraction}>Subtraction</option>
         <option value={OperatorVariants.Multiplication}>Multiplication</option>
@@ -334,43 +193,42 @@ export function Operator({
         <option value={OperatorVariants.Modulo}>Modulo</option>
       </select>
       <div className={styles.outputs}>
-        <button
-          className={styles.port}
-          onPointerDown={(event) => handleOutputPortPointerDown(event, nodeId)}
-        />
+        <button className={styles.port} onPointerDown={(event) => onOutputPointerDown(event, id)} />
       </div>
     </article>
   )
 }
 
 export function Output({
-  nodeValue,
+  value,
   position,
   targetValue,
-  handleInputPortPointerUp,
-}: {
-  nodeValue: number
-  position: Coordinate
+  onInputPointerUp,
+}: NodeProps & {
   targetValue: number
-  handleInputPortPointerUp: (
-    event: PointerEvent<HTMLButtonElement>,
-    nodeValue: number
-  ) => void
+  onInputPointerUp: (event: PointerEvent<HTMLButtonElement>, nodeValue: number) => void
 }) {
   return (
-    <article
-      className={styles.node}
-      style={{ left: position.x, top: position.y }}
-    >
+    <article className={styles.node} style={{ left: position.x, top: position.y }}>
       <div className={styles.inputs}>
-        <button
-          className={styles.port}
-          onPointerUp={(event) => handleInputPortPointerUp(event, nodeValue)}
-        />
+        <button className={styles.port} onPointerUp={(event) => onInputPointerUp(event, value)} />
       </div>
-      <output className={styles.value}>{(nodeValue = targetValue)}</output>
+      <output className={styles.value}>{(value = targetValue)}</output>
     </article>
   )
+}
+
+export function Stream({ from, to }: StreamProps) {
+  return <path d={`M ${from} L ${to}`} />
+}
+
+export const operations = {
+  addition: (a: number, b: number) => a + b,
+  subtraction: (a: number, b: number) => a - b,
+  multiplication: (a: number, b: number) => a * b,
+  division: (a: number, b: number) => a / b,
+  exponentiation: (a: number, b: number) => a ** b,
+  modulo: (a: number, b: number) => a % b,
 }
 
 enum OperatorVariants {
@@ -390,8 +248,9 @@ enum StreamStatus {
 
 enum NodeStatus {
   Inactive = 'inactive',
-  Active = 'active',
-  Linking = 'linking',
+  Transmitting = 'transmitting',
+  Searching = 'searching',
+  Recieving = 'recieving',
 }
 
 enum NodeVariants {
@@ -405,16 +264,96 @@ interface NodeProps {
   value: number
   status: NodeStatus
   type: NodeVariants
-  linkedNodes: NodeProps[]
+  linkedIds: string[]
+  position: Coordinate
+  operator?: OperatorVariants
 }
 
 interface StreamProps {
+  id: string
   from: string
   to: string
   status: StreamStatus
+  transmitterId: string
+  recieverId: string
 }
 
 export interface Coordinate {
   x: number
   y: number
 }
+
+export function useStream(streams: StreamProps[], nodes: NodeProps[]) {
+  const activeStream = streams.find((stream) => stream.status === StreamStatus.Active)
+  const linkedStreams = streams.find((stream) => stream.status === StreamStatus.Linked)
+  const transmitter = activeStream
+    ? nodes.find((node) => node.id === activeStream.transmitterId)
+    : linkedStreams
+    ? nodes.find((node) => node.id === linkedStreams.transmitterId)
+    : null
+  const reciever = activeStream
+    ? nodes.find((node) => node.id === activeStream.recieverId)
+    : linkedStreams
+    ? nodes.find((node) => node.id === linkedStreams?.recieverId)
+    : null
+  return { transmitter, reciever, activeStream, linkedStreams }
+}
+
+const initialNodes: NodeProps[] = [
+  {
+    id: crypto.randomUUID(),
+    value: 0,
+    status: NodeStatus.Inactive,
+    type: NodeVariants.Input,
+    linkedIds: [],
+    position: { x: 50, y: 50 },
+  },
+  {
+    id: crypto.randomUUID(),
+    value: 0,
+    status: NodeStatus.Inactive,
+    type: NodeVariants.Input,
+    linkedIds: [],
+    position: { x: 50, y: 250 },
+  },
+  {
+    id: crypto.randomUUID(),
+    value: 0,
+    status: NodeStatus.Inactive,
+    type: NodeVariants.Input,
+    linkedIds: [],
+    position: { x: 50, y: 450 },
+  },
+  {
+    id: crypto.randomUUID(),
+    value: 0,
+    status: NodeStatus.Inactive,
+    type: NodeVariants.Operator,
+    linkedIds: [],
+    position: { x: 250, y: 150 },
+  },
+  {
+    id: crypto.randomUUID(),
+    value: 0,
+    status: NodeStatus.Inactive,
+    type: NodeVariants.Operator,
+    linkedIds: [],
+    position: { x: 250, y: 350 },
+  },
+  {
+    id: crypto.randomUUID(),
+    value: 0,
+    status: NodeStatus.Inactive,
+    type: NodeVariants.Operator,
+    linkedIds: [],
+    position: { x: 450, y: 250 },
+  },
+  {
+    id: crypto.randomUUID(),
+    value: 0,
+    status: NodeStatus.Inactive,
+    type: NodeVariants.Output,
+    linkedIds: [],
+    position: { x: 650, y: 250 },
+  },
+]
