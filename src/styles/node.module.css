@@ -1,0 +1,145 @@
+.node {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  cursor: grab;
+  box-shadow: var(--node-box-shadow);
+  border-width: var(--node-border-width);
+  border-style: solid;
+  border-color: var(--node-border-color);
+  border-radius: var(--node-border-radius);
+  background-color: var(--node-background-color);
+  padding: var(--node-padding);
+  width: var(--node-width);
+  height: var(--node-height);
+  user-select: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.value {
+  display: flex;
+  justify-content: safe center;
+  align-items: center;
+  cursor: grab;
+  border-width: var(--content-border-width);
+  border-style: solid;
+  border-color: var(--content-border-color);
+  border-radius: var(--content-border-radius);
+  background-color: var(--content-background-color);
+  width: 100%;
+  height: 100%;
+  color: var(--content-font-color);
+  font-weight: 800;
+  font-size: x-large;
+  user-select: none;
+  overflow-x: scroll;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:focus {
+    outline-color: var(--focus-outline-color);
+  }
+}
+
+.slider {
+  cursor: pointer;
+  width: 100%;
+
+  &:focus {
+    outline-color: var(--focus-outline-color);
+  }
+
+  &:active {
+    cursor: move;
+  }
+}
+
+.selector {
+  appearance: none;
+  margin-top: 0.5rem;
+  border-radius: var(--content-border-radius);
+  background-color: var(--content-background-color);
+  padding-block: 0.15rem;
+  width: 100%;
+  color: var(--node-title-color);
+  font-weight: 800;
+  font-size: medium;
+  text-align-last: center;
+
+  &:focus {
+    outline-color: var(--focus-outline-color);
+  }
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-1 * var(--node-border-width));
+  justify-content: space-evenly;
+  align-items: center;
+  width: 0;
+  height: '100%';
+}
+
+.outputs {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: calc(-1 * var(--node-border-width));
+  justify-content: space-evenly;
+  align-items: center;
+  width: 0;
+  height: '100%';
+}
+
+.port {
+  cursor: pointer;
+  border-width: var(--port-border-width);
+  border-style: solid;
+  border-color: var(--port-border-color);
+  border-radius: var(--port-border-radius);
+  background-color: var(--port-background-color);
+  width: var(--port-width);
+  height: var(--port-height);
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:focus {
+    outline-color: var(--focus-outline-color);
+  }
+
+  &:active {
+    cursor: move;
+    animation: pulse 1.4s infinite ease-in-out;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    border-color: rgba(0, 0, 0, 0.4);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    border-color: var(--port-border-color);
+  }
+}
