@@ -9,7 +9,7 @@
   --light-gray: #777777;
 
   background-color: var(--background);
-  accent-color: var(--red);
+  accent-color: var(--green);
 
   --node-height: 8rem;
   --node-width: 8rem;
@@ -32,6 +32,6 @@
   --content-font-color: var(--green);
   --content-border-color: var(--light-gray);
   --content-background-color: var(--black);
-  --focus-outline-color: var(--red);
+  --focus-outline-color: var(--green);
   --path-color: var(--purple);
 }
