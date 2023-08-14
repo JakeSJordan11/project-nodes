@@ -1,29 +1,13 @@
 import styles from '@/styles/node.module.css'
-import { NodeProps } from '@/types/node.types'
-import { ChangeEvent, PointerEvent } from 'react'
+import type { NodeProps } from '@/types/node.types'
 
-export function Input({
-  id,
-  value,
-  position,
-  onInputValueChange,
-  onOutputPointerDown,
-}: NodeProps & {
-  onInputValueChange: (event: ChangeEvent<HTMLInputElement>, nodeId: string) => void
-  onOutputPointerDown: (event: PointerEvent<HTMLButtonElement>, nodeId: string) => void
-}) {
+export function Input(node: NodeProps) {
   return (
-    <article className={styles.node} style={{ left: position.x, top: position.y }}>
-      <output className={styles.value}>{value}</output>
-      <input
-        className={styles.slider}
-        type='range'
-        max={10}
-        value={value}
-        onChange={(event) => onInputValueChange(event, id)}
-      />
+    <article className={styles.node} style={{ left: node.position.x, top: node.position.y }}>
+      <output className={styles.value}>{node.value}</output>
+      <input className={styles.slider} type='range' max={10} />
       <div className={styles.outputs}>
-        <button className={styles.port} onPointerDown={(event) => onOutputPointerDown(event, id)} />
+        <button className={styles.port} />
       </div>
     </article>
   )

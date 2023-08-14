@@ -1,26 +1,16 @@
 import { OperationVariants } from '@/constants/node.constant'
 import styles from '@/styles/node.module.css'
-import { NodeProps } from '@/types/node.types'
-import { PointerEvent } from 'react'
+import type { NodeProps } from '@/types'
 
-export function Operator({
-  id,
-  value,
-  position,
-  onInputPointerUp,
-  onOutputPointerDown,
-}: NodeProps & {
-  onInputPointerUp: (event: PointerEvent<HTMLButtonElement>, nodeValue: number) => void
-  onOutputPointerDown: (event: PointerEvent<HTMLButtonElement>, nodeId: string) => void
-}) {
+export function Operator(node: NodeProps) {
   return (
-    <article className={styles.node} style={{ left: position.x, top: position.y }}>
+    <article className={styles.node} style={{ left: node.position.x, top: node.position.y }}>
       <div className={styles.inputs}>
-        <button className={styles.port} onPointerUp={(event) => onInputPointerUp(event, value)} />
-        <button className={styles.port} onPointerUp={(event) => onInputPointerUp(event, value)} />
+        <button className={styles.port} />
+        <button className={styles.port} />
       </div>
-      <output className={styles.value}>{value}</output>
-      <select className={styles.selector} value={value}>
+      <output className={styles.value}>{node.value}</output>
+      <select className={styles.selector} value={node.value}>
         <option value={OperationVariants.Addition}>Addition</option>
         <option value={OperationVariants.Subtraction}>Subtraction</option>
         <option value={OperationVariants.Multiplication}>Multiplication</option>
@@ -29,7 +19,7 @@ export function Operator({
         <option value={OperationVariants.Modulo}>Modulo</option>
       </select>
       <div className={styles.outputs}>
-        <button className={styles.port} onPointerDown={(event) => onOutputPointerDown(event, id)} />
+        <button className={styles.port} />
       </div>
     </article>
   )

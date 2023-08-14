@@ -1,1 +1,1 @@
-export * from './initial.mock'
+export * from './initialGraph'

@@ -1,5 +1,5 @@
 import { StreamStatus } from '@/constants'
-import { NodeProps, StreamProps } from '@/types'
+import type { NodeProps, StreamProps } from '@/types'
 
 export function useStream(streams: StreamProps[], nodes: NodeProps[]) {
   const activeStream = streams.find((stream) => stream.status === StreamStatus.Active)

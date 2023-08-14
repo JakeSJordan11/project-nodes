@@ -1,20 +1,13 @@
 import styles from '@/styles/node.module.css'
-import { NodeProps } from '@/types/node.types'
-import { PointerEvent } from 'react'
+import type { NodeProps } from '@/types/node.types'
 
-export function Output({
-  value,
-  position,
-  onInputPointerUp,
-}: NodeProps & {
-  onInputPointerUp: (event: PointerEvent<HTMLButtonElement>, nodeValue: number) => void
-}) {
+export function Output(node: NodeProps) {
   return (
-    <article className={styles.node} style={{ left: position.x, top: position.y }}>
+    <article className={styles.node} style={{ left: node.position.x, top: node.position.y }}>
       <div className={styles.inputs}>
-        <button className={styles.port} onPointerUp={(event) => onInputPointerUp(event, value)} />
+        <button className={styles.port} />
       </div>
-      <output className={styles.value}>{value}</output>
+      <output className={styles.value}>{node.value}</output>
     </article>
   )
 }

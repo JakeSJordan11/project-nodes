@@ -1,3 +1,4 @@
+export * from './Graph.component'
 export * from './Input.component'
 export * from './Operator.component'
 export * from './Output.component'
