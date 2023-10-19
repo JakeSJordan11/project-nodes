@@ -36,7 +36,7 @@ export function Node({
           />
           <div className={styles.outputs}>
             <Port
-              id={`${id}-output-0}`}
+              id={`node${id}-output0`}
               value={value}
               variant={PortVariant.Output}
               onPortPointerDown={(event, id) =>
@@ -54,7 +54,7 @@ export function Node({
         >
           <div className={styles.inputs}>
             <Port
-              id={`${id}-input-0`}
+              id={`node${id}-input0`}
               value={value}
               variant={PortVariant.Input}
               onPortPointerUp={(event, id) =>
@@ -62,7 +62,7 @@ export function Node({
               }
             />
             <Port
-              id={`${id}-input-1`}
+              id={`node${id}-input1`}
               value={value}
               variant={PortVariant.Input}
               onPortPointerUp={(event, id) =>
@@ -87,7 +87,7 @@ export function Node({
           </select>
           <div className={styles.outputs}>
             <Port
-              id={`${id}-output-0`}
+              id={`node${id}-output0`}
               value={value}
               variant={PortVariant.Output}
               onPortPointerDown={(event, id) =>
@@ -105,7 +105,7 @@ export function Node({
         >
           <div className={styles.inputs}>
             <Port
-              id={`${id}-input-0`}
+              id={`node${id}-input0`}
               value={value}
               variant={PortVariant.Input}
               onPortPointerUp={(event, id) =>

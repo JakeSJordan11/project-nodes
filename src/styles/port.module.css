@@ -7,17 +7,17 @@
   background-color: var(--port-background-color);
   width: var(--port-width);
   height: var(--port-height);
+}
 
-  &:hover {
-    cursor: pointer;
-  }
+.port:hover {
+  cursor: pointer;
+}
 
-  &:focus {
-    outline-color: var(--focus-outline-color);
-  }
+.port:focus {
+  outline-color: var(--focus-outline-color);
+}
 
-  &:active {
-    cursor: move;
-    animation: pulse 1.4s infinite ease-in-out;
-  }
+.port:active {
+  cursor: move;
+  animation: pulse 1.4s infinite ease-in-out;
 }

@@ -14,10 +14,10 @@
   width: var(--node-width);
   height: var(--node-height);
   user-select: none;
+}
 
-  &:active {
-    cursor: grabbing;
-  }
+.node:active {
+  cursor: grabbing;
 }
 
 .value {
@@ -36,28 +36,26 @@
   font-weight: 800;
   font-size: x-large;
   user-select: none;
-  overflow-x: scroll;
+}
 
-  &:active {
-    cursor: grabbing;
-  }
+.value:active {
+  cursor: grabbing;
+}
 
-  &:focus {
-    outline-color: var(--focus-outline-color);
-  }
+.value:focus {
+  outline-color: var(--focus-outline-color);
 }
 
 .slider {
   cursor: pointer;
   width: 100%;
+}
 
-  &:focus {
-    outline-color: var(--focus-outline-color);
-  }
-
-  &:active {
-    cursor: move;
-  }
+.slider:active {
+  cursor: move;
+}
+.slider:focus {
+  outline-color: var(--focus-outline-color);
 }
 
 .selector {
@@ -71,10 +69,10 @@
   font-weight: 800;
   font-size: medium;
   text-align-last: center;
+}
 
-  &:focus {
-    outline-color: var(--focus-outline-color);
-  }
+.selector:focus {
+  outline-color: var(--focus-outline-color);
 }
 
 .inputs {

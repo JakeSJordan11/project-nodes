@@ -1,9 +1,9 @@
 .main {
   height: 100%;
+}
 
-  &:active {
-    cursor: move;
-  }
+.main:active {
+  cursor: move;
 }
 
 .svg {

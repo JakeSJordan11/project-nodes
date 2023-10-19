@@ -1,7 +1,6 @@
 'use client'
 
 import { Node } from '@/components/node'
-import { Port } from '@/components/port'
 import { Stream } from '@/components/stream'
 import { mockNodes } from '@/mock/data'
 import styles from '@/styles/app.module.css'
