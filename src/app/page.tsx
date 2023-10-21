@@ -4,12 +4,12 @@ import { Node } from '@/components/node'
 import { Stream } from '@/components/stream'
 import { mockNodes } from '@/mock/data'
 import styles from '@/styles/app.module.css'
-import { NodeProps, NodeStatus } from '@/types/node'
+import { NodeProps } from '@/types/node'
 import { StreamProps, StreamStatus } from '@/types/stream'
 import { ChangeEvent, PointerEvent, useState } from 'react'
 
 export default function Application() {
-  const [nodes, setNodes] = useState<NodeProps[]>(mockNodes)
+  const [nodes, setNodes] = useState(mockNodes)
   const [streams, setStreams] = useState<StreamProps[]>([])
 
   function handleMainPointerMove(event: PointerEvent<HTMLElement>) {
@@ -22,17 +22,9 @@ export default function Application() {
   }
 
   function handleMainPointerUp() {
-    const newNodes = nodes.map((node) => {
-      if (node.status !== NodeStatus.Linking) return node
-      return {
-        ...node,
-        status: NodeStatus.Inactive,
-      }
-    })
     const newStreams = streams.filter(
       (stream) => stream.status === StreamStatus.Linked
     )
-    setNodes(newNodes)
     setStreams(newStreams)
   }
 
@@ -40,47 +32,72 @@ export default function Application() {
     event: ChangeEvent<HTMLInputElement>,
     nodeId: string
   ) {
-    const newNodes = [...nodes]
-    const nodeIndex = newNodes.findIndex((node) => node.id === nodeId)
-    newNodes[nodeIndex].value = Number(event.currentTarget.value)
-    setNodes(newNodes)
+    const targetPortId = streams.find(
+      (stream) =>
+        stream.status === StreamStatus.Linked && stream.sourceNodeId === nodeId
+    )?.targetPortId
+    const newStreams = streams.map((stream) => {
+      if (stream.sourceNodeId !== nodeId) return stream
+      return { ...stream, value: Number(event.target.value) }
+    })
+    setStreams(newStreams)
+    const newPortValues = nodes.map((node) => {
+      if (nodeId === node.id) {
+        return {
+          ...node,
+          value: Number(event.currentTarget.value),
+        }
+      } else if (targetPortId === node.inputId) {
+        return {
+          ...node,
+          inputValue: Number(event.currentTarget.value),
+        }
+      } else if (targetPortId === node.input1Id) {
+        return {
+          ...node,
+          input1Value: Number(event.currentTarget.value),
+        }
+      } else if (targetPortId === node.input2Id) {
+        return {
+          ...node,
+          input2Value: Number(event.currentTarget.value),
+        }
+      } else if (targetPortId === node.inputId) {
+        return {
+          ...node,
+          input3Value: Number(event.currentTarget.value),
+        }
+      } else return node
+    })
+    setNodes(newPortValues)
   }
 
   function handlePortPointerDown(
     event: PointerEvent<HTMLButtonElement>,
     nodeId: string
   ) {
-    setNodes(
-      nodes.map((node) => {
-        if (node.id !== nodeId) return node
-        return {
-          ...node,
-          status: NodeStatus.Linking,
-        }
-      })
-    )
     const { x, y, width, height } = event.currentTarget.getBoundingClientRect()
     setStreams([
       ...streams,
       {
+        value: Number(event.currentTarget.value),
         id: crypto.randomUUID(),
         from: `${x + width / 2} ${y + height / 2}`,
         to: `${x + width / 2} ${y + height / 2}`,
         status: StreamStatus.Active,
+        sourcePortId: event.currentTarget.id,
+        targetPortId: '',
+        sourceNodeId: nodeId,
+        targetNodeId: '',
       },
     ])
   }
 
-  function handlePortPointerUp(event: PointerEvent<HTMLButtonElement>) {
+  function handlePortPointerUp(
+    event: PointerEvent<HTMLButtonElement>,
+    nodeId: string
+  ) {
     event.stopPropagation()
-    const newNodes = nodes.map((node) => {
-      if (node.status !== NodeStatus.Linking) return node
-      return {
-        ...node,
-        status: NodeStatus.Inactive,
-      }
-    })
-    setNodes(newNodes)
     const { x, y, width, height } = event.currentTarget.getBoundingClientRect()
     const newStreams = streams.map((stream) => {
       if (stream.status !== StreamStatus.Active) return stream
@@ -88,9 +105,34 @@ export default function Application() {
         ...stream,
         to: `${x + width / 2} ${y + height / 2}`,
         status: StreamStatus.Linked,
+        targetPortId: event.currentTarget.id,
+        targetNodeId: nodeId,
       }
     })
     setStreams(newStreams)
+    const activeStreamValue = streams.find(
+      (stream) => stream.status === StreamStatus.Active
+    )?.value
+    const newInputValues = nodes.map((node) => {
+      if (!activeStreamValue) return node
+      if (event.currentTarget.id === node.inputId) {
+        return {
+          ...node,
+          inputValue: activeStreamValue,
+        } as NodeProps
+      } else if (event.currentTarget.id === node.input1Id) {
+        return {
+          ...node,
+          input1Value: activeStreamValue,
+        } as NodeProps
+      } else if (event.currentTarget.id === node.input2Id) {
+        return {
+          ...node,
+          input2Value: activeStreamValue,
+        } as NodeProps
+      } else return node
+    })
+    setNodes(newInputValues)
   }
 
   return (
@@ -101,11 +143,11 @@ export default function Application() {
     >
       {nodes.map((node) => (
         <Node
-          key={node.id}
           {...node}
-          onNodeValueChange={handleNodeValueChange}
-          onPortPointerDown={handlePortPointerDown}
-          onPortPointerUp={handlePortPointerUp}
+          key={node.id}
+          onNodeValueChange={(event) => handleNodeValueChange(event, node.id)}
+          onPortPointerDown={(event) => handlePortPointerDown(event, node.id)}
+          onPortPointerUp={(event) => handlePortPointerUp(event, node.id)}
         />
       ))}
       <svg className={styles.svg} xmlns='http://www.w3.org/2000/svg'>

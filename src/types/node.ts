@@ -1,22 +1,30 @@
+import { PortStatus } from '@/types/port'
 import type { ChangeEvent, PointerEvent, ReactNode } from 'react'
 
 export interface NodeProps {
   id: string
   value: number
-  linkedNodeIds?: string[]
+  position: { x: number; y: number }
   status?: NodeStatus
   variant: NodeVariant
-  position: { x: number; y: number }
-  outputs?: ReactNode
-  inputs?: ReactNode
-  operator?: Operator
-  onNodeValueChange?: (event: ChangeEvent<HTMLInputElement>, id: string) => void
-  onOperatorChange?: (event: ChangeEvent<HTMLSelectElement>) => void
-  onPortPointerDown?: (
+  outputId: string
+  outputStatus?: PortStatus
+  outputValue: number
+  input1Id: string
+  input1Status?: PortStatus
+  input1Value: number
+  input2Id: string
+  input2Status?: PortStatus
+  input2Value: number
+  inputId: string
+  inputStatus?: PortStatus
+  inputValue: number
+  onNodeValueChange: (event: ChangeEvent<HTMLInputElement>, id: string) => void
+  onPortPointerDown: (
     event: PointerEvent<HTMLButtonElement>,
     id: string
   ) => void
-  onPortPointerUp?: (event: PointerEvent<HTMLButtonElement>, id: string) => void
+  onPortPointerUp: (event: PointerEvent<HTMLButtonElement>, id: string) => void
 }
 
 export enum NodeVariant {
@@ -26,16 +34,6 @@ export enum NodeVariant {
 }
 
 export enum NodeStatus {
-  Inactive = 'inactive',
+  Idle = 'inactive',
   Active = 'active',
-  Linking = 'linking',
-}
-
-export enum Operator {
-  Addition = 'addition',
-  Subtraction = 'subtraction',
-  Multiplication = 'multiplication',
-  Division = 'division',
-  Modulo = 'modulo',
-  Exponentiation = 'exponentiation',
 }

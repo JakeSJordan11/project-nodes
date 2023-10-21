@@ -15,3 +15,9 @@ export enum PortVariant {
   Input = 'input',
   Output = 'output',
 }
+
+export enum PortStatus {
+  Idle = 'inactive',
+  Active = 'active',
+  Linked = 'linked',
+}

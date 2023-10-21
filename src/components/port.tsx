@@ -3,14 +3,17 @@ import { PortProps, PortVariant } from '@/types/port'
 
 export function Port({
   id,
-  onPortPointerDown,
-  onPortPointerUp,
+  value,
   variant,
+  onPortPointerUp,
+  onPortPointerDown,
 }: PortProps) {
   switch (variant) {
     case PortVariant.Output:
       return (
         <button
+          id={id}
+          value={value}
           className={styles.port}
           onPointerDown={(event) =>
             onPortPointerDown ? onPortPointerDown(event, id) : null
@@ -20,6 +23,8 @@ export function Port({
     case PortVariant.Input:
       return (
         <button
+          id={id}
+          value={value}
           className={styles.port}
           onPointerUp={(event) =>
             onPortPointerUp ? onPortPointerUp(event, id) : null

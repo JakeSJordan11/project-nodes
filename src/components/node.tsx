@@ -1,6 +1,6 @@
 import { Port } from '@/components/port'
 import styles from '@/styles/node.module.css'
-import { NodeProps, NodeVariant, Operator } from '@/types/node'
+import { NodeProps, NodeVariant } from '@/types/node'
 import { PortVariant } from '@/types/port'
 
 export function Node({
@@ -8,8 +8,9 @@ export function Node({
   value,
   variant,
   position,
-  operator,
-  onOperatorChange,
+  inputValue,
+  input1Value,
+  input2Value,
   onNodeValueChange,
   onPortPointerDown,
   onPortPointerUp,
@@ -21,6 +22,7 @@ export function Node({
           className={styles.node}
           style={{ left: position.x, top: position.y }}
         >
+          <h1 className={styles.title}>Int</h1>
           <output className={styles.value} tabIndex={0}>
             {value}
           </output>
@@ -30,18 +32,14 @@ export function Node({
             min='0'
             max='10'
             value={value}
-            onChange={(event) =>
-              onNodeValueChange ? onNodeValueChange(event, id) : null
-            }
+            onChange={(event) => onNodeValueChange(event, id)}
           />
           <div className={styles.outputs}>
             <Port
-              id={`node${id}-output0`}
+              id={`${id}-0`}
               value={value}
               variant={PortVariant.Output}
-              onPortPointerDown={(event, id) =>
-                onPortPointerDown ? onPortPointerDown(event, id) : null
-              }
+              onPortPointerDown={(event, id) => onPortPointerDown(event, id)}
             />
           </div>
         </article>
@@ -54,45 +52,28 @@ export function Node({
         >
           <div className={styles.inputs}>
             <Port
-              id={`node${id}-input0`}
-              value={value}
+              id={`${id}-0`}
+              value={input1Value}
               variant={PortVariant.Input}
-              onPortPointerUp={(event, id) =>
-                onPortPointerUp ? onPortPointerUp(event, id) : null
-              }
+              onPortPointerUp={(event) => onPortPointerUp(event, id)}
             />
             <Port
-              id={`node${id}-input1`}
-              value={value}
+              id={`${id}-1`}
+              value={input2Value}
               variant={PortVariant.Input}
-              onPortPointerUp={(event, id) =>
-                onPortPointerUp ? onPortPointerUp(event, id) : null
-              }
+              onPortPointerUp={(event) => onPortPointerUp(event, id)}
             />
           </div>
+          <h1 className={styles.title}>Add</h1>
           <output className={styles.value} tabIndex={0}>
-            {value}
+            {input1Value + input2Value}
           </output>
-          <select
-            className={styles.selector}
-            value={operator}
-            onChange={onOperatorChange}
-          >
-            <option value={Operator.Addition}>Addition</option>
-            <option value={Operator.Subtraction}>Subtraction</option>
-            <option value={Operator.Multiplication}>Multiplication</option>
-            <option value={Operator.Division}>Division</option>
-            <option value={Operator.Exponentiation}>Exponentiation</option>
-            <option value={Operator.Modulo}>Modulo</option>
-          </select>
           <div className={styles.outputs}>
             <Port
-              id={`node${id}-output0`}
-              value={value}
+              id={`${id}-2`}
+              value={input1Value + input2Value}
               variant={PortVariant.Output}
-              onPortPointerDown={(event, id) =>
-                onPortPointerDown ? onPortPointerDown(event, id) : null
-              }
+              onPortPointerDown={(event) => onPortPointerDown(event, id)}
             />
           </div>
         </article>
@@ -105,16 +86,15 @@ export function Node({
         >
           <div className={styles.inputs}>
             <Port
-              id={`node${id}-input0`}
-              value={value}
+              id={`${id}-0`}
+              value={inputValue}
               variant={PortVariant.Input}
-              onPortPointerUp={(event, id) =>
-                onPortPointerUp ? onPortPointerUp(event, id) : null
-              }
+              onPortPointerUp={(event) => onPortPointerUp(event, id)}
             />
           </div>
+          <h1 className={styles.title}>Output</h1>
           <output className={styles.value} tabIndex={0}>
-            {value}
+            {inputValue}
           </output>
         </article>
       )
