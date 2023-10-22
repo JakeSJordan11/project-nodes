@@ -1,0 +1,23 @@
+.port {
+  cursor: pointer;
+  border-width: var(--port-border-width);
+  border-style: solid;
+  border-color: var(--port-border-color);
+  border-radius: var(--port-border-radius);
+  background-color: var(--port-background-color);
+  width: var(--port-width);
+  height: var(--port-height);
+}
+
+.port:hover {
+  cursor: pointer;
+}
+
+.port:focus {
+  outline-color: var(--focus-outline-color);
+}
+
+.port:active {
+  cursor: move;
+  animation: pulse 1.4s infinite ease-in-out;
+}

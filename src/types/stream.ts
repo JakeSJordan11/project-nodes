@@ -1,13 +1,9 @@
 export interface StreamProps {
-  value: number
   id: string
-  from: string
-  to: string
+  value: number
+  m: string
+  l: string
   status: StreamStatus
-  sourceNodeId: string
-  targetNodeId: string
-  sourcePortId: string
-  targetPortId: string
 }
 
 export enum StreamStatus {

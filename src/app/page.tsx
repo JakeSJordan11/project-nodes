@@ -1,22 +1,30 @@
 'use client'
 
-import { Node } from '@/components/node'
+import { AdditionNode } from '@/components/addition.node'
+import { ContextMenu } from '@/components/context.menu'
+import { IntegerNode } from '@/components/integer.node'
+import { OutputNode } from '@/components/output.node'
 import { Stream } from '@/components/stream'
-import { mockNodes } from '@/mock/data'
-import styles from '@/styles/app.module.css'
-import { NodeProps } from '@/types/node'
+import styles from '@/styles/page.module.css'
+import { ContextMenuStatus } from '@/types/context.menu'
+import { Node, NodeType } from '@/types/node'
 import { StreamProps, StreamStatus } from '@/types/stream'
-import { ChangeEvent, PointerEvent, useState } from 'react'
+import { randomUUID } from 'crypto'
+import { PointerEvent, useState } from 'react'
 
-export default function Application() {
-  const [nodes, setNodes] = useState(mockNodes)
+export default function Home() {
   const [streams, setStreams] = useState<StreamProps[]>([])
+  const [nodes, setNodes] = useState<Node[]>([])
+  const [contextMenu, setContextMenu] = useState({
+    position: { x: 0, y: 0 },
+    status: ContextMenuStatus.Hidden,
+  })
 
   function handleMainPointerMove(event: PointerEvent<HTMLElement>) {
     if (streams.length === 0) return
     const newStreams = streams.map((stream) => {
       if (stream.status !== StreamStatus.Active) return stream
-      return { ...stream, to: `${event.clientX} ${event.clientY}` }
+      return { ...stream, l: `${event.clientX} ${event.clientY}` }
     })
     setStreams(newStreams)
   }
@@ -28,111 +36,59 @@ export default function Application() {
     setStreams(newStreams)
   }
 
-  function handleNodeValueChange(
-    event: ChangeEvent<HTMLInputElement>,
-    nodeId: string
-  ) {
-    const targetPortId = streams.find(
-      (stream) =>
-        stream.status === StreamStatus.Linked && stream.sourceNodeId === nodeId
-    )?.targetPortId
-    const newStreams = streams.map((stream) => {
-      if (stream.sourceNodeId !== nodeId) return stream
-      return { ...stream, value: Number(event.target.value) }
-    })
-    setStreams(newStreams)
-    const newPortValues = nodes.map((node) => {
-      if (nodeId === node.id) {
-        return {
-          ...node,
-          value: Number(event.currentTarget.value),
-        }
-      } else if (targetPortId === node.inputId) {
-        return {
-          ...node,
-          inputValue: Number(event.currentTarget.value),
-        }
-      } else if (targetPortId === node.input1Id) {
-        return {
-          ...node,
-          input1Value: Number(event.currentTarget.value),
-        }
-      } else if (targetPortId === node.input2Id) {
-        return {
-          ...node,
-          input2Value: Number(event.currentTarget.value),
-        }
-      } else if (targetPortId === node.inputId) {
-        return {
-          ...node,
-          input3Value: Number(event.currentTarget.value),
-        }
-      } else return node
-    })
-    setNodes(newPortValues)
+  function handleContextMenu(event: PointerEvent<HTMLElement>) {
+    event.preventDefault()
+    if (contextMenu.status === ContextMenuStatus.Visible) {
+      setContextMenu({
+        position: { x: 0, y: 0 },
+        status: ContextMenuStatus.Hidden,
+      })
+    } else if (contextMenu.status === ContextMenuStatus.Hidden) {
+      setContextMenu({
+        position: { x: event.clientX, y: event.clientY },
+        status: ContextMenuStatus.Visible,
+      })
+    } else return null
   }
 
-  function handlePortPointerDown(
-    event: PointerEvent<HTMLButtonElement>,
-    nodeId: string
-  ) {
-    const { x, y, width, height } = event.currentTarget.getBoundingClientRect()
-    setStreams([
-      ...streams,
-      {
-        value: Number(event.currentTarget.value),
-        id: crypto.randomUUID(),
-        from: `${x + width / 2} ${y + height / 2}`,
-        to: `${x + width / 2} ${y + height / 2}`,
-        status: StreamStatus.Active,
-        sourcePortId: event.currentTarget.id,
-        targetPortId: '',
-        sourceNodeId: nodeId,
-        targetNodeId: '',
-      },
-    ])
-  }
-
-  function handlePortPointerUp(
-    event: PointerEvent<HTMLButtonElement>,
-    nodeId: string
-  ) {
-    event.stopPropagation()
-    const { x, y, width, height } = event.currentTarget.getBoundingClientRect()
-    const newStreams = streams.map((stream) => {
-      if (stream.status !== StreamStatus.Active) return stream
-      return {
-        ...stream,
-        to: `${x + width / 2} ${y + height / 2}`,
-        status: StreamStatus.Linked,
-        targetPortId: event.currentTarget.id,
-        targetNodeId: nodeId,
-      }
+  function handleItemPointerDown(event: PointerEvent<HTMLButtonElement>) {
+    if (event.currentTarget.value === 'IntegerNode') {
+      const newNodes = [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          type: NodeType.Integer,
+          position: { x: event.clientX, y: event.clientY },
+        },
+      ]
+      setNodes(newNodes)
+    }
+    if (event.currentTarget.value === 'AdditionNode') {
+      const newNodes = [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          type: NodeType.Addition,
+          position: { x: event.clientX, y: event.clientY },
+        },
+      ]
+      setNodes(newNodes)
+    }
+    if (event.currentTarget.value === 'OutputNode') {
+      const newNodes = [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          type: NodeType.Output,
+          position: { x: event.clientX, y: event.clientY },
+        },
+      ]
+      setNodes(newNodes)
+    }
+    setContextMenu({
+      position: { x: 0, y: 0 },
+      status: ContextMenuStatus.Hidden,
     })
-    setStreams(newStreams)
-    const activeStreamValue = streams.find(
-      (stream) => stream.status === StreamStatus.Active
-    )?.value
-    const newInputValues = nodes.map((node) => {
-      if (!activeStreamValue) return node
-      if (event.currentTarget.id === node.inputId) {
-        return {
-          ...node,
-          inputValue: activeStreamValue,
-        } as NodeProps
-      } else if (event.currentTarget.id === node.input1Id) {
-        return {
-          ...node,
-          input1Value: activeStreamValue,
-        } as NodeProps
-      } else if (event.currentTarget.id === node.input2Id) {
-        return {
-          ...node,
-          input2Value: activeStreamValue,
-        } as NodeProps
-      } else return node
-    })
-    setNodes(newInputValues)
   }
 
   return (
@@ -140,16 +96,26 @@ export default function Application() {
       className={styles.main}
       onPointerMove={handleMainPointerMove}
       onPointerUp={handleMainPointerUp}
+      onContextMenu={handleContextMenu}
     >
-      {nodes.map((node) => (
-        <Node
-          {...node}
-          key={node.id}
-          onNodeValueChange={(event) => handleNodeValueChange(event, node.id)}
-          onPortPointerDown={(event) => handlePortPointerDown(event, node.id)}
-          onPortPointerUp={(event) => handlePortPointerUp(event, node.id)}
+      {contextMenu.status === ContextMenuStatus.Visible ? (
+        <ContextMenu
+          position={contextMenu.position}
+          onItemPointerDown={handleItemPointerDown}
         />
-      ))}
+      ) : null}
+      {nodes.map((node) => {
+        switch (node.type) {
+          case NodeType.Integer:
+            return <IntegerNode key={node.id} {...node} />
+          case NodeType.Addition:
+            return <AdditionNode key={node.id} {...node} />
+          case NodeType.Output:
+            return <OutputNode key={node.id} {...node} />
+          default:
+            return null
+        }
+      })}
       <svg className={styles.svg} xmlns='http://www.w3.org/2000/svg'>
         {streams.map((stream) => (
           <Stream key={stream.id} {...stream} />
