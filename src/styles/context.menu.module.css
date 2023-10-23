@@ -8,43 +8,57 @@
   background-color: var(--node-background-color);
   padding: var(--node-padding);
   user-select: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
   margin: 0;
+  z-index: 100;
 }
 
-.button {
+.item {
   border-style: none;
   cursor: pointer;
-  color: var(--path-color);
+  color: var(--content-font-color);
+  font-weight: 200;
   font-size: medium;
   background-color: transparent;
   text-align: left;
   padding-block: 0.25rem;
+  transition: color 0.6s ease-in-out;
+  transition: transform 0.1s ease-out;
 }
 
-.button:focus {
+.item:hover {
+  color: var(--path-color);
+  transform: translateY(0.2rem);
+}
+
+.item::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--path-color);
+  transition: transform 0.1s ease-out;
+  transform: scale(0);
+}
+
+.item:hover::after {
+  transform: scale(1);
+}
+
+.item:focus {
   outline-color: var(--focus-outline-color);
-}
-
-.button:active {
-  animation: shrink 0.1s linear forwards;
-}
-
-@keyframes shrink {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0);
-  }
 }
 
 .title {
   margin: 0;
   font-size: medium;
   text-align: center;
+  color: var(--node-title-color);
+  background-color: var(--content-background-color);
+  border-radius: var(--node-border-radius);
+  border-color: var(--content-border-color);
+  border-width: var(--content-border-width);
+  border-style: solid;
+  padding: 0.5rem;
 }
 
 .title:focus {

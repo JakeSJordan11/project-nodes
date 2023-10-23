@@ -3,7 +3,7 @@ import { PointerEvent } from 'react'
 
 export interface ContextMenuProps {
   position: Coordinate
-  status?: ContextMenuStatus
+  status: ContextMenuStatus
   onItemPointerDown: (event: PointerEvent<HTMLButtonElement>) => void
 }
 

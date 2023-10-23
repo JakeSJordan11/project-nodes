@@ -13,10 +13,6 @@
   cursor: pointer;
 }
 
-.port:focus {
-  outline-color: var(--focus-outline-color);
-}
-
 .port:active {
   cursor: move;
   animation: pulse 1.4s infinite ease-in-out;
