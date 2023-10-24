@@ -1,11 +1,14 @@
-import { HTMLProps, PointerEventHandler, PropsWithoutRef } from 'react'
+import { Value } from '@/types/utils'
+import { PointerEventHandler } from 'react'
 
-export interface PortProps extends Omit<HTMLProps<HTMLButtonElement>, 'value'> {
-  nodeId: string
+export interface PortState {
   id: string
-  value: string | number | boolean
+  value?: Value
   kind: PortKind
   status: PortStatus
+}
+
+export interface PortProps extends PortState {
   onPointerUp: PointerEventHandler<HTMLButtonElement>
   onPointerDown: PointerEventHandler<HTMLButtonElement>
 }

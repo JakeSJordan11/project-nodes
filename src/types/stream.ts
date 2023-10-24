@@ -1,11 +1,13 @@
+import { Value } from '@/types/utils'
+
 export interface StreamProps {
   id: string
-  value: string | number | boolean
+  value?: Value
   m: string
   l: string
   status: StreamStatus
   source: HTMLButtonElement
-  target: HTMLButtonElement
+  target?: HTMLButtonElement
 }
 
 export enum StreamStatus {

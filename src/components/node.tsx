@@ -99,7 +99,7 @@ export function Node({
                 {...port}
                 key={port.id}
                 onPointerDown={onPortPointerDown}
-                value={value}
+                value={port.value}
               />
             ) : null
           )}

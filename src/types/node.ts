@@ -1,17 +1,20 @@
-import { PortProps } from '@/types/port'
-import { Coordinate } from '@/types/utils'
+import { PortState } from '@/types/port'
+import { Coordinate, Value } from '@/types/utils'
 import { ChangeEventHandler, PointerEventHandler } from 'react'
 
-export interface NodeProps {
+export interface NodeState {
   id: string
-  title: string
-  value: string | number | boolean
+  title: NodeVariant
+  value?: Value
   kind: NodeKind
   variant: NodeVariant
   position: Coordinate
   offset: Coordinate
   status: NodeStatus
-  ports: PortProps[]
+  ports: PortState[]
+}
+
+export interface NodeProps extends NodeState {
   onNodePointerDown: PointerEventHandler<HTMLElement>
   onPortPointerDown: PointerEventHandler<HTMLButtonElement>
   onPortPointerUp: PointerEventHandler<HTMLButtonElement>

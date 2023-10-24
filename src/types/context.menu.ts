@@ -1,10 +1,10 @@
 import { Coordinate } from '@/types/utils'
-import { PointerEvent } from 'react'
+import { PointerEvent, PointerEventHandler } from 'react'
 
 export interface ContextMenuProps {
   position: Coordinate
   status: ContextMenuStatus
-  onItemPointerDown: (event: PointerEvent<HTMLButtonElement>) => void
+  onItemPointerDown: PointerEventHandler<HTMLButtonElement>
 }
 
 export enum ContextMenuStatus {

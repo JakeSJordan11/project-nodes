@@ -1,6 +1,6 @@
 import styles from '@/styles/context.menu.module.css'
 import { ContextMenuProps } from '@/types/context.menu'
-import { NodeKind, NodeVariant } from '@/types/node'
+import { NodeVariant } from '@/types/node'
 
 export function ContextMenu({ position, onItemPointerDown }: ContextMenuProps) {
   return (
@@ -11,37 +11,7 @@ export function ContextMenu({ position, onItemPointerDown }: ContextMenuProps) {
           {NodeVariant.Integer}
         </button>
         <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Float}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Boolean}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.String}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
           {NodeVariant.Addition}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Subtraction}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Multiplication}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Division}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Modulo}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Power}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Result}
-        </button>
-        <button className={styles.item} onPointerDown={onItemPointerDown}>
-          {NodeVariant.Export}
         </button>
       </div>
     </menu>

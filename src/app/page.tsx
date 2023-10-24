@@ -5,14 +5,20 @@ import { Node } from '@/components/node'
 import { Stream } from '@/components/stream'
 import styles from '@/styles/page.module.css'
 import { ContextMenuStatus } from '@/types/context.menu'
-import { NodeKind, NodeProps, NodeStatus, NodeVariant } from '@/types/node'
-import { PortProps, PortStatus } from '@/types/port'
+import {
+  NodeKind,
+  NodeProps,
+  NodeState,
+  NodeStatus,
+  NodeVariant,
+} from '@/types/node'
+import { PortKind, PortState, PortStatus } from '@/types/port'
 import { StreamProps, StreamStatus } from '@/types/stream'
 import { ChangeEvent, PointerEvent, useState } from 'react'
 
 export default function Home() {
   const [streams, setStreams] = useState<StreamProps[]>([])
-  const [nodes, setNodes] = useState<NodeProps[]>([])
+  const [nodes, setNodes] = useState<NodeState[]>([])
   const [contextMenu, setContextMenu] = useState({
     position: { x: 0, y: 0 },
     status: ContextMenuStatus.Hidden,
@@ -22,16 +28,21 @@ export default function Home() {
     return nodes
       .map((node) => node.ports)
       .flat()
-      .find((port) => port.id === id) as PortProps
+      .find((port) => port.id === id) as PortState
   }
 
-  const linkedStreams = streams.filter(
-    (stream) => stream.status === StreamStatus.Linked
-  )
+  function calculatePortValue(port: PortState) {
+    if (port.status !== PortStatus.Linked) return port.value
+    const stream = streams.find((stream) => stream.target?.id === port.id)
+    if (!stream) return port.value
+    return stream.value
+  }
 
-  const activeStream = streams.find(
-    (stream) => stream.status === StreamStatus.Active
-  ) as StreamProps
+  function calculateStreamValue(stream: StreamProps) {
+    if (stream.status !== StreamStatus.Linked) return stream.value
+    const port = getPortById(stream.source.id)
+    return port.value
+  }
 
   function handleMainPointerMove(event: PointerEvent<HTMLElement>) {
     const newNodes = nodes.map((node) => {
@@ -61,7 +72,7 @@ export default function Home() {
           y: ty,
           width: tw,
           height: th,
-        } = stream.target.getBoundingClientRect()
+        } = stream.target?.getBoundingClientRect() as DOMRect
         return {
           ...stream,
           m: `${sx + sw * 0.5} ${sy + sh * 0.5}`,
@@ -99,7 +110,90 @@ export default function Home() {
     } else return null
   }
 
-  function handleItemPointerDown(event: PointerEvent<HTMLButtonElement>) {}
+  function calculateNodeKind(textContent: string | null) {
+    if (textContent === NodeVariant.Integer) return NodeKind.Input
+    if (textContent === NodeVariant.Addition) return NodeKind.Operator
+    return NodeKind.Output
+  }
+
+  function calculateNodeVariant(textContent: string | null) {
+    if (textContent === NodeVariant.Integer) return NodeVariant.Integer
+    return NodeVariant.Addition
+  }
+
+  function calculateNodeTitle(textContent: string | null) {
+    if (textContent === NodeVariant.Integer) return NodeVariant.Integer
+    return NodeVariant.Addition
+  }
+
+  function calculateNodeValue(textContent: string | null) {
+    if (textContent === NodeVariant.Integer) return 0
+  }
+
+  function calculateNodePosition(clientX: number, clientY: number) {
+    return { x: clientX - 75, y: clientY - 10 }
+  }
+
+  function calculateNodeStatus(textContent: string | null) {
+    return NodeStatus.Idle
+  }
+
+  function calculatePorts(textContent: string | null) {
+    if (textContent === NodeVariant.Integer) {
+      return [
+        {
+          id: crypto.randomUUID(),
+          kind: PortKind.Output,
+          value: 0,
+          status: PortStatus.Idle,
+        },
+      ]
+    }
+    if (textContent === NodeVariant.Addition) {
+      return [
+        {
+          id: crypto.randomUUID(),
+          kind: PortKind.Input,
+          status: PortStatus.Idle,
+        },
+        {
+          id: crypto.randomUUID(),
+          kind: PortKind.Input,
+          status: PortStatus.Idle,
+        },
+        {
+          id: crypto.randomUUID(),
+          kind: PortKind.Output,
+          status: PortStatus.Idle,
+        },
+      ]
+    }
+    return []
+  }
+
+  function handleItemPointerDown(event: PointerEvent<HTMLButtonElement>) {
+    const { textContent } = event.currentTarget
+    const { clientX, clientY } = event
+    const newNodes = [
+      ...nodes,
+      {
+        id: crypto.randomUUID(),
+        kind: calculateNodeKind(textContent),
+        variant: calculateNodeVariant(textContent),
+        title: calculateNodeTitle(textContent),
+        value: calculateNodeValue(textContent),
+        position: calculateNodePosition(clientX, clientY),
+        status: calculateNodeStatus(textContent),
+        ports: calculatePorts(textContent),
+        offset: calculateNodePosition(clientX, clientY),
+      },
+    ]
+    setNodes(newNodes)
+    setContextMenu({
+      ...contextMenu,
+      status: ContextMenuStatus.Hidden,
+    })
+  }
 
   function handleNodePointerDown(event: PointerEvent<HTMLElement>) {
     const newNodes = nodes.map((node) => {
@@ -131,7 +225,7 @@ export default function Home() {
           l: `${x + width * 0.5} ${y + height * 0.5}`,
           status: StreamStatus.Active,
           source: event.currentTarget as HTMLButtonElement,
-        } as StreamProps,
+        },
       ]
       setStreams(newStreams)
     }
@@ -150,17 +244,23 @@ export default function Home() {
       }
     })
     setStreams(newStreams)
+
     const port = getPortById(event.currentTarget.id)
     const newNodes = nodes.map((node) => {
       if (port.id === event.currentTarget.id) {
         return {
           ...node,
           ports: node.ports.map((port) => {
-            if (port.id !== event.currentTarget.id) return port
             return {
               ...port,
-              status: PortStatus.Linked,
-              value: activeStream.value,
+              status: streams.find(
+                (stream) =>
+                  (stream.status === StreamStatus.Active &&
+                    stream.source.id === port.id) ||
+                  event.currentTarget.id === port.id
+              )
+                ? PortStatus.Linked
+                : PortStatus.Idle,
             }
           }),
         }
@@ -172,32 +272,19 @@ export default function Home() {
   function handleValueChange(event: ChangeEvent<HTMLInputElement>) {
     const { value, checked } = event.currentTarget
     const newNodes = nodes.map((node) => {
-      if (node.id === event.currentTarget.parentElement?.id) {
-        return {
-          ...node,
-          value: node.variant === NodeVariant.Boolean ? checked : value,
-          ports: node.ports.map((port) => {
-            return {
-              ...port,
-              value: value,
-            }
-          }),
-        }
-      } else return node
+      if (node.id !== event.currentTarget.parentElement?.id) return node
+      return {
+        ...node,
+        value: node.variant === NodeVariant.Boolean ? checked : value,
+        ports: node.ports.map((port) => {
+          return {
+            ...port,
+            value: node.variant === NodeVariant.Boolean ? checked : value,
+          }
+        }),
+      }
     }) as NodeProps[]
     setNodes(newNodes)
-    const newStreams = streams.map((stream) => {
-      if (
-        stream.source.parentElement?.parentElement?.id !==
-        event.currentTarget.parentElement?.id
-      )
-        return stream
-      return {
-        ...stream,
-        value: value,
-      }
-    })
-    setStreams(newStreams)
   }
 
   return (
@@ -223,11 +310,19 @@ export default function Home() {
           onPortPointerDown={handlePortPointerDown}
           onPortPointerUp={handlePortPointerUp}
           onValueChange={handleValueChange}
+          ports={node.ports.map((port) => ({
+            ...port,
+            value: calculatePortValue(port),
+          }))}
         />
       ))}
       <svg className={styles.svg} xmlns='http://www.w3.org/2000/svg'>
         {streams.map((stream) => (
-          <Stream {...stream} key={stream.id} />
+          <Stream
+            {...stream}
+            key={stream.id}
+            value={calculateStreamValue(stream)}
+          />
         ))}
       </svg>
     </main>
