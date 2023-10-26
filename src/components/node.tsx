@@ -42,55 +42,16 @@ export function Node({
         </div>
       ) : null}
       <h1 className={styles.title}>{title}</h1>
-      {variant === NodeVariant.String ? (
-        <input
-          className={styles.stringValue}
-          type='text'
-          value={String(value)}
-          onPointerDown={(event) => event.stopPropagation()}
-          onChange={onValueChange}
-        />
-      ) : (
-        <output className={styles.value} tabIndex={0}>
-          {variant === NodeVariant.Boolean
-            ? String(value)
-            : variant === NodeVariant.Addition
-            ? Number(ports[0].value) + Number(ports[1].value) ||
-              Number(ports[0].value) ||
-              Number(ports[1].value) ||
-              null
-            : variant === NodeVariant.Subtraction
-            ? Number(ports[0].value) - Number(ports[1].value) ||
-              Number(ports[0].value) ||
-              Number(ports[1].value) ||
-              null
-            : variant === NodeVariant.Multiplication
-            ? Number(ports[0].value) * Number(ports[1].value) ||
-              Number(ports[0].value) ||
-              Number(ports[1].value) ||
-              null
-            : variant === NodeVariant.Division
-            ? Number(ports[0].value) / Number(ports[1].value) ||
-              Number(ports[0].value) ||
-              Number(ports[1].value) ||
-              null
-            : variant === NodeVariant.Modulo
-            ? Number(ports[0].value) % Number(ports[1].value) ||
-              Number(ports[0].value) ||
-              Number(ports[1].value) ||
-              null
-            : variant === NodeVariant.Power
-            ? Number(ports[0].value) ** Number(ports[1].value) ||
-              Number(ports[0].value) ||
-              Number(ports[1].value) ||
-              null
-            : variant === NodeVariant.Integer
-            ? Math.round(Number(value))
-            : variant === NodeVariant.Float
-            ? Number(value).toFixed(1)
-            : null}
-        </output>
-      )}
+      <output className={styles.value} tabIndex={0}>
+        {variant === NodeVariant.Addition
+          ? Number(ports[0].value) + Number(ports[1].value) ||
+            Number(ports[0].value) ||
+            Number(ports[1].value) ||
+            null
+          : variant === NodeVariant.Integer
+          ? Number(value)
+          : null}
+      </output>
       {outputPorts.length > 0 ? (
         <div className={styles.outputs}>
           {ports.map((port) =>
@@ -99,7 +60,7 @@ export function Node({
                 {...port}
                 key={port.id}
                 onPointerDown={onPortPointerDown}
-                value={port.value}
+                value={value}
               />
             ) : null
           )}
@@ -112,23 +73,6 @@ export function Node({
             min='0'
             max='10'
             value={Number(value)}
-            onPointerDown={(event) => event.stopPropagation()}
-            onChange={onValueChange}
-          />
-        ) : variant === NodeVariant.Float ? (
-          <input
-            type='range'
-            min='0.0'
-            max='10.0'
-            step='0.1'
-            value={Number(value)}
-            onPointerDown={(event) => event.stopPropagation()}
-            onChange={onValueChange}
-          />
-        ) : variant === NodeVariant.Boolean ? (
-          <input
-            type='checkbox'
-            checked={Boolean(value)}
             onPointerDown={(event) => event.stopPropagation()}
             onChange={onValueChange}
           />

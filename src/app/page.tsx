@@ -31,19 +31,6 @@ export default function Home() {
       .find((port) => port.id === id) as PortState
   }
 
-  function calculatePortValue(port: PortState) {
-    if (port.status !== PortStatus.Linked) return port.value
-    const stream = streams.find((stream) => stream.target?.id === port.id)
-    if (!stream) return port.value
-    return stream.value
-  }
-
-  function calculateStreamValue(stream: StreamProps) {
-    if (stream.status !== StreamStatus.Linked) return stream.value
-    const port = getPortById(stream.source.id)
-    return port.value
-  }
-
   function handleMainPointerMove(event: PointerEvent<HTMLElement>) {
     const newNodes = nodes.map((node) => {
       if (node.status !== NodeStatus.Active) return node
@@ -261,6 +248,20 @@ export default function Home() {
               )
                 ? PortStatus.Linked
                 : PortStatus.Idle,
+
+              value: streams.find(
+                (stream) =>
+                  (stream.status === StreamStatus.Active &&
+                    stream.source.id === port.id) ||
+                  event.currentTarget.id === port.id
+              )
+                ? streams.find(
+                    (stream) =>
+                      (stream.status === StreamStatus.Active &&
+                        stream.source.id === port.id) ||
+                      event.currentTarget.id === port.id
+                  )?.value
+                : port.value,
             }
           }),
         }
@@ -310,19 +311,11 @@ export default function Home() {
           onPortPointerDown={handlePortPointerDown}
           onPortPointerUp={handlePortPointerUp}
           onValueChange={handleValueChange}
-          ports={node.ports.map((port) => ({
-            ...port,
-            value: calculatePortValue(port),
-          }))}
         />
       ))}
       <svg className={styles.svg} xmlns='http://www.w3.org/2000/svg'>
         {streams.map((stream) => (
-          <Stream
-            {...stream}
-            key={stream.id}
-            value={calculateStreamValue(stream)}
-          />
+          <Stream {...stream} key={stream.id} />
         ))}
       </svg>
     </main>

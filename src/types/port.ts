@@ -9,7 +9,7 @@ export interface PortState {
 }
 
 export interface PortProps extends PortState {
-  onPointerUp: PointerEventHandler<HTMLButtonElement>
+  onPointerUp?: PointerEventHandler<HTMLButtonElement>
   onPointerDown: PointerEventHandler<HTMLButtonElement>
 }
 
