@@ -8,9 +8,6 @@
   --gray: #666666;
   --light-gray: #777777;
 
-  background-color: var(--background);
-  accent-color: var(--green);
-
   --node-height: 8rem;
   --node-width: 8rem;
   --node-padding: 0.75rem;
@@ -20,18 +17,30 @@
   --port-width: 1.25rem;
   --port-border-radius: 50%;
   --port-border-width: 0.15rem;
-  --content-border-radius: 0.25rem;
+  --content-border-radius: 0.35rem;
   --content-border-width: 0.15rem;
+  --node-title-border-radius: 0.15rem;
 
   --node-background-color: var(--gray);
-  --node-border-color: var(--light-gray);
+  --node-title-background-color: var(--black);
+  --node-border-color: var(--black);
   --node-title-color: var(--yellow);
-  --node-box-shadow: 0.35rem 0.35rem 0.25rem 0rem var(--black);
   --port-background-color: var(--gray);
-  --port-border-color: var(--background);
+  --port-border-color: var(--black);
   --content-font-color: var(--green);
   --content-border-color: var(--light-gray);
   --content-background-color: var(--black);
-  --focus-outline-color: var(--green);
+  --focus-outline-color: var(--yellow);
   --path-color: var(--purple);
+
+  accent-color: var(--yellow);
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--background);
+    accent-color: var(--green);
+    --focus-outline-color: var(--green);
+    --node-box-shadow: 0.35rem 0.35rem 0.25rem 0rem var(--black);
+    --node-border-color: var(--light-gray);
+    --port-border-color: var(--background);
+  }
 }
