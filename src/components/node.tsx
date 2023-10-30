@@ -1,7 +1,7 @@
-import { Port } from '@/components/port'
-import styles from '@/styles/node.module.css'
-import { NodeKind, NodeProps, NodeVariant } from '@/types/node'
-import { PortKind } from '@/types/port'
+import { Port } from "@/components/port";
+import styles from "@/styles/node.module.css";
+import { NodeKind, NodeProps, NodeVariant } from "@/types/node";
+import { PortKind } from "@/types/port";
 
 export function Node({
   id,
@@ -16,25 +16,25 @@ export function Node({
   onPortPointerUp,
   onValueChange,
 }: NodeProps) {
-  const inputPorts = ports.filter((port) => port.kind === PortKind.Input)
-  const outputPorts = ports.filter((port) => port.kind === PortKind.Output)
   return (
     <article
-      id={id}
       className={styles.node}
       style={{ left: position.x, top: position.y }}
-      onPointerDown={onNodePointerDown}
-      tabIndex={0}
+      onPointerDown={(event) => onNodePointerDown(event, id)}
     >
-      {inputPorts.length > 0 ? (
+      {ports.filter((port) => port.kind === PortKind.Input).length > 0 ? (
         <div className={styles.inputs}>
           {ports.map((port) =>
             port.kind === PortKind.Input ? (
               <Port
                 {...port}
                 key={port.id}
-                onPointerUp={onPortPointerUp}
-                onPointerDown={(event) => event.stopPropagation()}
+                onPointerDown={(event, portId, portValue) =>
+                  onPortPointerDown(event, portId, portValue, id, value)
+                }
+                onPointerUp={(event, portId, portValue) =>
+                  onPortPointerUp(event, portId, portValue, id, value)
+                }
                 value={port.value}
               />
             ) : null
@@ -42,25 +42,21 @@ export function Node({
         </div>
       ) : null}
       <h1 className={styles.title}>{title}</h1>
-      <output className={styles.value} tabIndex={0}>
-        {variant === NodeVariant.Addition
-          ? Number(ports[0].value) + Number(ports[1].value) ||
-            Number(ports[0].value) ||
-            Number(ports[1].value) ||
-            null
-          : variant === NodeVariant.Integer
-          ? Number(value)
-          : null}
-      </output>
-      {outputPorts.length > 0 ? (
+      <output className={styles.value}>{value}</output>
+      {ports.filter((port) => port.kind === PortKind.Output).length > 0 ? (
         <div className={styles.outputs}>
           {ports.map((port) =>
             port.kind === PortKind.Output ? (
               <Port
                 {...port}
                 key={port.id}
-                onPointerDown={onPortPointerDown}
-                value={value}
+                onPointerDown={(event, portId, portValue) =>
+                  onPortPointerDown(event, portId, portValue, id, value)
+                }
+                onPointerUp={(event, portId, portValue) =>
+                  onPortPointerUp(event, portId, portValue, id, value)
+                }
+                value={port.value}
               />
             ) : null
           )}
@@ -69,15 +65,15 @@ export function Node({
       {kind === NodeKind.Input ? (
         variant === NodeVariant.Integer ? (
           <input
-            type='range'
-            min='0'
-            max='10'
-            value={Number(value)}
+            type="range"
+            min="0"
+            max="10"
+            value={value}
             onPointerDown={(event) => event.stopPropagation()}
-            onChange={onValueChange}
+            onChange={(event) => onValueChange(event, id)}
           />
         ) : null
       ) : null}
     </article>
-  )
+  );
 }

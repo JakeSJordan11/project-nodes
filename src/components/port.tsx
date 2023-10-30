@@ -1,13 +1,18 @@
-import styles from '@/styles/port.module.css'
-import { PortProps } from '@/types/port'
+import styles from "@/styles/port.module.css";
+import { PortProps } from "@/types/port";
 
-export function Port({ id, onPointerUp, onPointerDown }: PortProps) {
+export function Port({ id, value, onPointerUp, onPointerDown }: PortProps) {
   return (
     <button
-      id={id}
       className={styles.port}
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+        onPointerDown(event, id, value);
+      }}
+      onPointerUp={(event) => {
+        event.stopPropagation();
+        onPointerUp(event, id, value);
+      }}
     />
-  )
+  );
 }

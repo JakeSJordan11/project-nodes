@@ -1,6 +1,7 @@
 export interface Coordinate {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 
-export type Value = string | number | boolean
+export type Value = number | undefined;
+export type Id = string;
