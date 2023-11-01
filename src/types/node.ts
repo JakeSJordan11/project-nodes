@@ -29,13 +29,13 @@ export interface NodeProps extends NodeState {
   onPortPointerUp: (
     event: PointerEvent<HTMLButtonElement>,
     portId: PortState["id"],
-    PortValue: PortState["value"],
+    portValue: PortState["value"],
     nodeId: NodeState["id"],
     nodeValue: NodeState["value"]
   ) => void;
   onValueChange: (
     event: ChangeEvent<HTMLInputElement>,
-    nodeId: NodeState["id"]
+    id: NodeState["id"]
   ) => void;
 }
 

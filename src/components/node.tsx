@@ -22,10 +22,10 @@ export function Node({
       style={{ left: position.x, top: position.y }}
       onPointerDown={(event) => onNodePointerDown(event, id)}
     >
-      {ports.filter((port) => port.kind === PortKind.Input).length > 0 ? (
+      {ports.filter((port) => port.kind === PortKind.Input).length < 0 ? null : (
         <div className={styles.inputs}>
           {ports.map((port) =>
-            port.kind === PortKind.Input ? (
+            port.kind !== PortKind.Input ? null : (
               <Port
                 {...port}
                 key={port.id}
@@ -37,16 +37,16 @@ export function Node({
                 }
                 value={port.value}
               />
-            ) : null
+            )
           )}
         </div>
-      ) : null}
+      )}
       <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>{value}</output>
-      {ports.filter((port) => port.kind === PortKind.Output).length > 0 ? (
+      {ports.filter((port) => port.kind === PortKind.Output).length < 0 ? null : (
         <div className={styles.outputs}>
           {ports.map((port) =>
-            port.kind === PortKind.Output ? (
+            port.kind !== PortKind.Output ? null : (
               <Port
                 {...port}
                 key={port.id}
@@ -58,12 +58,12 @@ export function Node({
                 }
                 value={port.value}
               />
-            ) : null
+            )
           )}
         </div>
-      ) : null}
-      {kind === NodeKind.Input ? (
-        variant === NodeVariant.Integer ? (
+      )}
+      {kind !== NodeKind.Input ? null : (
+        variant !== NodeVariant.Integer ? null : (
           <input
             type="range"
             min="0"
@@ -72,8 +72,8 @@ export function Node({
             onPointerDown={(event) => event.stopPropagation()}
             onChange={(event) => onValueChange(event, id)}
           />
-        ) : null
-      ) : null}
+        )
+      )}
     </article>
   );
 }

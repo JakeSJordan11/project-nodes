@@ -1,8 +1,11 @@
-import styles from '@/styles/context.menu.module.css'
-import { ContextMenuProps } from '@/types/context.menu'
-import { NodeVariant } from '@/types/node'
+import styles from "@/styles/context.menu.module.css";
+import { GraphMenuProps } from "@/types/context.menu";
+import { NodeVariant } from "@/types/node";
 
-export function ContextMenu({ position, onItemPointerDown }: ContextMenuProps) {
+export function ContextMenu({
+  position,
+  onItemPointerDown,
+}: GraphMenuProps) {
   return (
     <menu className={styles.menu} style={{ left: position.x, top: position.y }}>
       <h1 className={styles.title}>Create Menu</h1>
@@ -15,5 +18,5 @@ export function ContextMenu({ position, onItemPointerDown }: ContextMenuProps) {
         </button>
       </div>
     </menu>
-  )
+  );
 }
