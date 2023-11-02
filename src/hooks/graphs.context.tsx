@@ -1,14 +1,6 @@
 import { GraphAction, GraphProviderProps, GraphState } from "@/types/graph";
-import {
-  Dispatch,
-  createContext,
-  useContext,
-  useReducer
-} from "react";
-import {
-  graphsReducer,
-  initialState,
-} from "./graphs.reducer";
+import { Dispatch, createContext, useContext, useReducer } from "react";
+import { graphsReducer } from "./graphs.reducer";
 
 export const GraphsContext = createContext<GraphState | null>(null);
 export const GraphsDispatchContext =
@@ -24,6 +16,11 @@ export function useGraph() {
 }
 
 export function GraphProvider({ children }: GraphProviderProps) {
+  const initialState: GraphState = {
+    nodes: [],
+    streams: [],
+    ContextMenu: { position: { x: 0, y: 0 }, hidden: true },
+  };
   const [state, dispatch] = useReducer(graphsReducer, initialState);
   return (
     <GraphsContext.Provider value={state}>

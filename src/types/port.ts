@@ -1,24 +1,10 @@
-import { PointerEvent } from "react";
 import { Id, Value } from "./utils";
 
-export interface PortState {
+export interface PortProps {
   id: Id;
   value: Value;
   kind: PortKind;
   status: PortStatus;
-}
-
-export interface PortProps extends PortState {
-  onPointerUp: (
-    event: PointerEvent<HTMLButtonElement>,
-    portId: PortState["id"],
-    portValue: PortState["value"]
-  ) => void;
-  onPointerDown: (
-    event: PointerEvent<HTMLButtonElement>,
-    portId: PortState["id"],
-    portValue: PortState["value"]
-  ) => void;
 }
 
 export enum PortKind {

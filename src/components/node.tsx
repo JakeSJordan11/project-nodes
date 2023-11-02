@@ -2,7 +2,11 @@ import { Port } from "@/components/port";
 import styles from "@/styles/node.module.css";
 import { NodeKind, NodeProps, NodeVariant } from "@/types/node";
 import { PortKind } from "@/types/port";
+import { useGraph } from "src/hooks/graphs.context";
 
+/* posible more modular approach
+   at some point use state here and map through state.nodes to render all the individual nodes so that 
+   they can hold their implementations and values themselves */
 export function Node({
   id,
   value,
@@ -11,68 +15,56 @@ export function Node({
   kind,
   variant,
   ports,
-  onNodePointerDown,
-  onPortPointerDown,
-  onPortPointerUp,
-  onValueChange,
 }: NodeProps) {
+  const { dispatch } = useGraph();
   return (
     <article
       className={styles.node}
       style={{ left: position.x, top: position.y }}
-      onPointerDown={(event) => onNodePointerDown(event, id)}
+      onPointerDown={(event) =>
+        dispatch({
+          type: "node_pointer_down",
+          payload: { event: event, id: id },
+        })
+      }
     >
-      {ports.filter((port) => port.kind === PortKind.Input).length < 0 ? null : (
+      {ports.filter((port) => port.kind === PortKind.Input).length <
+      0 ? null : (
         <div className={styles.inputs}>
           {ports.map((port) =>
             port.kind !== PortKind.Input ? null : (
-              <Port
-                {...port}
-                key={port.id}
-                onPointerDown={(event, portId, portValue) =>
-                  onPortPointerDown(event, portId, portValue, id, value)
-                }
-                onPointerUp={(event, portId, portValue) =>
-                  onPortPointerUp(event, portId, portValue, id, value)
-                }
-                value={port.value}
-              />
+              <Port {...port} key={port.id} />
             )
           )}
         </div>
       )}
       <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>{value}</output>
-      {ports.filter((port) => port.kind === PortKind.Output).length < 0 ? null : (
+      {ports.filter((port) => port.kind === PortKind.Output).length <
+      0 ? null : (
         <div className={styles.outputs}>
           {ports.map((port) =>
             port.kind !== PortKind.Output ? null : (
-              <Port
-                {...port}
-                key={port.id}
-                onPointerDown={(event, portId, portValue) =>
-                  onPortPointerDown(event, portId, portValue, id, value)
-                }
-                onPointerUp={(event, portId, portValue) =>
-                  onPortPointerUp(event, portId, portValue, id, value)
-                }
-                value={port.value}
-              />
+              <Port {...port} key={port.id} />
             )
           )}
         </div>
       )}
-      {kind !== NodeKind.Input ? null : (
-        variant !== NodeVariant.Integer ? null : (
-          <input
-            type="range"
-            min="0"
-            max="10"
-            value={value}
-            onPointerDown={(event) => event.stopPropagation()}
-            onChange={(event) => onValueChange(event, id)}
-          />
-        )
+      {kind !== NodeKind.Input ? null : variant !==
+        NodeVariant.Integer ? null : (
+        <input
+          type="range"
+          min="0"
+          max="10"
+          value={value}
+          onChange={(event) =>
+            dispatch({
+              type: "node_slider_change",
+              payload: { event: event, id: id },
+            })
+          }
+          onPointerDown={(event) => event.stopPropagation()}
+        />
       )}
     </article>
   );

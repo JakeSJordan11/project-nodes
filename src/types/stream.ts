@@ -8,10 +8,6 @@ export interface StreamProps {
   status: StreamStatus;
   sourceElement: HTMLButtonElement;
   targetElement?: HTMLButtonElement;
-  sourceNodeId: Id;
-  targetNodeId?: Id;
-  sourcePortId: Id;
-  targetPortId?: Id;
 }
 
 export enum StreamStatus {
