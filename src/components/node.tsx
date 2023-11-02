@@ -4,9 +4,6 @@ import { NodeKind, NodeProps, NodeVariant } from "@/types/node";
 import { PortKind } from "@/types/port";
 import { useGraph } from "src/hooks/graphs.context";
 
-/* posible more modular approach
-   at some point use state here and map through state.nodes to render all the individual nodes so that 
-   they can hold their implementations and values themselves */
 export function Node({
   id,
   value,
@@ -29,7 +26,7 @@ export function Node({
       }
     >
       {ports.filter((port) => port.kind === PortKind.Input).length <
-      0 ? null : (
+      1 ? null : (
         <div className={styles.inputs}>
           {ports.map((port) =>
             port.kind !== PortKind.Input ? null : (
@@ -41,7 +38,7 @@ export function Node({
       <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>{value}</output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
-      0 ? null : (
+      1 ? null : (
         <div className={styles.outputs}>
           {ports.map((port) =>
             port.kind !== PortKind.Output ? null : (

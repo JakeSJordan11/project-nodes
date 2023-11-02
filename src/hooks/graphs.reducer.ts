@@ -35,9 +35,9 @@ export function graphsReducer(
           };
         }),
         streams: state.streams.map((stream) => {
-          const { sourceElement, targetElement } = stream;
-          const sourceBounds = sourceElement.getBoundingClientRect();
-          const targetBounds = targetElement?.getBoundingClientRect();
+          const { source, target } = stream;
+          const sourceBounds = source.getBoundingClientRect();
+          const targetBounds = target?.getBoundingClientRect();
           const sourceX = sourceBounds.x + sourceBounds.width * 0.5;
           const sourceY = sourceBounds.y + sourceBounds.height * 0.5;
           if (stream.status === StreamStatus.Linked) {
@@ -193,9 +193,9 @@ export function graphsReducer(
     }
     case "port_pointer_down": {
       const { streams } = state;
-      const { value } = action.payload;
-      const target = action.payload.event.target as HTMLButtonElement;
-      const { x, y, width, height } = target.getBoundingClientRect();
+      const { value, ref } = action.payload;
+      if (!ref.current) throw new Error("Invalid port reference");
+      const { x, y, width, height } = ref.current.getBoundingClientRect();
       return {
         ...state,
         streams: [
@@ -206,14 +206,16 @@ export function graphsReducer(
             m: `${x + width * 0.5} ${y + height * 0.5}`,
             l: `${x + width * 0.5} ${y + height * 0.5}`,
             status: StreamStatus.Active,
-            sourceElement: target,
+            source: ref.current,
+            target: null,
           },
         ],
       };
     }
     case "port_pointer_up": {
-      const target = action.payload.event.target as HTMLButtonElement;
-      const { x, y, width, height } = target.getBoundingClientRect();
+      const { ref } = action.payload;
+      if (!ref.current) throw new Error("Invalid port reference");
+      const { x, y, width, height } = ref.current.getBoundingClientRect();
       return {
         ...state,
         streams: state.streams.map((stream) => {
@@ -222,7 +224,7 @@ export function graphsReducer(
             ...stream,
             status: StreamStatus.Linked,
             l: `${x + width * 0.5} ${y + height * 0.5}`,
-            targetElement: target,
+            target: ref.current,
           };
         }),
       };

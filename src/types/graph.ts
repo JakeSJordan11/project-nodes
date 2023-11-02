@@ -4,6 +4,7 @@ import {
   MouseEvent,
   PointerEvent,
   ReactNode,
+  RefObject,
 } from "react";
 import { GraphMenuState } from "./context.menu";
 import { NodeProps } from "./node";
@@ -52,6 +53,7 @@ export type GraphAction =
         event: PointerEvent<HTMLButtonElement>;
         id: Id;
         value: Value;
+        ref: RefObject<HTMLButtonElement>;
       };
     }
   | {
@@ -60,6 +62,7 @@ export type GraphAction =
         event: PointerEvent<HTMLButtonElement>;
         id: Id;
         value: Value;
+        ref: RefObject<HTMLButtonElement>;
       };
     }
   | {
