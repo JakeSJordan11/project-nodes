@@ -1,8 +1,7 @@
-import { PortState } from "@/types/port";
+import { PortProps } from "@/types/port";
 import { Coordinate, Id, Value } from "@/types/utils";
-import { ChangeEvent, PointerEvent } from "react";
 
-export interface NodeState {
+export interface NodeProps {
   id: Id;
   title: NodeVariant;
   value: Value;
@@ -11,32 +10,7 @@ export interface NodeState {
   position: Coordinate;
   offset: Coordinate;
   status: NodeStatus;
-  ports: PortState[];
-}
-
-export interface NodeProps extends NodeState {
-  onNodePointerDown: (
-    event: PointerEvent<HTMLElement>,
-    nodeId: NodeState["id"]
-  ) => void;
-  onPortPointerDown: (
-    event: PointerEvent<HTMLButtonElement>,
-    portId: PortState["id"],
-    portValue: PortState["value"],
-    nodeId: NodeState["id"],
-    nodeValue: NodeState["value"]
-  ) => void;
-  onPortPointerUp: (
-    event: PointerEvent<HTMLButtonElement>,
-    portId: PortState["id"],
-    PortValue: PortState["value"],
-    nodeId: NodeState["id"],
-    nodeValue: NodeState["value"]
-  ) => void;
-  onValueChange: (
-    event: ChangeEvent<HTMLInputElement>,
-    nodeId: NodeState["id"]
-  ) => void;
+  ports: PortProps[];
 }
 
 export enum NodeKind {

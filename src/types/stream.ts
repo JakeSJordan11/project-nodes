@@ -1,3 +1,4 @@
+import { Ref, RefObject } from "react";
 import { Id, Value } from "./utils";
 
 export interface StreamProps {
@@ -6,12 +7,8 @@ export interface StreamProps {
   m: string;
   l?: string;
   status: StreamStatus;
-  sourceElement: HTMLButtonElement;
-  targetElement?: HTMLButtonElement;
-  sourceNodeId: Id;
-  targetNodeId?: Id;
-  sourcePortId: Id;
-  targetPortId?: Id;
+  source: HTMLButtonElement;
+  target: HTMLButtonElement | null;
 }
 
 export enum StreamStatus {
