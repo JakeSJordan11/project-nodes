@@ -1,5 +1,20 @@
-import type { StreamProps } from "@/types/stream";
+import { useGraph } from '@/hooks/graphs.context'
+import type { StreamProps } from '@/types/stream'
+import { useEffect } from 'react'
 
-export function Stream({ m, l }: StreamProps) {
-  return <path d={`M ${m} L ${l}`} />;
+export function Stream({ m, l, value, targetId }: StreamProps) {
+  const { dispatch } = useGraph()
+
+  useEffect(() => {
+    if (!targetId) return
+    dispatch({
+      type: 'stream_value_change',
+      payload: {
+        value: value,
+        targetId: targetId,
+      },
+    })
+  }, [value])
+
+  return <path d={`M ${m} L ${l}`} />
 }

@@ -1,3 +1,3 @@
-export type Coordinate = { x: number; y: number };
-export type Value = number | undefined;
-export type Id = string;
+export type Coordinate = { x: number; y: number }
+export type Value = number | boolean | string | undefined
+export type Id = string | undefined
