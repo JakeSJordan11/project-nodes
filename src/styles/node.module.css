@@ -42,8 +42,17 @@
   cursor: grabbing;
 }
 
-.value:focus {
-  outline-color: var(--focus-outline-color);
+.stringValue {
+  border-width: var(--content-border-width);
+  border-style: solid;
+  border-color: var(--content-border-color);
+  border-radius: var(--content-border-radius);
+  background-color: var(--content-background-color);
+  width: 100%;
+  height: 100%;
+  color: var(--content-font-color);
+  font-size: medium;
+  user-select: none;
 }
 
 .slider {
@@ -53,9 +62,6 @@
 
 .slider:active {
   cursor: move;
-}
-.slider:focus {
-  outline-color: var(--focus-outline-color);
 }
 
 .title {
@@ -69,10 +75,6 @@
   font-weight: 800;
   font-size: medium;
   text-align-last: center;
-}
-
-.selector:focus {
-  outline-color: var(--focus-outline-color);
 }
 
 .inputs {

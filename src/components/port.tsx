@@ -1,35 +1,41 @@
+import { useGraph } from '@/hooks/graphs.context'
 import styles from '@/styles/port.module.css'
-import { PortProps, PortVariant } from '@/types/port'
+import { PortProps } from '@/types/port'
+import { PointerEvent, useEffect, useRef } from 'react'
 
-export function Port({
-  id,
-  value,
-  variant,
-  onPortPointerUp,
-  onPortPointerDown,
-}: PortProps) {
-  switch (variant) {
-    case PortVariant.Output:
-      return (
-        <button
-          id={id}
-          value={value}
-          className={styles.port}
-          onPointerDown={(event) =>
-            onPortPointerDown ? onPortPointerDown(event, id) : null
-          }
-        />
-      )
-    case PortVariant.Input:
-      return (
-        <button
-          id={id}
-          value={value}
-          className={styles.port}
-          onPointerUp={(event) =>
-            onPortPointerUp ? onPortPointerUp(event, id) : null
-          }
-        />
-      )
+export function Port({ id, value, nodeId }: PortProps) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const { dispatch } = useGraph()
+
+  useEffect(() => {
+    dispatch({
+      type: 'port_value_change',
+      payload: { value: value, id: id, nodeId: nodeId },
+    })
+  }, [value])
+
+  function handlePointerDown(event: PointerEvent<HTMLButtonElement>) {
+    event.stopPropagation()
+    dispatch({
+      type: 'port_pointer_down',
+      payload: { event: event, id: id, value: value, ref: ref },
+    })
   }
+
+  function handlePointerUp(event: PointerEvent<HTMLButtonElement>) {
+    event.stopPropagation()
+    dispatch({
+      type: 'port_pointer_up',
+      payload: { event: event, id: id, value: value, ref: ref },
+    })
+  }
+
+  return (
+    <button
+      ref={ref}
+      className={styles.port}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+    />
+  )
 }

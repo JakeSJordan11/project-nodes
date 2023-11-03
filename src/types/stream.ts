@@ -1,17 +1,18 @@
+import { Id, Value } from '@/types/utils'
+
 export interface StreamProps {
-  value: number
-  id: string
-  from: string
-  to: string
+  id: Id
+  value: Value
+  m: string
+  l?: string
   status: StreamStatus
-  sourceNodeId: string
-  targetNodeId: string
-  sourcePortId: string
-  targetPortId: string
+  sourceId: Id
+  targetId?: Id
+  source: HTMLButtonElement
+  target: HTMLButtonElement | null
 }
 
 export enum StreamStatus {
-  Idle = 'idle',
   Active = 'active',
   Linked = 'linked',
 }
