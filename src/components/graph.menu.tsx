@@ -86,11 +86,6 @@ export function ContextMenu() {
               {NodeVariant.Result}
             </button>
           </li>
-          <li>
-            <button className={styles.item} onPointerDown={handlePointerDown}>
-              {NodeVariant.Export}
-            </button>
-          </li>
         </ul>
       </div>
     </menu>
