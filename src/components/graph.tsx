@@ -24,14 +24,28 @@ export default function Graph() {
     dispatch({ type: 'graph_menu_show', payload: { event: event } })
   }
 
+  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
+    dispatch({ type: 'graph_pointer_down', payload: { event: event } })
+  }
+
   return (
     <main
       className={styles.main}
+      onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerLeave}
       onContextMenu={handleContextMenu}
     >
+      <h1 className={styles.title}>Project Nodes</h1>
+      <p
+        className={
+          state.nodes.length === 0 ? styles.directions : styles.directionsfade
+        }
+      >
+        right click to create a node
+      </p>
+      <p className={styles.signature}>created by: Jake Jordan</p>
       {state.nodes.map((node) => (
         <Node key={node.id} {...node} />
       ))}

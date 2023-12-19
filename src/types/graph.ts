@@ -22,6 +22,10 @@ export interface GraphState {
 
 export type GraphAction =
   | {
+      type: 'graph_pointer_down'
+      payload: { event: PointerEvent<HTMLElement> }
+    }
+  | {
       type: 'graph_pointer_move'
       payload: { event: PointerEvent<HTMLElement> }
     }

@@ -96,6 +96,17 @@ export function graphsReducer(
         ),
       }
     }
+    case 'graph_pointer_down': {
+      const { ContextMenu } = state
+      if (ContextMenu.hidden) return state
+      return {
+        ...state,
+        ContextMenu: {
+          ...ContextMenu,
+          hidden: true,
+        },
+      }
+    }
     case 'graph_pointer_leave': {
       const { streams } = state
       return {
@@ -544,7 +555,7 @@ export function graphsReducer(
                 ports: [
                   {
                     id: crypto.randomUUID(),
-                    kind: PortKind.Output,
+                    kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
@@ -716,9 +727,11 @@ export function graphsReducer(
           return {
             ...node,
             value:
-              node.ports[0].value &&
-              node.ports[1].value &&
-              node.variant === NodeVariant.Addition
+              node.ports[0].value && node.variant === NodeVariant.Result
+                ? Number(node.ports[0].value)
+                : node.ports[0].value &&
+                  node.ports[1].value &&
+                  node.variant === NodeVariant.Addition
                 ? Number(node.ports[0].value) + Number(node.ports[1].value)
                 : node.ports[0].value &&
                   node.ports[1].value &&
