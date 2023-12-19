@@ -19,7 +19,7 @@ export function SubtractionNode({
       type: 'node_value_change',
       payload: { value: value, id: id },
     })
-  }, [value])
+  }, [value, id, dispatch])
 
   function handlePointerDown(event: PointerEvent<HTMLButtonElement>) {
     dispatch({

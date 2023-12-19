@@ -14,7 +14,7 @@ export function Stream({ m, l, value, targetId }: StreamProps) {
         targetId: targetId,
       },
     })
-  }, [value])
+  }, [value, targetId, dispatch])
 
   return <path d={`M ${m} L ${l}`} />
 }

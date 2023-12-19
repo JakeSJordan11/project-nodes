@@ -12,7 +12,7 @@ export function Port({ id, value, nodeId }: PortProps) {
       type: 'port_value_change',
       payload: { value: value, id: id, nodeId: nodeId },
     })
-  }, [value])
+  }, [value, id, nodeId, dispatch])
 
   function handlePointerDown(event: PointerEvent<HTMLButtonElement>) {
     event.stopPropagation()
