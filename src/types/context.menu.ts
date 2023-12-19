@@ -1,11 +1,18 @@
-import { Coordinate } from '@/types/utils'
+import { Coordinate, Id } from '@/types/utils'
 import { PointerEventHandler } from 'react'
 
-export interface GraphMenuState {
-  position: Coordinate
-  hidden: boolean
+export interface ContextMenuState {
+  graph: {
+    position: Coordinate
+    hidden: boolean
+  }
+  node: {
+    position: Coordinate
+    hidden: boolean
+    id: Id
+  }
 }
 
-export interface GraphMenuProps extends GraphMenuState {
+export interface ContextMenuProps extends ContextMenuState {
   onItemPointerDown?: PointerEventHandler<HTMLButtonElement>
 }

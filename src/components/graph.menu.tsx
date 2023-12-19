@@ -17,8 +17,8 @@ export function ContextMenu() {
     <menu
       className={styles.menu}
       style={{
-        left: state.ContextMenu.position.x,
-        top: state.ContextMenu.position.y,
+        left: state.ContextMenus.graph.position.x,
+        top: state.ContextMenus.graph.position.y,
       }}
     >
       <h1 className={styles.title}>Create Menu</h1>

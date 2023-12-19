@@ -1,9 +1,10 @@
 import { ContextMenu } from '@/components/graph.menu'
+import { Node } from '@/components/node'
+import { NodeMenu } from '@/components/node.menu'
 import { Stream } from '@/components/stream'
 import { useGraph } from '@/hooks/graphs.context'
 import styles from '@/styles/graph.module.css'
 import { PointerEvent } from 'react'
-import { Node } from './node'
 
 export default function Graph() {
   const { state, dispatch } = useGraph()
@@ -54,7 +55,8 @@ export default function Graph() {
           <Stream key={stream.id} {...stream} />
         ))}
       </svg>
-      {state.ContextMenu.hidden ? null : <ContextMenu />}
+      {state.ContextMenus.node.hidden ? null : <NodeMenu />}
+      {state.ContextMenus.graph.hidden ? null : <ContextMenu />}
     </main>
   )
 }

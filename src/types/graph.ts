@@ -1,4 +1,4 @@
-import { GraphMenuState } from '@/types/context.menu'
+import { ContextMenuState } from '@/types/context.menu'
 import { NodeProps } from '@/types/node'
 import { StreamProps } from '@/types/stream'
 import { Id, Value } from '@/types/utils'
@@ -17,7 +17,7 @@ export interface GraphProviderProps {
 export interface GraphState {
   nodes: NodeProps[]
   streams: StreamProps[]
-  ContextMenu: GraphMenuState
+  ContextMenus: ContextMenuState
 }
 
 export type GraphAction =
@@ -40,6 +40,14 @@ export type GraphAction =
     }
   | {
       type: 'graph_menu_item_pointer_down'
+      payload: { event: PointerEvent<HTMLElement> }
+    }
+  | {
+      type: 'node_menu_show'
+      payload: { event: MouseEvent<HTMLElement>; id: Id }
+    }
+  | {
+      type: 'node_menu_item_pointer_down'
       payload: { event: PointerEvent<HTMLElement> }
     }
   | {

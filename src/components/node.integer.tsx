@@ -35,11 +35,19 @@ export function IntegerNode({
     })
   }
 
+  function handleContextMenu(event: PointerEvent<HTMLDivElement>) {
+    dispatch({
+      type: 'node_menu_show',
+      payload: { event: event, id },
+    })
+  }
+
   return (
     <article
       className={styles.node}
       style={{ left: position.x, top: position.y }}
       onPointerDown={handlePointerDown}
+      onContextMenu={handleContextMenu}
     >
       {ports.filter((port) => port.kind === PortKind.Input).length <
       1 ? null : (

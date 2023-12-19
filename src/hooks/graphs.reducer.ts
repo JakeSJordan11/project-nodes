@@ -97,13 +97,27 @@ export function graphsReducer(
       }
     }
     case 'graph_pointer_down': {
-      const { ContextMenu } = state
-      if (ContextMenu.hidden) return state
+      const { ContextMenus } = state
+      if (ContextMenus.graph.hidden && ContextMenus.node.hidden) return state
       return {
         ...state,
-        ContextMenu: {
-          ...ContextMenu,
-          hidden: true,
+        ContextMenus: {
+          ...ContextMenus,
+          node: {
+            id: ContextMenus.node.id,
+            hidden: true,
+            position: {
+              x: ContextMenus.node.position.x,
+              y: ContextMenus.node.position.y,
+            },
+          },
+          graph: {
+            hidden: true,
+            position: {
+              x: ContextMenus.graph.position.x,
+              y: ContextMenus.graph.position.y,
+            },
+          },
         },
       }
     }
@@ -117,35 +131,43 @@ export function graphsReducer(
       }
     }
     case 'graph_menu_show': {
-      const { ContextMenu } = state
+      const { ContextMenus } = state
       const { event } = action.payload
       const { clientX, clientY } = event
       event.preventDefault()
 
       return {
         ...state,
-        ContextMenu: {
-          ...ContextMenu,
-          position: {
-            x: clientX,
-            y: clientY,
+        ContextMenus: {
+          ...ContextMenus,
+          graph: {
+            hidden: ContextMenus.node.hidden ? false : true,
+            position: {
+              x: clientX,
+              y: clientY,
+            },
           },
-          hidden: !ContextMenu.hidden,
         },
       }
     }
     case 'graph_menu_item_pointer_down': {
-      const { nodes, ContextMenu } = state
+      const { nodes, ContextMenus } = state
       const target = action.payload.event.target as HTMLElement
-      const { x, y } = state.ContextMenu.position
+      const { x, y } = state.ContextMenus.graph.position
 
       switch (target.textContent) {
         case NodeVariant.Integer: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -175,9 +197,15 @@ export function graphsReducer(
         case NodeVariant.Boolean: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -207,9 +235,15 @@ export function graphsReducer(
         case NodeVariant.Float: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -239,9 +273,15 @@ export function graphsReducer(
         case NodeVariant.String: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -271,9 +311,15 @@ export function graphsReducer(
         case NodeVariant.Addition: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -315,9 +361,15 @@ export function graphsReducer(
         case NodeVariant.Subtraction: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -359,9 +411,15 @@ export function graphsReducer(
         case NodeVariant.Division: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -403,9 +461,15 @@ export function graphsReducer(
         case NodeVariant.Multiplication: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -447,9 +511,15 @@ export function graphsReducer(
         case NodeVariant.Modulo: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -491,9 +561,15 @@ export function graphsReducer(
         case NodeVariant.Power: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -535,9 +611,15 @@ export function graphsReducer(
         case NodeVariant.Result: {
           return {
             ...state,
-            ContextMenu: {
-              ...ContextMenu,
-              hidden: true,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
             },
             nodes: [
               ...nodes,
@@ -567,6 +649,59 @@ export function graphsReducer(
       }
       return state
     }
+    case 'node_menu_show': {
+      return {
+        ...state,
+        ContextMenus: {
+          ...state.ContextMenus,
+          node: {
+            id: action.payload.id,
+            hidden: false,
+            position: {
+              x: action.payload.event.clientX,
+              y: action.payload.event.clientY,
+            },
+          },
+        },
+      }
+    }
+    case 'node_menu_item_pointer_down': {
+      const { nodes, streams } = state
+      const { id } = state.ContextMenus.node
+      const target = action.payload.event.target as HTMLElement
+      switch (target.textContent) {
+        case 'delete node': {
+          return {
+            ...state,
+            ContextMenus: {
+              ...state.ContextMenus,
+              node: {
+                id: state.ContextMenus.node.id,
+                hidden: true,
+                position: {
+                  x: state.ContextMenus.node.position.x,
+                  y: state.ContextMenus.node.position.y,
+                },
+              },
+            },
+          }
+        }
+      }
+      return {
+        ...state,
+        ContextMenus: {
+          ...state.ContextMenus,
+          node: {
+            id: state.ContextMenus.node.id,
+            hidden: true,
+            position: {
+              x: state.ContextMenus.node.position.x,
+              y: state.ContextMenus.node.position.y,
+            },
+          },
+        },
+      }
+    }
     case 'node_pointer_down': {
       const { nodes } = state
       const { clientX, clientY } = action.payload.event
@@ -574,6 +709,17 @@ export function graphsReducer(
 
       return {
         ...state,
+        ContextMenus: {
+          ...state.ContextMenus,
+          node: {
+            id: state.ContextMenus.node.id,
+            hidden: true,
+            position: {
+              x: state.ContextMenus.node.position.x,
+              y: state.ContextMenus.node.position.y,
+            },
+          },
+        },
         nodes: nodes.map((node) => {
           const { x, y } = node.position
           if (node.id !== id) return node
