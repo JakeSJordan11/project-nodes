@@ -33,11 +33,13 @@
   --focus-outline-color: var(--yellow);
   --path-color: var(--purple);
 
+  color-scheme: light;
   accent-color: var(--yellow);
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--background);
+    color-scheme: dark;
     accent-color: var(--green);
+    background-color: var(--background);
     --focus-outline-color: var(--green);
     --node-box-shadow: 0.35rem 0.35rem 0.25rem 0rem var(--black);
     --node-border-color: var(--light-gray);

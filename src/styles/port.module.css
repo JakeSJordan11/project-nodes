@@ -15,5 +15,4 @@
 
 .port:active {
   cursor: move;
-  animation: pulse 1.4s infinite ease-in-out;
 }
