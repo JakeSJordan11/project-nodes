@@ -1,4 +1,4 @@
-import { inter } from '@/app/fonts'
+import { inter } from '@/styles/fonts'
 import '@/styles/globals.css'
 import styles from '@/styles/layout.module.css'
 import type { ReactNode } from 'react'
