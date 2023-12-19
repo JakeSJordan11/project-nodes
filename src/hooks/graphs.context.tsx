@@ -21,7 +21,7 @@ export function GraphProvider({ children }: GraphProviderProps) {
     streams: [],
     ContextMenus: {
       graph: { position: { x: 0, y: 0 }, hidden: true },
-      node: { position: { x: 0, y: 0 }, hidden: true },
+      node: { position: { x: 0, y: 0 }, hidden: true, id: '' },
     },
   }
   const [state, dispatch] = useReducer(graphsReducer, initialState)
