@@ -17,6 +17,7 @@
   stroke-linejoin: round;
   animation: stream 0.5s linear infinite;
   pointer-events: none;
+  touch-action: none;
 }
 
 @keyframes stream {
