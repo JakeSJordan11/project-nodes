@@ -172,7 +172,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Input,
                 variant: NodeVariant.Integer,
                 position: {
@@ -184,7 +184,7 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -210,7 +210,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Input,
                 variant: NodeVariant.Boolean,
                 position: {
@@ -222,7 +222,7 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -248,7 +248,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Input,
                 variant: NodeVariant.Float,
                 position: {
@@ -260,7 +260,7 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -286,7 +286,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Input,
                 variant: NodeVariant.String,
                 position: {
@@ -298,7 +298,7 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -324,7 +324,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Opertator,
                 variant: NodeVariant.Addition,
                 position: {
@@ -336,19 +336,19 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-2`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-3`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -374,7 +374,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Opertator,
                 variant: NodeVariant.Subtraction,
                 position: {
@@ -386,19 +386,19 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-2`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-3`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -424,7 +424,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Opertator,
                 variant: NodeVariant.Division,
                 position: {
@@ -436,19 +436,19 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-2`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-3`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -474,7 +474,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Opertator,
                 variant: NodeVariant.Multiplication,
                 position: {
@@ -486,19 +486,19 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-2`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-3`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -524,7 +524,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Opertator,
                 variant: NodeVariant.Modulo,
                 position: {
@@ -536,19 +536,19 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-2`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-3`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -574,7 +574,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Opertator,
                 variant: NodeVariant.Power,
                 position: {
@@ -586,19 +586,19 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-2`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
                   },
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-3`,
                     kind: PortKind.Output,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -624,7 +624,7 @@ export function graphsReducer(
             nodes: [
               ...nodes,
               {
-                id: crypto.randomUUID(),
+                id: String(nodes.length + 1),
                 kind: NodeKind.Output,
                 variant: NodeVariant.Result,
                 position: {
@@ -636,7 +636,7 @@ export function graphsReducer(
                 status: NodeStatus.Idle,
                 ports: [
                   {
-                    id: crypto.randomUUID(),
+                    id: `${nodes.length + 1}-1`,
                     kind: PortKind.Input,
                     value: undefined,
                     status: PortStatus.Idle,
@@ -731,6 +731,10 @@ export function graphsReducer(
               y: clientY - y,
             },
             status: NodeStatus.Active,
+            position: {
+              x: node.position.x,
+              y: node.position.y,
+            },
           }
         }),
       }
@@ -760,7 +764,7 @@ export function graphsReducer(
         streams: [
           ...streams,
           {
-            id: crypto.randomUUID(),
+            id: String(streams.length + 1),
             value: value,
             m: `${x + width * 0.5} ${y + height * 0.5}`,
             l: `${x + width * 0.5} ${y + height * 0.5}`,
