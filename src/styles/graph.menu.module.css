@@ -9,7 +9,6 @@
   padding: var(--node-padding);
   user-select: none;
   margin: 0;
-  z-index: 100;
 }
 
 .item {
@@ -19,14 +18,14 @@
   font-weight: 200;
   font-size: medium;
   background-color: transparent;
-  text-align: left;
-  padding-block: 0.25rem;
+  padding: 0;
+  margin: 0;
   transition: color 0.6s ease-in-out;
   transition: transform 0.1s ease-out;
 }
 
 .item:hover {
-  color: var(--path-color);
+  color: var(--yellow);
   transform: translateY(0.2rem);
 }
 
@@ -73,7 +72,7 @@
   border-color: var(--content-border-color);
   border-width: var(--content-border-width);
   border-style: solid;
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 .kind {
@@ -81,11 +80,21 @@
   font-size: large;
   font-weight: 300;
   color: var(--path-color);
+  padding-bottom: 0.25rem;
 }
 
 .category {
   list-style-type: none;
+  padding-bottom: 0.25rem;
   padding-inline-start: 0;
-  margin-block-start: 0;
-  margin-block-end: 0;
+  margin: 0;
+}
+
+.type {
+  margin: 0;
+  padding-bottom: 0.25rem;
+  font-size: medium;
+  font-weight: 500;
+  color: var(--node-title-color);
+  text-align: center;
 }

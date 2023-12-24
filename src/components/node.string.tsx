@@ -46,7 +46,16 @@ export function StringNode({ id, value, position, variant, ports }: NodeProps) {
         </div>
       )}
       <h1 className={styles.title}>{variant}</h1>
-      <output className={styles.value}>{value}</output>
+      <output className={styles.value}>
+        <input
+          className={styles.stringValue}
+          type='text'
+          placeholder='Enter a string'
+          value={String(value)}
+          onChange={handleChange}
+          onPointerDown={(event) => event.stopPropagation()}
+        />
+      </output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
       1 ? null : (
         <div className={styles.outputs}>
@@ -57,12 +66,6 @@ export function StringNode({ id, value, position, variant, ports }: NodeProps) {
           )}
         </div>
       )}
-      <input
-        type='text'
-        placeholder='Enter a string'
-        onChange={handleChange}
-        onPointerDown={(event) => event.stopPropagation()}
-      />
     </article>
   )
 }
