@@ -76,6 +76,10 @@ export type GraphAction =
       type: 'node_slider_change'
       payload: { event: ChangeEvent<HTMLInputElement>; id: Id }
     }
+  | {
+      type: 'node_color_change'
+      payload: { event: ChangeEvent<HTMLInputElement>; id: Id }
+    }
   | { type: 'node_value_change'; payload: { value: Value; id: Id } }
   | { type: 'port_value_change'; payload: { value: Value; id: Id; nodeId: Id } }
   | { type: 'stream_value_change'; payload: { value: Value; targetId: Id } }

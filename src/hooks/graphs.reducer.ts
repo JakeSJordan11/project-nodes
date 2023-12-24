@@ -646,6 +646,132 @@ export function graphsReducer(
             ],
           }
         }
+        case NodeVariant.Color: {
+          return {
+            ...state,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
+            },
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.Color,
+                position: {
+                  x: x,
+                  y: y,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.WebGpu: {
+          return {
+            ...state,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
+            },
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.WebGpu,
+                position: {
+                  x: x,
+                  y: y,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Blend: {
+          return {
+            ...state,
+            ContextMenus: {
+              ...ContextMenus,
+              graph: {
+                hidden: true,
+                position: {
+                  x: ContextMenus.graph.position.x,
+                  y: ContextMenus.graph.position.y,
+                },
+              },
+            },
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Blend,
+                position: {
+                  x: x,
+                  y: y,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
       }
       return state
     }
@@ -666,8 +792,6 @@ export function graphsReducer(
       }
     }
     case 'node_menu_item_pointer_down': {
-      const { nodes, streams } = state
-      const { id } = state.ContextMenus.node
       const target = action.payload.event.target as HTMLElement
       switch (target.textContent) {
         case 'delete node': {
@@ -933,6 +1057,23 @@ export function graphsReducer(
                 value: value,
               }
             }),
+          }
+        }),
+      }
+    }
+    case 'node_color_change': {
+      const { nodes } = state
+      const { id, event } = action.payload
+      const { value } = event.target as HTMLInputElement
+
+      return {
+        ...state,
+        nodes: nodes.map((node) => {
+          if (node.id !== id) return node
+
+          return {
+            ...node,
+            value: value,
           }
         }),
       }

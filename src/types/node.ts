@@ -30,6 +30,9 @@ export enum NodeVariant {
   Boolean = 'boolean',
   String = 'string',
   Result = 'result',
+  Color = 'color',
+  Blend = 'blend',
+  WebGpu = 'webgpu',
 }
 
 export enum NodeStatus {

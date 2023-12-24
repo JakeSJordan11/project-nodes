@@ -1,5 +1,7 @@
 import { AdditionNode } from '@/components/node.addition'
+import { BlendNode } from '@/components/node.blend'
 import { BooleanNode } from '@/components/node.boolean'
+import { ColorNode } from '@/components/node.color'
 import { DivisionNode } from '@/components/node.division'
 import { FloatNode } from '@/components/node.float'
 import { IntegerNode } from '@/components/node.integer'
@@ -10,6 +12,7 @@ import { ResultNode } from '@/components/node.result'
 import { StringNode } from '@/components/node.string'
 import { SubtractionNode } from '@/components/node.subtraction'
 import { NodeProps, NodeVariant } from '@/types/node'
+import { WebgpuNode } from './node.webgpu'
 
 export function Node({ ...node }: NodeProps) {
   switch (node.variant) {
@@ -35,5 +38,11 @@ export function Node({ ...node }: NodeProps) {
       return <PowerNode {...node} />
     case NodeVariant.Result:
       return <ResultNode {...node} />
+    case NodeVariant.Color:
+      return <ColorNode {...node} />
+    case NodeVariant.Blend:
+      return <BlendNode {...node} />
+    case NodeVariant.WebGpu:
+      return <WebgpuNode {...node} />
   }
 }

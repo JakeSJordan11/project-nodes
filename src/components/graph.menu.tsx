@@ -23,7 +23,8 @@ export function ContextMenu() {
     >
       <h1 className={styles.title}>Create Menu</h1>
       <div className={styles.container}>
-        <h1 className={styles.kind}>Inputs</h1>
+        <h2 className={styles.type}>Numbers</h2>
+        <h3 className={styles.kind}>Inputs</h3>
         <ul className={styles.category}>
           <li>
             <button className={styles.item} onPointerDown={handlePointerDown}>
@@ -46,7 +47,7 @@ export function ContextMenu() {
             </button>
           </li>
         </ul>
-        <h1 className={styles.kind}>Operators</h1>
+        <h3 className={styles.kind}>Operators</h3>
         <ul className={styles.category}>
           <li>
             <button className={styles.item} onPointerDown={handlePointerDown}>
@@ -79,11 +80,33 @@ export function ContextMenu() {
             </button>
           </li>
         </ul>
-        <h1 className={styles.kind}>Outputs</h1>
+        <h3 className={styles.kind}>Outputs</h3>
         <ul className={styles.category}>
           <li>
             <button className={styles.item} onPointerDown={handlePointerDown}>
               {NodeVariant.Result}
+            </button>
+          </li>
+        </ul>
+        <h2 className={styles.type}>Colors</h2>
+        <h3 className={styles.kind}>Inputs</h3>
+        <ul className={styles.category}>
+          <li>
+            <button className={styles.item} onPointerDown={handlePointerDown}>
+              {NodeVariant.WebGpu}
+            </button>
+          </li>
+          <li>
+            <button className={styles.item} onPointerDown={handlePointerDown}>
+              {NodeVariant.Color}
+            </button>
+          </li>
+        </ul>
+        <h3 className={styles.kind}>Operators</h3>
+        <ul className={styles.category}>
+          <li>
+            <button className={styles.item} onPointerDown={handlePointerDown}>
+              {NodeVariant.Blend}
             </button>
           </li>
         </ul>
