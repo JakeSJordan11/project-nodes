@@ -148,7 +148,7 @@ export function WebgpuNode({ id, value, position, variant, ports }: NodeProps) {
       )}
       <h1 className={styles.title}>{variant}</h1>
       <output className={styles.value}>
-        <canvas ref={canvasRef} />
+        <canvas className={styles.canvas} ref={canvasRef} />
       </output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
       1 ? null : (
