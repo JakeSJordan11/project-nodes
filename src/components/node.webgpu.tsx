@@ -1,9 +1,10 @@
 import { Port } from '@/components/port'
 import { useGraph } from '@/hooks/graphs.context'
+import triangle from '@/shaders/triangle.wgsl'
 import styles from '@/styles/node.module.css'
 import { NodeProps } from '@/types/node'
 import { PortKind } from '@/types/port'
-import { PointerEvent, use, useEffect, useRef } from 'react'
+import { PointerEvent, useEffect, useRef } from 'react'
 
 export function WebgpuNode({ id, value, position, variant, ports }: NodeProps) {
   const { dispatch } = useGraph()
@@ -11,19 +12,16 @@ export function WebgpuNode({ id, value, position, variant, ports }: NodeProps) {
 
   useEffect(() => {
     async function main() {
-      const adapter = await navigator.gpu?.requestAdapter()
+      const adapter = (await navigator.gpu?.requestAdapter()) as GPUAdapter
       // request a device from the adapter.
       const device = await adapter?.requestDevice()
       if (!device) {
-        fail('need a browser that supports WebGPU')
-        return
+        console.error('need a browser that supports WebGPU')
       }
 
       // Get a WebGPU context from the canvas and configure it
-      const canvas = canvasRef.current
-      if (!canvas) return
-      const context = canvas.getContext('webgpu')
-      if (!context) return
+      const canvas = canvasRef.current as HTMLCanvasElement
+      const context = canvas.getContext('webgpu') as GPUCanvasContext
       const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
       context.configure({
         device,
@@ -31,25 +29,9 @@ export function WebgpuNode({ id, value, position, variant, ports }: NodeProps) {
       })
 
       // create a shader module
-      const module = device.createShaderModule({
+      const shaderModule = device.createShaderModule({
         label: 'our hardcoded red triangle shaders',
-        code: `
-    @vertex fn vs(
-      @builtin(vertex_index) vertexIndex : u32
-    ) -> @builtin(position) vec4f {
-      let pos = array(
-        vec2f( 0.0,  0.5),  // top center
-        vec2f(-0.5, -0.5),  // bottom left
-        vec2f( 0.5, -0.5)   // bottom right
-      );
-
-      return vec4f(pos[vertexIndex], 0.0, 1.0);
-    }
-
-    @fragment fn fs() -> @location(0) vec4f {
-      return vec4f(1.0, 0.0, 0.0, 1.0);
-    }
-  `,
+        code: triangle,
       })
 
       // make a render pipeline
@@ -57,11 +39,11 @@ export function WebgpuNode({ id, value, position, variant, ports }: NodeProps) {
         label: 'our hardcoded red triangle pipeline',
         layout: 'auto',
         vertex: {
-          module,
+          module: shaderModule,
           entryPoint: 'vs',
         },
         fragment: {
-          module,
+          module: shaderModule,
           entryPoint: 'fs',
           targets: [{ format: presentationFormat }],
         },
@@ -70,15 +52,16 @@ export function WebgpuNode({ id, value, position, variant, ports }: NodeProps) {
       // prepare a GPURenderPassDescriptor
       // which describes which textures we want to draw to
       // and how to use them
+
       const renderPassDescriptor = {
         label: 'our basic canvas renderPass',
         colorAttachments: [
           {
-            // view: <- to be filled out when we render
+            view: {} as GPUTextureView,
             clearValue: [0.3, 0.3, 0.3, 1],
             loadOp: 'clear',
             storeOp: 'store',
-          },
+          } as GPURenderPassColorAttachment,
         ],
       }
 
@@ -105,6 +88,7 @@ export function WebgpuNode({ id, value, position, variant, ports }: NodeProps) {
 
       render()
     }
+
     main()
   }, [])
 
