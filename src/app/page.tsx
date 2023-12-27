@@ -1,7 +1,5 @@
-'use client'
-
-import Graph from '@/components/graph'
-import { GraphProvider } from '@/hooks/graphs.context'
+import Graph from '../components/graph/component'
+import { GraphProvider } from '../components/graph/context/component'
 
 export default function Home() {
   return (

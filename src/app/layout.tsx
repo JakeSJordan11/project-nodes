@@ -1,15 +1,15 @@
-import { inter } from '@/styles/fonts'
-import '@/styles/globals.css'
-import styles from '@/styles/layout.module.css'
-import type { ReactNode } from 'react'
+import { inter } from './fonts'
+import './globals.css'
+import styles from './styles.module.css'
+import { RootLayoutProps } from './types'
 
 export const metadata = {
   title: 'Project Nodes',
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang='en' className={`${styles.html} ${inter.className}`}>
+    <html className={inter.className} lang='en'>
       <body className={styles.body}>{children}</body>
     </html>
   )
