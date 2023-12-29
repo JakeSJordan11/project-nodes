@@ -1,5 +1,6 @@
 .graph {
   height: 100svh;
+  overflow: hidden;
 }
 
 .graph:active {
@@ -16,8 +17,7 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   animation: stream 0.5s linear infinite;
-  pointer-events: none;
-  touch-action: none;
+  /* touch-action: none; */
 }
 
 @keyframes stream {
