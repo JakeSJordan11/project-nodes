@@ -1,18 +1,17 @@
-'use client'
-
-import Graph from '../components/graph/component'
-import { GraphProvider } from '../components/graph/context/component'
-import { NewGraph, NewLibrary } from '../components/new'
+import { Graph, Library, Output, Properties } from '../components'
 import styles from './styles.module.css'
 
 export default function Home() {
   return (
-    <GraphProvider>
-      {/* <main className={styles.page}> */}
-      <NewGraph />
-      {/* <article className={styles.output} /> */}
-      {/* <article className={styles.properties}>properties</article> */}
-      {/* </main> */}
-    </GraphProvider>
+    <main className={styles.page}>
+      <section className={styles.mainSection}>
+        <Graph />
+        <Library />
+      </section>
+      <section className={styles.sideSection}>
+        <Output />
+        <Properties />
+      </section>
+    </main>
   )
 }

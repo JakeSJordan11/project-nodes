@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect } from 'react'
 import { useGraph } from '../graph/context/component'
 import type { StreamProps } from './types'

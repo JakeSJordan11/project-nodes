@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useRef, type PointerEvent } from 'react'
 import { useGraph } from '../../graph/context/component'
 import { Port } from '../../port/component'

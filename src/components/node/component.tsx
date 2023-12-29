@@ -35,7 +35,7 @@ export function Node({ ...node }: NodeProps) {
       return <Division {...node} />
     case NodeVariant.Modulo:
       return <Modulo {...node} />
-    case NodeVariant.Power:
+    case NodeVariant.Exponentiation:
       return <Exponent {...node} />
     case NodeVariant.Result:
       return <Result {...node} />

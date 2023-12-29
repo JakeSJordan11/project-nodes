@@ -5,12 +5,12 @@ export enum NodeKind {
 }
 
 export enum NodeVariant {
-  Addition = 'addition',
-  Subtraction = 'subtraction',
-  Multiplication = 'multiplication',
-  Division = 'division',
+  Addition = 'add',
+  Subtraction = 'subtract',
+  Multiplication = 'multiply',
+  Division = 'divide',
+  Exponentiation = 'exponent',
   Modulo = 'modulo',
-  Power = 'power',
   Integer = 'integer',
   Float = 'float',
   Boolean = 'boolean',

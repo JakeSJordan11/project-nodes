@@ -1,7 +1,7 @@
-import styles from './styles.module.css'
 import { nodeData } from './data'
+import styles from './styles.module.css'
 
-export function NewLibrary() {
+export function Library() {
   return (
     <article className={styles.library}>
       {nodeData.map((node) => (

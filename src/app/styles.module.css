@@ -1,31 +1,26 @@
 .body {
   margin: 0;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
-/* .page {
-  height: 100svh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.page {
+  box-sizing: border-box;
+  display: flex;
   gap: 1rem;
-} */
-
-.output {
-  background-color: var(---gray-500);
-  box-shadow: var(--drop-shadow);
-  border: var(--stroke-width) solid;
-  border-color: var(--stroke-color);
-  border-radius: var(--radii-border-large);
-  aspect-ratio: 1;
+  padding: 1rem;
+  height: 100svh;
 }
 
-.properties {
-  background-color: var(---gray-500);
-  box-shadow: var(--drop-shadow);
-  border: var(--stroke-width) solid;
-  border-color: var(--stroke-color);
-  border-radius: var(--radii-border-large);
-  user-select: none;
-  text-align: center;
-  padding-block-start: 1rem;
+.mainSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 75%;
+}
+
+.sideSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 25%;
 }

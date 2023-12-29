@@ -1,15 +1,13 @@
 'use client'
 
-import type { PointerEvent } from 'react'
-import { Node } from '../node/component'
-import { NodeMenu } from '../node/menu/component'
-import { Stream } from '../stream/component'
-import { useGraph } from './context/component'
-import { ContextMenu } from './menu/component'
+import { useState, type PointerEvent } from 'react'
+import { ContextMenu, useGraph } from '.'
+import { Node, NodeMenu, Stream } from '..'
 import styles from './styles.module.css'
 
-export default function Graph() {
+export function Graph() {
   const { state, dispatch } = useGraph()
+  const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 })
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
     dispatch({ type: 'graph_pointer_move', payload: { event: event } })
@@ -39,16 +37,17 @@ export default function Graph() {
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerLeave}
       onContextMenu={handleContextMenu}
+      onWheel={(event) => {
+        setScrollPosition({
+          x: scrollPosition.x + event.deltaX,
+          y: scrollPosition.y + event.deltaY,
+        })
+      }}
+      style={{
+        backgroundImage: `url(/grid.svg)`,
+        backgroundPosition: `${scrollPosition.x}px ${scrollPosition.y}px`,
+      }}
     >
-      <h1 className={styles.title}>Project Nodes</h1>
-      <p
-        className={
-          state.nodes.length === 0 ? styles.directions : styles.directionsfade
-        }
-      >
-        right click to create a node
-      </p>
-      <p className={styles.signature}>created by: Jake Jordan</p>
       {state.nodes.map((node) => (
         <Node key={node.id} {...node} />
       ))}

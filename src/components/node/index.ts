@@ -1,4 +1,4 @@
-export * as default from './component'
+export * from './component'
 export * from './addition'
 export * from './blend'
 export * from './color'

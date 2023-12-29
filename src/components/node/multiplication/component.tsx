@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, type PointerEvent } from 'react'
 import { useGraph } from '../../graph/context/component'
 import styles from '../styles.module.css'

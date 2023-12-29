@@ -1,3 +1,4 @@
+import { GraphProvider } from '../components'
 import { inter } from './fonts'
 import './globals.css'
 import styles from './styles.module.css'
@@ -10,7 +11,9 @@ export const metadata = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html className={inter.className} lang='en'>
-      <body className={styles.body}>{children}</body>
+      <body className={styles.body}>
+        <GraphProvider>{children}</GraphProvider>
+      </body>
     </html>
   )
 }

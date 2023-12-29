@@ -76,7 +76,7 @@ export function ContextMenu() {
           </li>
           <li>
             <button className={styles.item} onPointerDown={handlePointerDown}>
-              {NodeVariant.Power}
+              {NodeVariant.Exponentiation}
             </button>
           </li>
         </ul>

@@ -7,6 +7,7 @@ export function graphsReducer(
   state: GraphState,
   action: GraphAction
 ): GraphState {
+  const gap = 16
   switch (action.type) {
     case 'graph_pointer_move': {
       const { nodes, streams } = state
@@ -37,12 +38,12 @@ export function graphsReducer(
           const { source, target } = stream
           const sourceBounds = source.getBoundingClientRect()
           const targetBounds = target?.getBoundingClientRect()
-          const sourceX = sourceBounds.x + sourceBounds.width * 0.5
-          const sourceY = sourceBounds.y + sourceBounds.height * 0.5
+          const sourceX = sourceBounds.x + sourceBounds.width * 0.5 - gap
+          const sourceY = sourceBounds.y + sourceBounds.height * 0.5 - gap
 
           if (stream.status === StreamStatus.Linked && targetBounds) {
-            const targetX = targetBounds.x + targetBounds.width * 0.5
-            const targetY = targetBounds.y + targetBounds.height * 0.5
+            const targetX = targetBounds.x + targetBounds.width * 0.5 - gap
+            const targetY = targetBounds.y + targetBounds.height * 0.5 - gap
 
             return {
               ...stream,
@@ -57,7 +58,7 @@ export function graphsReducer(
 
           return {
             ...stream,
-            l: `${clientX} ${clientY}`,
+            l: `${clientX - gap} ${clientY - gap}`,
           }
         }),
       }
@@ -96,12 +97,12 @@ export function graphsReducer(
             const { source, target } = stream
             const sourceBounds = source.getBoundingClientRect()
             const targetBounds = target?.getBoundingClientRect()
-            const sourceX = sourceBounds.x + sourceBounds.width * 0.5
-            const sourceY = sourceBounds.y + sourceBounds.height * 0.5
+            const sourceX = sourceBounds.x + sourceBounds.width * 0.5 - gap
+            const sourceY = sourceBounds.y + sourceBounds.height * 0.5 - gap
             const targetX =
-              targetBounds && targetBounds?.x + targetBounds.width * 0.5
+              targetBounds && targetBounds?.x + targetBounds.width * 0.5 - gap
             const targetY =
-              targetBounds && targetBounds?.y + targetBounds.height * 0.5
+              targetBounds && targetBounds?.y + targetBounds.height * 0.5 - gap
             return {
               ...stream,
               m: `${sourceX} ${sourceY}`,
@@ -146,12 +147,12 @@ export function graphsReducer(
             const { source, target } = stream
             const sourceBounds = source.getBoundingClientRect()
             const targetBounds = target?.getBoundingClientRect()
-            const sourceX = sourceBounds.x + sourceBounds.width * 0.5
-            const sourceY = sourceBounds.y + sourceBounds.height * 0.5
+            const sourceX = sourceBounds.x + sourceBounds.width * 0.5 - gap
+            const sourceY = sourceBounds.y + sourceBounds.height * 0.5 - gap
             const targetX =
-              targetBounds && targetBounds?.x + targetBounds.width * 0.5
+              targetBounds && targetBounds?.x + targetBounds.width * 0.5 - gap
             const targetY =
-              targetBounds && targetBounds?.y + targetBounds.height * 0.5
+              targetBounds && targetBounds?.y + targetBounds.height * 0.5 - gap
             return {
               ...stream,
               m: `${sourceX} ${sourceY}`,
@@ -174,8 +175,8 @@ export function graphsReducer(
           graph: {
             hidden: ContextMenus.node.hidden ? false : true,
             position: {
-              x: clientX,
-              y: clientY,
+              x: clientX - gap,
+              y: clientY - gap,
             },
           },
         },
@@ -589,7 +590,7 @@ export function graphsReducer(
             ],
           }
         }
-        case NodeVariant.Power: {
+        case NodeVariant.Exponentiation: {
           return {
             ...state,
             ContextMenus: {
@@ -607,7 +608,7 @@ export function graphsReducer(
               {
                 id: String(nodes.length + 1),
                 kind: NodeKind.Opertator,
-                variant: NodeVariant.Power,
+                variant: NodeVariant.Exponentiation,
                 position: {
                   x: x,
                   y: y,
@@ -921,8 +922,8 @@ export function graphsReducer(
           {
             id: String(streams.length + 1),
             value: value,
-            m: `${x + width * 0.5} ${y + height * 0.5}`,
-            l: `${x + width * 0.5} ${y + height * 0.5}`,
+            m: `${x + width * 0.5 - gap} ${y + height * 0.5 - gap}`,
+            l: `${x + width * 0.5 - gap} ${y + height * 0.5 - gap}`,
             status: StreamStatus.Active,
             sourceId: id,
             source: ref.current,
@@ -967,7 +968,7 @@ export function graphsReducer(
           return {
             ...stream,
             status: StreamStatus.Linked,
-            l: `${x + width * 0.5} ${y + height * 0.5}`,
+            l: `${x + width * 0.5 - gap} ${y + height * 0.5 - gap}`,
             target: ref.current,
             targetId: id,
           }
@@ -1056,7 +1057,7 @@ export function graphsReducer(
                 ? Number(node.ports[0].value) % Number(node.ports[1].value)
                 : node.ports[0].value &&
                   node.ports[1].value &&
-                  node.variant === NodeVariant.Power
+                  node.variant === NodeVariant.Exponentiation
                 ? Number(node.ports[0].value) ** Number(node.ports[1].value)
                 : value,
           }
