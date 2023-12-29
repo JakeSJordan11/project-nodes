@@ -1,5 +1,4 @@
 :root {
-  --background: #25272e;
   --red: #f44747;
   --purple: #b267e6;
   --yellow: #ffcb6b;
@@ -33,16 +32,31 @@
   --focus-outline-color: var(--yellow);
   --path-color: var(--purple);
 
+  --background: hsla(240, 1%, 66%, 1);
+  ---gray-500: hsla(0, 0%, 88%, 1);
+  --drop-shadow: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
+  --stroke-width: 2px;
+  --stroke-color: hsla(0, 0%, 56%, 1);
+  --radii-border-large: 8px;
+
   color-scheme: light;
   accent-color: var(--yellow);
+  background-color: var(--background);
 
   @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-    accent-color: var(--green);
-    background-color: var(--background);
+    --background: hsla(240, 1%, 15%, 1);
+    --drop-shadow: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
+    ---gray-500: hsla(0, 0%, 18%, 1);
+    --stroke-width: 2px;
+    --stroke-color: hsla(0, 0%, 0%, 1);
+    --radii-border-large: 8px;
     --focus-outline-color: var(--green);
     --node-box-shadow: 0.35rem 0.35rem 0.25rem 0rem var(--black);
     --node-border-color: var(--light-gray);
     --port-border-color: var(--background);
+
+    color-scheme: dark;
+    accent-color: var(--green);
+    background-color: var(--background);
   }
 }
