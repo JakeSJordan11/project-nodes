@@ -91,9 +91,24 @@ export function graphsReducer(
             }),
           }
         }),
-        streams: streams.filter(
-          (stream) => stream.status === StreamStatus.Linked
-        ),
+        streams: streams
+          .map((stream) => {
+            const { source, target } = stream
+            const sourceBounds = source.getBoundingClientRect()
+            const targetBounds = target?.getBoundingClientRect()
+            const sourceX = sourceBounds.x + sourceBounds.width * 0.5
+            const sourceY = sourceBounds.y + sourceBounds.height * 0.5
+            const targetX =
+              targetBounds && targetBounds?.x + targetBounds.width * 0.5
+            const targetY =
+              targetBounds && targetBounds?.y + targetBounds.height * 0.5
+            return {
+              ...stream,
+              m: `${sourceX} ${sourceY}`,
+              l: `${targetX} ${targetY}`,
+            }
+          })
+          .filter((stream) => stream.status === StreamStatus.Linked),
       }
     }
     case 'graph_pointer_down': {
@@ -125,9 +140,25 @@ export function graphsReducer(
       const { streams } = state
       return {
         ...state,
-        streams: streams.filter(
-          (stream) => stream.status === StreamStatus.Linked
-        ),
+
+        streams: streams
+          .map((stream) => {
+            const { source, target } = stream
+            const sourceBounds = source.getBoundingClientRect()
+            const targetBounds = target?.getBoundingClientRect()
+            const sourceX = sourceBounds.x + sourceBounds.width * 0.5
+            const sourceY = sourceBounds.y + sourceBounds.height * 0.5
+            const targetX =
+              targetBounds && targetBounds?.x + targetBounds.width * 0.5
+            const targetY =
+              targetBounds && targetBounds?.y + targetBounds.height * 0.5
+            return {
+              ...stream,
+              m: `${sourceX} ${sourceY}`,
+              l: `${targetX} ${targetY}`,
+            }
+          })
+          .filter((stream) => stream.status === StreamStatus.Linked),
       }
     }
     case 'graph_menu_show': {
