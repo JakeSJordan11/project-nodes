@@ -1,5 +1,5 @@
 .properties {
-  flex-grow: 1;
+  grid-area: properties;
   background-color: var(---gray-500);
   box-shadow: var(--drop-shadow);
   border: var(--stroke-width) solid;

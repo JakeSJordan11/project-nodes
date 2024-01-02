@@ -1,4 +1,5 @@
 .graph {
+  grid-area: graph;
   position: relative;
   overflow: hidden;
   background-color: var(---gray-500);

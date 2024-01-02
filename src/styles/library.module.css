@@ -1,4 +1,5 @@
 .library {
+  grid-area: library;
   display: grid;
   grid-auto-flow: column dense;
   grid-template-rows: 1fr 1fr;
@@ -6,12 +7,11 @@
   overflow-x: scroll;
   margin-inline: -1rem;
   padding-inline: 1rem;
-  margin-block-end: -1rem;
   padding-block-end: 1rem;
 }
 
 .item {
-  height: 8rem;
+  height: 6rem;
   padding: 1ch;
   text-align: center;
   background-color: var(---gray-500);

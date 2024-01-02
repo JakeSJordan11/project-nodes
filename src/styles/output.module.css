@@ -1,4 +1,5 @@
 .output {
+  grid-area: output;
   background-color: var(---gray-500);
   box-shadow: var(--drop-shadow);
   border: var(--stroke-width) solid;
