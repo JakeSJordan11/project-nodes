@@ -7,7 +7,7 @@ export function graphsReducer(
   state: GraphState,
   action: GraphAction
 ): GraphState {
-  const gap = 16
+  const gap = 18
   switch (action.type) {
     case 'graph_pointer_move': {
       const { nodes, streams } = state
