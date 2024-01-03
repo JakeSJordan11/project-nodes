@@ -1,10 +1,10 @@
 .output {
   grid-area: output;
-  background-color: var(---gray-500);
+  background-color: var(--gray-500);
   box-shadow: var(--drop-shadow);
   border: var(--stroke-width) solid;
   border-color: var(--stroke-color);
   border-radius: var(--radii-border-large);
-  min-width: 20rem;
+  min-width: 18rem;
   aspect-ratio: 1;
 }

@@ -46,7 +46,7 @@
   @media (prefers-color-scheme: dark) {
     --background: hsla(240, 1%, 15%, 1);
     --drop-shadow: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
-    ---gray-500: hsla(0, 0%, 18%, 1);
+    --gray-500: hsla(0, 0%, 18%, 1);
     --stroke-width: 2px;
     --stroke-color: hsla(0, 0%, 0%, 1);
     --radii-border-large: 8px;

@@ -8,13 +8,14 @@
   margin-inline: -1rem;
   padding-inline: 1rem;
   padding-block-end: 1rem;
+  justify-content: center;
 }
 
 .item {
   height: 6rem;
   padding: 1ch;
   text-align: center;
-  background-color: var(---gray-500);
+  background-color: var(--gray-500);
   box-shadow: var(--drop-shadow);
   border: var(--stroke-width) solid;
   border-color: var(--stroke-color);

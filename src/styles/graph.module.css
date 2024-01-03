@@ -2,12 +2,10 @@
   grid-area: graph;
   position: relative;
   overflow: hidden;
-  background-color: var(---gray-500);
+  background-color: var(--gray-500);
   box-shadow: var(--drop-shadow);
-  border: var(--stroke-width) solid;
-  border-color: var(--stroke-color);
+  border: var(--stroke-width) solid var(--stroke-color);
   border-radius: var(--radii-border-large);
-  flex-grow: 1;
 }
 
 .graph:active {
