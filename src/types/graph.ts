@@ -3,6 +3,7 @@ import type { NodeProps } from '@/types/node'
 import type { StreamProps } from '@/types/stream'
 import type {
   ChangeEvent,
+  DragEvent,
   MouseEvent,
   PointerEvent,
   ReactNode,
@@ -32,6 +33,10 @@ export type GraphAction =
   | {
       type: 'graph_pointer_leave'
       payload: { event: PointerEvent<HTMLElement> }
+    }
+  | {
+      type: 'graph_drop'
+      payload: { event: DragEvent<HTMLElement> }
     }
   | {
       type: 'graph_menu_show'

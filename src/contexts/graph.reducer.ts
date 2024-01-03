@@ -2,12 +2,15 @@ import { NodeKind, NodeStatus, NodeVariant } from '@/enums/node'
 import { PortKind, PortStatus } from '@/enums/port'
 import { StreamStatus } from '@/enums/stream'
 import { GraphAction, GraphState } from '@/types/graph'
+import { DragEvent } from 'react'
 
 export function graphsReducer(
   state: GraphState,
   action: GraphAction
 ): GraphState {
   const gap = 18
+  const nodeHeight = 128
+
   switch (action.type) {
     case 'graph_pointer_move': {
       const { nodes, streams } = state
@@ -161,6 +164,491 @@ export function graphsReducer(
           })
           .filter((stream) => stream.status === StreamStatus.Linked),
       }
+    }
+    case 'graph_drop': {
+      const { nodes } = state
+      const { clientX, clientY } = action.payload.event
+      const center = nodeHeight * 0.5
+
+      switch (action.payload.event.dataTransfer.getData('node')) {
+        case NodeVariant.Integer: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.Integer,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: 0,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Boolean: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.Boolean,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: false,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Float: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.Float,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: 0.0,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.String: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.String,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: '',
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Addition: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Addition,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Subtraction: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Subtraction,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Division: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Division,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Multiplication: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Multiplication,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Modulo: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Modulo,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Exponentiation: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Exponentiation,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Result: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Output,
+                variant: NodeVariant.Result,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Color: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.Color,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.WebGpu: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Input,
+                variant: NodeVariant.WebGpu,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+        case NodeVariant.Blend: {
+          return {
+            ...state,
+            nodes: [
+              ...nodes,
+              {
+                id: String(nodes.length + 1),
+                kind: NodeKind.Opertator,
+                variant: NodeVariant.Blend,
+                position: {
+                  x: clientX - gap - center,
+                  y: clientY - gap - center,
+                },
+                value: undefined,
+                offset: { x: 0, y: 0 },
+                status: NodeStatus.Idle,
+                ports: [
+                  {
+                    id: `${nodes.length + 1}-1`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-2`,
+                    kind: PortKind.Input,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                  {
+                    id: `${nodes.length + 1}-3`,
+                    kind: PortKind.Output,
+                    value: undefined,
+                    status: PortStatus.Idle,
+                  },
+                ],
+              },
+            ],
+          }
+        }
+      }
+      return state
     }
     case 'graph_menu_show': {
       const { ContextMenus } = state

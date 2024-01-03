@@ -6,7 +6,7 @@ import { NodeMenu } from '@/components/nodes/node.menu'
 import { Stream } from '@/components/stream'
 import { useGraph } from '@/contexts/graph.povider'
 import styles from '@/styles/graph.module.css'
-import { useState, type PointerEvent } from 'react'
+import { DragEvent, useState, type PointerEvent } from 'react'
 
 export function Graph() {
   const { state, dispatch } = useGraph()
@@ -32,6 +32,15 @@ export function Graph() {
     dispatch({ type: 'graph_pointer_down', payload: { event: event } })
   }
 
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    dispatch({ type: 'graph_drop', payload: { event: event } })
+    console.log(event.dataTransfer.getData('node'))
+  }
+
+  function handleDragOver(event: React.DragEvent<HTMLDivElement>) {
+    event.preventDefault()
+  }
+
   return (
     <article
       className={styles.graph}
@@ -40,6 +49,8 @@ export function Graph() {
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerLeave}
       onContextMenu={handleContextMenu}
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
       onWheel={(event) => {
         setScrollPosition({
           x: scrollPosition.x + event.deltaX,
