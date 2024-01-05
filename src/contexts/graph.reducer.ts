@@ -1,8 +1,8 @@
+import { GraphActionTypes } from '@/enums/graph'
 import { NodeKind, NodeStatus, NodeVariant } from '@/enums/node'
 import { PortKind, PortStatus } from '@/enums/port'
 import { StreamStatus } from '@/enums/stream'
 import { GraphAction, GraphState } from '@/types/graph'
-import { DragEvent } from 'react'
 
 export function graphsReducer(
   state: GraphState,
@@ -12,7 +12,7 @@ export function graphsReducer(
   const nodeHeight = 128
 
   switch (action.type) {
-    case 'graph_pointer_move': {
+    case GraphActionTypes.GRAPH_MOUSE_MOVE: {
       const { nodes, streams } = state
       const { clientX, clientY } = action.payload.event
 
@@ -66,7 +66,7 @@ export function graphsReducer(
         }),
       }
     }
-    case 'graph_pointer_up': {
+    case GraphActionTypes.GRAPH_MOUSE_UP: {
       const { nodes, streams } = state
       if (
         nodes.every((node) => node.status !== NodeStatus.Active) &&
@@ -115,32 +115,7 @@ export function graphsReducer(
           .filter((stream) => stream.status === StreamStatus.Linked),
       }
     }
-    case 'graph_pointer_down': {
-      const { ContextMenus } = state
-      if (ContextMenus.graph.hidden && ContextMenus.node.hidden) return state
-      return {
-        ...state,
-        ContextMenus: {
-          ...ContextMenus,
-          node: {
-            id: ContextMenus.node.id,
-            hidden: true,
-            position: {
-              x: ContextMenus.node.position.x,
-              y: ContextMenus.node.position.y,
-            },
-          },
-          graph: {
-            hidden: true,
-            position: {
-              x: ContextMenus.graph.position.x,
-              y: ContextMenus.graph.position.y,
-            },
-          },
-        },
-      }
-    }
-    case 'graph_pointer_leave': {
+    case GraphActionTypes.GRAPH_MOUSE_LEAVE: {
       const { streams } = state
       return {
         ...state,
@@ -165,7 +140,7 @@ export function graphsReducer(
           .filter((stream) => stream.status === StreamStatus.Linked),
       }
     }
-    case 'graph_drop': {
+    case GraphActionTypes.GRAPH_DROP: {
       const { nodes } = state
       const { clientX, clientY } = action.payload.event
       const center = nodeHeight * 0.5
@@ -650,720 +625,13 @@ export function graphsReducer(
       }
       return state
     }
-    case 'graph_menu_show': {
-      const { ContextMenus } = state
-      const { event } = action.payload
-      const { clientX, clientY } = event
-      event.preventDefault()
-
-      return {
-        ...state,
-        ContextMenus: {
-          ...ContextMenus,
-          graph: {
-            hidden: ContextMenus.node.hidden ? false : true,
-            position: {
-              x: clientX - gap,
-              y: clientY - gap,
-            },
-          },
-        },
-      }
-    }
-    case 'graph_menu_item_pointer_down': {
-      const { nodes, ContextMenus } = state
-      const target = action.payload.event.target as HTMLElement
-      const { x, y } = state.ContextMenus.graph.position
-
-      switch (target.textContent) {
-        case NodeVariant.Integer: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Input,
-                variant: NodeVariant.Integer,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: 0,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Boolean: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Input,
-                variant: NodeVariant.Boolean,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: false,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Float: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Input,
-                variant: NodeVariant.Float,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: 0.0,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.String: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Input,
-                variant: NodeVariant.String,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: '',
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Addition: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Opertator,
-                variant: NodeVariant.Addition,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-2`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-3`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Subtraction: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Opertator,
-                variant: NodeVariant.Subtraction,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-2`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-3`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Division: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Opertator,
-                variant: NodeVariant.Division,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-2`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-3`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Multiplication: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Opertator,
-                variant: NodeVariant.Multiplication,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-2`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-3`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Modulo: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Opertator,
-                variant: NodeVariant.Modulo,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-2`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-3`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Exponentiation: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Opertator,
-                variant: NodeVariant.Exponentiation,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-2`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-3`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Result: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Output,
-                variant: NodeVariant.Result,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Color: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Input,
-                variant: NodeVariant.Color,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.WebGpu: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Input,
-                variant: NodeVariant.WebGpu,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Blend: {
-          return {
-            ...state,
-            ContextMenus: {
-              ...ContextMenus,
-              graph: {
-                hidden: true,
-                position: {
-                  x: ContextMenus.graph.position.x,
-                  y: ContextMenus.graph.position.y,
-                },
-              },
-            },
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Opertator,
-                variant: NodeVariant.Blend,
-                position: {
-                  x: x,
-                  y: y,
-                },
-                value: undefined,
-                offset: { x: 0, y: 0 },
-                status: NodeStatus.Idle,
-                ports: [
-                  {
-                    id: `${nodes.length + 1}-1`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-2`,
-                    kind: PortKind.Input,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                  {
-                    id: `${nodes.length + 1}-3`,
-                    kind: PortKind.Output,
-                    value: undefined,
-                    status: PortStatus.Idle,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-      }
-      return state
-    }
-    case 'node_menu_show': {
-      return {
-        ...state,
-        ContextMenus: {
-          ...state.ContextMenus,
-          node: {
-            id: action.payload.id,
-            hidden: false,
-            position: {
-              x: action.payload.event.clientX,
-              y: action.payload.event.clientY,
-            },
-          },
-        },
-      }
-    }
-    case 'node_menu_item_pointer_down': {
-      const target = action.payload.event.target as HTMLElement
-      switch (target.textContent) {
-        case 'delete node': {
-          return {
-            ...state,
-            ContextMenus: {
-              ...state.ContextMenus,
-              node: {
-                id: state.ContextMenus.node.id,
-                hidden: true,
-                position: {
-                  x: state.ContextMenus.node.position.x,
-                  y: state.ContextMenus.node.position.y,
-                },
-              },
-            },
-          }
-        }
-      }
-      return {
-        ...state,
-        ContextMenus: {
-          ...state.ContextMenus,
-          node: {
-            id: state.ContextMenus.node.id,
-            hidden: true,
-            position: {
-              x: state.ContextMenus.node.position.x,
-              y: state.ContextMenus.node.position.y,
-            },
-          },
-        },
-      }
-    }
-    case 'node_pointer_down': {
+    case GraphActionTypes.NODE_MOUSE_DOWN: {
       const { nodes } = state
       const { clientX, clientY } = action.payload.event
       const { id } = action.payload
 
       return {
         ...state,
-        ContextMenus: {
-          ...state.ContextMenus,
-          node: {
-            id: state.ContextMenus.node.id,
-            hidden: true,
-            position: {
-              x: state.ContextMenus.node.position.x,
-              y: state.ContextMenus.node.position.y,
-            },
-          },
-        },
         nodes: nodes.map((node) => {
           const { x, y } = node.position
           if (node.id !== id) return node
@@ -1383,7 +651,22 @@ export function graphsReducer(
         }),
       }
     }
-    case 'port_pointer_down': {
+    case GraphActionTypes.NODE_CLICK: {
+      const { nodes } = state
+      const { id } = action.payload
+
+      return {
+        ...state,
+        nodes: nodes.map((node) => {
+          return {
+            ...node,
+            selected: node.id === id ? true : false,
+            value: node.id === id ? node.value : node.value,
+          }
+        }),
+      }
+    }
+    case GraphActionTypes.PORT_MOUSE_DOWN: {
       const { streams, nodes } = state
       const { value, ref, id } = action.payload
 
@@ -1420,7 +703,7 @@ export function graphsReducer(
         ],
       }
     }
-    case 'port_pointer_up': {
+    case GraphActionTypes.PORT_MOUSE_UP: {
       const { nodes, streams } = state
       const { ref, id } = action.payload
 
@@ -1463,7 +746,7 @@ export function graphsReducer(
         }),
       }
     }
-    case 'node_slider_change': {
+    case GraphActionTypes.NODE_SLIDER_CHANGE: {
       const { nodes } = state
       const { id, event } = action.payload
       const { value } = event.target as HTMLInputElement
@@ -1487,7 +770,7 @@ export function graphsReducer(
         }),
       }
     }
-    case 'node_value_change': {
+    case GraphActionTypes.NODE_VALUE_CHANGE: {
       const { nodes } = state
       const { value, id } = action.payload
 
@@ -1510,7 +793,7 @@ export function graphsReducer(
         }),
       }
     }
-    case 'port_value_change': {
+    case GraphActionTypes.PORT_VALUE_CHANGE: {
       const { nodes, streams } = state
       const { value, id, nodeId } = action.payload
 
@@ -1560,7 +843,7 @@ export function graphsReducer(
         }),
       }
     }
-    case 'stream_value_change': {
+    case GraphActionTypes.STREAM_VALUE_CHANGE: {
       const { nodes } = state
       const { value, targetId } = action.payload
 
@@ -1581,7 +864,7 @@ export function graphsReducer(
         }),
       }
     }
-    case 'node_color_change': {
+    case GraphActionTypes.NODE_COLOR_CHANGE: {
       const { nodes } = state
       const { id, event } = action.payload
       const { value } = event.target as HTMLInputElement
@@ -1599,6 +882,6 @@ export function graphsReducer(
       }
     }
     default:
-      throw new Error('Unknown action')
+      throw new Error(`Unhandled action type: ${GraphActionTypes}`)
   }
 }

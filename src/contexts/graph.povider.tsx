@@ -1,8 +1,14 @@
 'use client'
 
 import { graphsReducer } from '@/contexts/graph.reducer'
-import type { GraphAction, GraphProviderProps, GraphState } from '@/types/graph'
-import { createContext, useContext, useReducer, type Dispatch } from 'react'
+import type { GraphAction, GraphState } from '@/types/graph'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useReducer,
+  type Dispatch,
+} from 'react'
 
 export const GraphsContext = createContext<GraphState | null>(null)
 export const GraphsDispatchContext =
@@ -17,14 +23,10 @@ export function useGraph() {
   return { state, dispatch }
 }
 
-export function GraphProvider({ children }: GraphProviderProps) {
+export function GraphProvider({ children }: { children: ReactNode }) {
   const initialState: GraphState = {
     nodes: [],
     streams: [],
-    ContextMenus: {
-      graph: { position: { x: 0, y: 0 }, hidden: true },
-      node: { position: { x: 0, y: 0 }, hidden: true, id: '' },
-    },
   }
   const [state, dispatch] = useReducer(graphsReducer, initialState)
   return (

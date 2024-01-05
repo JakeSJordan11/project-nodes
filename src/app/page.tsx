@@ -1,4 +1,4 @@
-import { Graph } from '@/components/graph/graph'
+import { Graph } from '@/components/graph'
 import { Library } from '@/components/library'
 import { Output } from '@/components/output'
 import { Properties } from '@/components/properties'

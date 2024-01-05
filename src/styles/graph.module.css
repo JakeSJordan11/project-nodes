@@ -2,9 +2,9 @@
   grid-area: graph;
   position: relative;
   overflow: hidden;
-  background-color: var(--gray-500);
+  background-color: var(--color-background-primary);
   box-shadow: var(--drop-shadow);
-  border: var(--stroke-width) solid var(--stroke-color);
+  border: var(--width-border) solid var(--color-border);
   border-radius: var(--radii-border-large);
 }
 
@@ -16,7 +16,7 @@
   width: 100%;
   height: 100%;
   background: none;
-  stroke: var(--path-color);
+  stroke: var(--color-stroke);
   stroke-width: 4;
   stroke-dasharray: 8;
   stroke-linecap: round;

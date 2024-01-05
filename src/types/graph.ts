@@ -1,98 +1,73 @@
-import type { ContextMenuState } from '@/types/context.menu'
+import { GraphActionTypes } from '@/enums/graph'
 import type { NodeProps } from '@/types/node'
 import type { StreamProps } from '@/types/stream'
-import type {
-  ChangeEvent,
-  DragEvent,
-  MouseEvent,
-  PointerEvent,
-  ReactNode,
-  RefObject,
-} from 'react'
-
-export interface GraphProviderProps {
-  children: ReactNode
-}
+import type { ChangeEvent, DragEvent, MouseEvent, RefObject } from 'react'
 
 export interface GraphState {
   nodes: NodeProps[]
   streams: StreamProps[]
-  ContextMenus: ContextMenuState
 }
 
 export type GraphAction =
   | {
-      type: 'graph_pointer_down'
-      payload: { event: PointerEvent<HTMLElement> }
-    }
-  | {
-      type: 'graph_pointer_move'
-      payload: { event: PointerEvent<HTMLElement> }
-    }
-  | { type: 'graph_pointer_up'; payload: { event: PointerEvent<HTMLElement> } }
-  | {
-      type: 'graph_pointer_leave'
-      payload: { event: PointerEvent<HTMLElement> }
-    }
-  | {
-      type: 'graph_drop'
-      payload: { event: DragEvent<HTMLElement> }
-    }
-  | {
-      type: 'graph_menu_show'
+      type: GraphActionTypes.GRAPH_MOUSE_MOVE
       payload: { event: MouseEvent<HTMLElement> }
     }
   | {
-      type: 'graph_menu_item_pointer_down'
-      payload: { event: PointerEvent<HTMLElement> }
+      type: GraphActionTypes.GRAPH_MOUSE_UP
+      payload: { event: MouseEvent<HTMLElement> }
     }
   | {
-      type: 'node_menu_show'
+      type: GraphActionTypes.GRAPH_MOUSE_LEAVE
+      payload: { event: MouseEvent<HTMLElement> }
+    }
+  | {
+      type: GraphActionTypes.GRAPH_DROP
+      payload: { event: DragEvent<HTMLElement> }
+    }
+  | {
+      type: GraphActionTypes.NODE_CLICK
+      payload: { id: string | undefined }
+    }
+  | {
+      type: GraphActionTypes.NODE_MOUSE_DOWN
       payload: { event: MouseEvent<HTMLElement>; id: string | undefined }
     }
   | {
-      type: 'node_menu_item_pointer_down'
-      payload: { event: PointerEvent<HTMLElement> }
-    }
-  | {
-      type: 'node_pointer_down'
-      payload: { event: PointerEvent<HTMLElement>; id: string | undefined }
-    }
-  | {
-      type: 'port_pointer_down'
+      type: GraphActionTypes.PORT_MOUSE_DOWN
       payload: {
-        event: PointerEvent<HTMLButtonElement>
+        event: MouseEvent<HTMLButtonElement>
         id: string | undefined
         value: number | boolean | string | undefined
         ref: RefObject<HTMLButtonElement>
       }
     }
   | {
-      type: 'port_pointer_up'
+      type: GraphActionTypes.PORT_MOUSE_UP
       payload: {
-        event: PointerEvent<HTMLButtonElement>
+        event: MouseEvent<HTMLButtonElement>
         id: string | undefined
         value: number | boolean | string | undefined
         ref: RefObject<HTMLButtonElement>
       }
     }
   | {
-      type: 'node_slider_change'
+      type: GraphActionTypes.NODE_SLIDER_CHANGE
       payload: { event: ChangeEvent<HTMLInputElement>; id: string | undefined }
     }
   | {
-      type: 'node_color_change'
+      type: GraphActionTypes.NODE_COLOR_CHANGE
       payload: { event: ChangeEvent<HTMLInputElement>; id: string | undefined }
     }
   | {
-      type: 'node_value_change'
+      type: GraphActionTypes.NODE_VALUE_CHANGE
       payload: {
         value: number | boolean | string | undefined
         id: string | undefined
       }
     }
   | {
-      type: 'port_value_change'
+      type: GraphActionTypes.PORT_VALUE_CHANGE
       payload: {
         value: number | boolean | string | undefined
         id: string | undefined
@@ -100,7 +75,7 @@ export type GraphAction =
       }
     }
   | {
-      type: 'stream_value_change'
+      type: GraphActionTypes.STREAM_VALUE_CHANGE
       payload: {
         value: number | boolean | string | undefined
         targetId: string | undefined

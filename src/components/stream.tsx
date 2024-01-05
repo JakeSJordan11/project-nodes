@@ -1,6 +1,7 @@
 'use client'
 
 import { useGraph } from '@/contexts/graph.povider'
+import { GraphActionTypes } from '@/enums/graph'
 import type { StreamProps } from '@/types/stream'
 import { useEffect } from 'react'
 
@@ -10,7 +11,7 @@ export function Stream({ m, l, value, targetId }: StreamProps) {
   useEffect(() => {
     if (!targetId) return
     dispatch({
-      type: 'stream_value_change',
+      type: GraphActionTypes.STREAM_VALUE_CHANGE,
       payload: {
         value: value,
         targetId: targetId,

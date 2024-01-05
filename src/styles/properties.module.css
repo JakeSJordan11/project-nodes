@@ -1,8 +1,8 @@
 .properties {
   grid-area: properties;
-  background-color: var(--gray-500);
+  background-color: var(--color-background-primary);
   box-shadow: var(--drop-shadow);
-  border: var(--stroke-width) solid var(--stroke-color);
+  border: var(--width-border) solid var(--color-border);
   border-radius: var(--radii-border-large);
   user-select: none;
   text-align: center;
@@ -10,5 +10,11 @@
 
 .title {
   font-size: 1.2rem;
-  padding-inline: 1rem;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }

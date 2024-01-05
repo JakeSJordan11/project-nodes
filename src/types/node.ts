@@ -10,4 +10,5 @@ export interface NodeProps {
   offset: { x: number; y: number }
   status: NodeStatus
   ports: PortProps[]
+  selected?: boolean
 }

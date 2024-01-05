@@ -1,12 +1,10 @@
 .port {
   cursor: pointer;
-  border-width: var(--port-border-width);
-  border-style: solid;
-  border-color: var(--port-border-color);
+  border: var(--port-border-width) solid var(--color-border);
   border-radius: var(--port-border-radius);
-  background-color: var(--port-background-color);
-  width: var(--port-width);
+  background-color: var(--color-background-primary);
   height: var(--port-height);
+  aspect-ratio: 1;
 }
 
 .port:hover {
