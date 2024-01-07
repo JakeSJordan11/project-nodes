@@ -1,19 +1,24 @@
+'use client'
+
 import { GraphProvider } from '@/components/graph'
 import type { ReactNode } from 'react'
-import styles from './app.layout.module.css'
+import styled from 'styled-components'
 import { inter } from './fonts'
-import './globals.css'
+import StyledComponentsRegistry from './registry'
 
-export const metadata = {
-  title: 'Project Nodes',
-}
+const StyledBody = styled.body`
+  margin: 0;
+  overflow: hidden;
+`
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html className={inter.className} lang='en'>
-      <body className={styles.body}>
-        <GraphProvider>{children}</GraphProvider>
-      </body>
+      <StyledBody>
+        <GraphProvider>
+          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        </GraphProvider>
+      </StyledBody>
     </html>
   )
 }

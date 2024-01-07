@@ -12,6 +12,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react'
+import styled, { keyframes } from 'styled-components'
 import {
   Node,
   NodeKind,
@@ -21,7 +22,6 @@ import {
 } from '../node'
 import { PortKind, PortStatus } from '../port'
 import { Stream, StreamStatus, type StreamProps } from '../stream'
-import styles from './graph.module.css'
 
 export enum GraphActionTypes {
   GRAPH_MOUSE_MOVE = 'graph_mouse_move',
@@ -580,6 +580,37 @@ export function graphsReducer(
   }
 }
 
+const StyledGraph = styled.article`
+  grid-area: graph;
+  position: relative;
+  overflow: hidden;
+  background-color: hsla(0, 0%, 90%, 1);
+  box-shadow: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
+  border: 2px solid hsla(0, 0%, 50%, 1);
+  border-radius: 8px;
+`
+
+const stream = keyframes` 
+  from {
+    stroke-dashoffset: 16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+  `
+
+const StyledSvg = styled.svg`
+  width: 100%;
+  height: 100%;
+  background: none;
+  stroke: var(--color-stroke);
+  stroke-width: 4;
+  stroke-dasharray: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: stream 0.5s linear infinite;
+`
+
 export function Graph() {
   const { state, dispatch } = useGraph()
   const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 })
@@ -614,8 +645,7 @@ export function Graph() {
   }
 
   return (
-    <article
-      className={styles.graph}
+    <StyledGraph
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
@@ -635,11 +665,11 @@ export function Graph() {
       {state.nodes.map((node) => (
         <Node key={node.id} {...node} />
       ))}
-      <svg className={styles.svg}>
+      <StyledSvg>
         {state.streams.map((stream) => (
           <Stream key={stream.id} {...stream} />
         ))}
-      </svg>
-    </article>
+      </StyledSvg>
+    </StyledGraph>
   )
 }
