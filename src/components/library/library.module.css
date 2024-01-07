@@ -7,6 +7,7 @@
   margin-inline: -1rem;
   padding-inline: 1rem;
   padding-block-end: 1rem;
+  justify-content: start;
 }
 
 .item {

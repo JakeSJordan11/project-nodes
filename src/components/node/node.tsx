@@ -1,13 +1,36 @@
 'use client'
 
-import { Port } from '@/components/port'
-import { useGraph } from '@/contexts/graph.povider'
-import { GraphActionTypes } from '@/enums/graph'
-import { NodeVariant } from '@/enums/node'
-import { PortKind } from '@/enums/port'
-import styles from '@/styles/node.module.css'
-import type { NodeProps } from '@/types/node'
 import { useEffect, type PointerEvent } from 'react'
+import { GraphActionTypes, useGraph } from '../graph'
+import { Port, PortKind, type PortProps } from '../port'
+import styles from './node.module.css'
+
+export enum NodeKind {
+  Input = 'input',
+  Operator = 'operator',
+}
+
+export enum NodeVariant {
+  Math = 'math',
+  Number = 'number',
+}
+
+export enum NodeStatus {
+  Idle = 'idle',
+  Active = 'active',
+}
+
+export interface NodeProps {
+  id: string | undefined
+  value: number | boolean | string | undefined
+  kind: NodeKind
+  variant: NodeVariant
+  position: { x: number; y: number }
+  offset: { x: number; y: number }
+  status: NodeStatus
+  ports: PortProps[]
+  selected?: boolean
+}
 
 export function Node({ id, value, position, variant, ports }: NodeProps) {
   const { dispatch } = useGraph()
@@ -31,28 +54,6 @@ export function Node({ id, value, position, variant, ports }: NodeProps) {
       type: GraphActionTypes.NODE_CLICK,
       payload: { id: id },
     })
-  }
-
-  function getValues() {
-    return ports[0].value
-      ? Number(ports[0].value)
-      : ports[0].value && ports[1].value && variant === NodeVariant.Addition
-      ? Number(ports[0].value) + Number(ports[1].value)
-      : ports[0].value && ports[1].value && variant === NodeVariant.Subtraction
-      ? Number(ports[0].value) - Number(ports[1].value)
-      : ports[0].value &&
-        ports[1].value &&
-        variant === NodeVariant.Multiplication
-      ? Number(ports[0].value) * Number(ports[1].value)
-      : ports[0].value && ports[1].value && variant === NodeVariant.Division
-      ? Number(ports[0].value) / Number(ports[1].value)
-      : ports[0].value && ports[1].value && variant === NodeVariant.Modulo
-      ? Number(ports[0].value) % Number(ports[1].value)
-      : ports[0].value &&
-        ports[1].value &&
-        variant === NodeVariant.Exponentiation
-      ? Number(ports[0].value) ** Number(ports[1].value)
-      : value
   }
 
   return (

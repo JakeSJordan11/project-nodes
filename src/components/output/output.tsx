@@ -1,7 +1,7 @@
 'use client'
 
-import { useGraph } from '@/contexts/graph.povider'
-import styles from '@/styles/output.module.css'
+import { useGraph } from '../graph'
+import styles from './output.module.css'
 
 export function Output() {
   const { state } = useGraph()

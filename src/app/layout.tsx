@@ -1,8 +1,8 @@
-import { GraphProvider } from '@/contexts/graph.povider'
-import styles from '@/styles/app.layout.module.css'
-import { inter } from '@/styles/fonts'
-import '@/styles/globals.css'
-import { ReactNode } from 'react'
+import { GraphProvider } from '@/components/graph'
+import type { ReactNode } from 'react'
+import styles from './app.layout.module.css'
+import { inter } from './fonts'
+import './globals.css'
 
 export const metadata = {
   title: 'Project Nodes',
