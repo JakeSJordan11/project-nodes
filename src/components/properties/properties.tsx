@@ -1,9 +1,30 @@
 'use client'
 
 import { type ChangeEvent } from 'react'
+import styled from 'styled-components'
 import { GraphActionTypes, useGraph } from '../graph'
 import { NodeVariant, type NodeProps } from '../node'
-import styles from './properties.module.css'
+
+const StyledProperties = styled.article`
+  grid-area: properties;
+  background-color: hsla(0, 0%, 90%, 1);
+  box-shadow: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
+  border: 0.125rem solid hsla(0, 0%, 50%, 1);
+  border-radius: 0.5rem;
+  user-select: none;
+  text-align: center;
+`
+
+const StyledTitle = styled.h1`
+  font-size: 1.2rem;
+`
+
+const StyledInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+`
 
 export function Properties() {
   const { state, dispatch } = useGraph()
@@ -26,14 +47,14 @@ export function Properties() {
   }
 
   return (
-    <article className={styles.properties}>
-      <h1 className={styles.title}>properties</h1>
+    <StyledProperties>
+      <StyledTitle>properties</StyledTitle>
       {state.nodes.map((node) => {
         if (!node.selected) return null
         switch (node.variant) {
           case NodeVariant.Number: {
             return (
-              <div key={node.id} className={styles.input}>
+              <StyledInput>
                 <input
                   type='range'
                   value={Number(node.value)}
@@ -44,7 +65,7 @@ export function Properties() {
                   value={Number(node.value)}
                   onChange={(event) => handleSliderChange(event, node.id)}
                 />
-              </div>
+              </StyledInput>
             )
           }
           case NodeVariant.Math: {
@@ -62,6 +83,6 @@ export function Properties() {
           }
         }
       })}
-    </article>
+    </StyledProperties>
   )
 }

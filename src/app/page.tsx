@@ -18,7 +18,7 @@ const StyledPage = styled.main`
   gap: 1rem;
   padding: 1rem;
   height: 100svh;
-  background-color: var(--color-background-secondary);
+  background-color: hsla(0, 0%, 100%, 1);
 `
 
 export default function Home() {

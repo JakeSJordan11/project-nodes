@@ -580,14 +580,19 @@ export function graphsReducer(
   }
 }
 
-const StyledGraph = styled.article`
+const StyledGraph = styled.article<{
+  backgroundPosition: { x: number; y: number }
+}>`
   grid-area: graph;
   position: relative;
   overflow: hidden;
   background-color: hsla(0, 0%, 90%, 1);
   box-shadow: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
-  border: 2px solid hsla(0, 0%, 50%, 1);
-  border-radius: 8px;
+  border: 0.125rem solid hsla(0, 0%, 50%, 1);
+  border-radius: 0.5rem;
+  background-image: url(/grid.svg);
+  background-position: ${({ backgroundPosition }) =>
+    `${backgroundPosition.x}px ${backgroundPosition.y}px`};
 `
 
 const stream = keyframes` 
@@ -603,12 +608,12 @@ const StyledSvg = styled.svg`
   width: 100%;
   height: 100%;
   background: none;
-  stroke: var(--color-stroke);
+  stroke: black;
   stroke-width: 4;
   stroke-dasharray: 8;
   stroke-linecap: round;
   stroke-linejoin: round;
-  animation: stream 0.5s linear infinite;
+  animation: ${stream} 0.5s linear infinite;
 `
 
 export function Graph() {
@@ -651,15 +656,12 @@ export function Graph() {
       onMouseLeave={handleMouseLeave}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
+      backgroundPosition={scrollPosition}
       onWheel={(event) => {
         setScrollPosition({
           x: scrollPosition.x + event.deltaX,
           y: scrollPosition.y + event.deltaY,
         })
-      }}
-      style={{
-        backgroundImage: `url(/grid.svg)`,
-        backgroundPosition: `${scrollPosition.x}px ${scrollPosition.y}px`,
       }}
     >
       {state.nodes.map((node) => (
