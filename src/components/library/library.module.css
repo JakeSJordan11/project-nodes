@@ -1,15 +1,17 @@
 .library {
-  flex: 1;
   display: grid;
   gap: var(--size-spacing-small);
+  grid-auto-flow: column;
+  justify-content: start;
+  align-content: start;
 }
 
 .item {
   border: 2px solid var(--color-border-primary);
-  border-radius: var(--radii-border-small);
   color: var(--color-text-primary);
   background-color: var(--color-background-secondary);
   height: 100px;
   aspect-ratio: 1;
   text-align: center;
+  box-shadow: var(--shadow-primary);
 }

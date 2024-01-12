@@ -2,7 +2,7 @@
   width: 1rem;
   aspect-ratio: 1;
   border: 2px solid var(--color-border-primary);
-  background-color: var(--color-background-tertiary);
+  background-color: var(--color-background-primary);
   border-radius: 50%;
   cursor: pointer;
 }

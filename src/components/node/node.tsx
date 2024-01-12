@@ -11,8 +11,8 @@ export enum NodeKind {
 }
 
 export enum NodeVariant {
-  Math = 'math',
   Number = 'number',
+  Math = 'math',
 }
 
 export enum NodeStatus {

@@ -9,7 +9,11 @@ export function Output() {
     <article className={styles.output}>
       {state.nodes.map((node) => {
         if (!node.selected) return null
-        return <output key={node.id}>{node.value}</output>
+        return (
+          <output key={node.id} className={styles.value}>
+            {node.value}
+          </output>
+        )
       })}
     </article>
   )

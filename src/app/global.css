@@ -8,11 +8,14 @@
   @media (prefers-color-scheme: light) {
     --color-text-primary: #353535;
 
-    --color-background-primary: #e8e8e8;
-    --color-background-secondary: #e0e0e0;
-    --color-background-tertiary: #a5a5a5;
+    --color-background-primary: hsl(240, 1%, 66%);
+    --color-background-secondary: hsl(0, 0%, 88%);
 
-    --color-border-primary: #404040;
+    --shadow-primary: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
+
+    --color-border-primary: hsl(0, 0%, 56%);
+
+    --color-stroke-primary: hsl(0, 0%, 0%);
   }
 }
 
@@ -20,10 +23,13 @@
   @media (prefers-color-scheme: dark) {
     --color-text-primary: #eeeeee;
 
-    --color-background-primary: #272728;
-    --color-background-secondary: #2f2f2f;
-    --color-background-tertiary: #474747;
+    --color-background-primary: hsl(240, 1%, 15%);
+    --color-background-secondary: hsl(0, 0%, 18%);
 
-    --color-border-primary: #a5a5a5;
+    --shadow-primary: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
+
+    --color-border-primary: hsl(0, 0%, 0%);
+
+    --color-stroke-primary: hsl(0, 0%, 56%);
   }
 }

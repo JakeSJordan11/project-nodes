@@ -1,6 +1,5 @@
 .properties {
   border: 2px solid var(--color-border-primary);
-  border-radius: var(--radii-border-medium);
   background-color: var(--color-background-secondary);
   color: var(--color-text-primary);
   flex: 1;
@@ -8,6 +7,7 @@
   flex-direction: column;
   gap: var(--size-spacing-small);
   align-items: center;
+  box-shadow: var(--shadow-primary);
 }
 
 .title {
