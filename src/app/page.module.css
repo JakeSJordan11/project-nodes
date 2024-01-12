@@ -1,0 +1,25 @@
+.main {
+  display: flex;
+  height: 100svh;
+  gap: var(--size-spacing-small);
+  padding: var(--size-spacing-small);
+  box-sizing: border-box;
+  background-color: var(--color-background-primary);
+}
+
+.main:active {
+  cursor: move;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: var(--size-spacing-small);
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-spacing-small);
+}

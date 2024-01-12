@@ -1,0 +1,49 @@
+.node {
+  position: absolute;
+  width: 100px;
+  aspect-ratio: 1;
+  border: 2px solid var(--color-border-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-spacing-small);
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-background-primary);
+  border-radius: var(--radii-border-small);
+  color: var(--color-text-primary);
+  cursor: grab;
+  user-select: none;
+}
+
+.node:active {
+  cursor: grabbing;
+}
+
+.outputs {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  right: -10px;
+}
+
+.inputs {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  left: -10px;
+  gap: 10px;
+}
+
+.title {
+  position: absolute;
+  top: -20px;
+  color: var(--color-text-primary);
+}
+
+.value {
+  display: grid;
+  place-items: center;
+  color: var(--color-text-primary);
+}

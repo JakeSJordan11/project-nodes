@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, type PointerEvent } from 'react'
-import styled from 'styled-components'
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
+import styles from './node.module.css'
 
 export enum NodeKind {
   Input = 'input',
@@ -30,66 +30,17 @@ export interface NodeProps {
   status: NodeStatus
   ports: PortProps[]
   selected?: boolean
+  scrollPosition: { x: number; y: number }
 }
 
-const StyledNode = styled.article<{ position: { x: number; y: number } }>`
-  display: flex;
-  position: absolute;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
-  border: 0.125rem solid hsla(0, 0%, 50%, 1);
-  border-radius: 0.5rem;
-  background-color: hsla(0, 0%, 90%, 1);
-  padding: 0.75rem;
-  height: 8rem;
-  aspect-ratio: 1;
-  user-select: none;
-  top: ${(props) => props.position.y}px;
-  left: ${(props) => props.position.x}px;
-`
-
-const StyledPortWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  justify-content: space-evenly;
-  align-items: center;
-  width: 0;
-  height: '100%';
-`
-
-const StyledInputs = styled(StyledPortWrapper)`
-  left: 0;
-`
-
-const StyledOutputs = styled(StyledPortWrapper)`
-  right: 0;
-`
-
-const StyledTitle = styled.h1`
-  margin: 0;
-  width: 100%;
-  font-weight: 800;
-  font-size: medium;
-  text-align: center;
-`
-
-const StyledValue = styled.output`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  width: 100%;
-  aspect-ratio: 1;
-  font-weight: 800;
-  font-size: x-large;
-  user-select: none;
-`
-
-export function Node({ id, value, position, variant, ports }: NodeProps) {
+export function Node({
+  scrollPosition,
+  id,
+  value,
+  position,
+  variant,
+  ports,
+}: NodeProps) {
   const { dispatch } = useGraph()
 
   useEffect(() => {
@@ -114,33 +65,37 @@ export function Node({ id, value, position, variant, ports }: NodeProps) {
   }
 
   return (
-    <StyledNode
+    <article
+      className={styles.node}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
-      position={position}
+      style={{
+        left: position.x + scrollPosition.x,
+        top: position.y + scrollPosition.y,
+      }}
     >
       {ports.filter((port) => port.kind === PortKind.Input).length <
       1 ? null : (
-        <StyledInputs>
+        <div className={styles.inputs}>
           {ports.map((port) =>
             port.kind !== PortKind.Input ? null : (
               <Port {...port} key={port.id} />
             )
           )}
-        </StyledInputs>
+        </div>
       )}
-      <StyledTitle>{variant}</StyledTitle>
-      <StyledValue>{value}</StyledValue>
+      <h1 className={styles.title}>{variant}</h1>
+      <output className={styles.value}>{value}</output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
       1 ? null : (
-        <StyledOutputs>
+        <div className={styles.outputs}>
           {ports.map((port) =>
             port.kind !== PortKind.Output ? null : (
               <Port {...port} key={port.id} />
             )
           )}
-        </StyledOutputs>
+        </div>
       )}
-    </StyledNode>
+    </article>
   )
 }

@@ -1,24 +1,27 @@
-'use client'
-
-import { GraphProvider } from '@/components/graph'
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
 import type { ReactNode } from 'react'
-import styled from 'styled-components'
-import { inter } from './fonts'
-import StyledComponentsRegistry from './registry'
+import './global.css'
+import styles from './layout.module.css'
 
-const StyledBody = styled.body`
-  margin: 0;
-  overflow: hidden;
-`
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
+export const metadata: Metadata = {
+  title: 'Project-Nodes',
+  description: 'A node based tool',
+}
+
+export const viewport: Viewport = {
+  colorScheme: 'light dark',
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html className={inter.className} lang='en'>
-      <StyledBody>
-        <GraphProvider>
-          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-        </GraphProvider>
-      </StyledBody>
+      <body className={styles.body}>{children}</body>
     </html>
   )
 }

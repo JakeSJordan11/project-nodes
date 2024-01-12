@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useRef, type MouseEvent } from 'react'
-import styled from 'styled-components'
 import { GraphActionTypes, useGraph } from '../graph'
+import styles from './port.module.css'
 
 export enum PortKind {
   Input = 'input',
@@ -22,14 +22,6 @@ export interface PortProps {
   kind: PortKind
   status: PortStatus
 }
-
-const StyledPort = styled.button`
-  border: 0.15rem solid hsla(0, 0%, 50%, 1);
-  border-radius: 50%;
-  background-color: hsla(0, 0%, 90%, 1);
-  height: 1.25rem;
-  aspect-ratio: 1;
-`
 
 export function Port({ id, value, nodeId }: PortProps) {
   const ref = useRef<HTMLButtonElement>(null)
@@ -59,7 +51,8 @@ export function Port({ id, value, nodeId }: PortProps) {
   }
 
   return (
-    <StyledPort
+    <button
+      className={styles.port}
       ref={ref}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
