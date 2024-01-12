@@ -19,7 +19,7 @@ export function Library() {
           draggable={true}
           onDragStart={(event) => handleonDragStart(event, variant)}
         >
-          {variant}
+          <h1 className={styles.title}>{variant}</h1>
         </article>
       ))}
     </article>

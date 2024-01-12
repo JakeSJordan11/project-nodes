@@ -1,25 +1,18 @@
 .main {
-  display: flex;
   height: 100svh;
-  gap: var(--size-spacing-small);
   padding: var(--size-spacing-small);
-  box-sizing: border-box;
+  display: grid;
+  gap: var(--size-spacing-small);
+  grid-template-areas:
+    'graph output'
+    'graph properties'
+    'library properties';
   background-color: var(--color-background-primary);
-}
+  grid-template-columns: 1fr minmax(0, 16rem);
+  grid-template-rows: auto 1fr;
+  box-sizing: border-box;
 
-.main:active {
-  cursor: move;
-}
-
-.right {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: var(--size-spacing-small);
-}
-
-.left {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-spacing-small);
+  &.main:active {
+    cursor: move;
+  }
 }

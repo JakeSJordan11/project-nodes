@@ -8,14 +8,10 @@ export default function Home() {
   return (
     <GraphProvider>
       <main className={styles.main}>
-        <article className={styles.right}>
-          <Graph />
-          <Library />
-        </article>
-        <article className={styles.left}>
-          <Output />
-          <Properties />
-        </article>
+        <Graph />
+        <Library />
+        <Output />
+        <Properties />
       </main>
     </GraphProvider>
   )

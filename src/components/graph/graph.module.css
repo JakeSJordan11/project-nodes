@@ -1,5 +1,5 @@
 .graph {
-  flex: 1;
+  grid-area: graph;
   border: 2px solid var(--color-border-primary);
   background-color: var(--color-background-secondary);
   contain: content;
