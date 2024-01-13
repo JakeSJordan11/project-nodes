@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, type PointerEvent } from 'react'
+import { MouseEvent, useEffect, type PointerEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
 import styles from './node.module.css'
@@ -17,20 +17,22 @@ export enum NodeVariant {
 
 export enum NodeStatus {
   Idle = 'idle',
+  Dragging = 'dragging',
   Active = 'active',
+  Selected = 'selected',
 }
 
 export interface NodeProps {
-  id: string | undefined
-  value: number | boolean | string | undefined
-  kind: NodeKind
-  variant: NodeVariant
-  position: { x: number; y: number }
-  offset: { x: number; y: number }
-  status: NodeStatus
+  id: string
   ports: PortProps[]
-  selected?: boolean
-  scrollPosition: { x: number; y: number }
+  position: { x: number; y: number }
+  status: NodeStatus
+  variant: NodeVariant
+
+  value: number | boolean | string | undefined // TODO: derive this state from node variant
+  kind: NodeKind // TODO: derive this state from node variant
+  offset: { x: number; y: number } // TODO: derive this state this may need to be created locally, but I don't think it needs to be in the global state
+  scrollPosition: { x: number; y: number } // TODO: derive this state
 }
 
 export function Node({
@@ -64,10 +66,18 @@ export function Node({
     })
   }
 
+  function handleMouseUp(event: MouseEvent<HTMLElement>) {
+    dispatch({
+      type: GraphActionTypes.NODE_MOUSE_UP,
+      payload: { event: event, id: id },
+    })
+  }
+
   return (
     <article
       className={styles.node}
       onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       onClick={handleClick}
       style={{
         left: position.x + scrollPosition.x,

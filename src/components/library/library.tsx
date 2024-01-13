@@ -1,15 +1,20 @@
 'use client'
 
 import type { DragEvent } from 'react'
+import { GraphActionTypes, useGraph } from '../graph'
 import { NodeVariant } from '../node'
 import styles from './library.module.css'
 
 export function Library() {
+  const { dispatch } = useGraph()
+
   function handleonDragStart(event: DragEvent<HTMLElement>, variant: string) {
-    event.dataTransfer.setData('variant', variant)
-    event.dataTransfer.setData('offsetx', event.nativeEvent.offsetX.toString())
-    event.dataTransfer.setData('offsety', event.nativeEvent.offsetY.toString())
+    dispatch({
+      type: GraphActionTypes.NODE_DRAG_START,
+      payload: { event: event, variant: variant },
+    })
   }
+
   return (
     <article className={styles.library}>
       {Object.values(NodeVariant).map((variant) => (

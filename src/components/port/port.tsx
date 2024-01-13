@@ -16,11 +16,11 @@ export enum PortStatus {
 }
 
 export interface PortProps {
-  nodeId?: string | undefined
-  id: string | undefined
-  value: number | boolean | string | undefined
-  kind: PortKind
+  id: string
   status: PortStatus
+  kind: PortKind // TODO: derive this state from node kind operators have inputs and outputs, numbers have inputs
+  nodeId?: string | undefined // this is duplicated state, I should be able to derive this from the global state of the node
+  value: number | boolean | string | undefined // TODO: derive this state from node variant
 }
 
 export function Port({ id, value, nodeId }: PortProps) {
@@ -52,8 +52,8 @@ export function Port({ id, value, nodeId }: PortProps) {
 
   return (
     <button
-      className={styles.port}
       ref={ref}
+      className={styles.port}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     />

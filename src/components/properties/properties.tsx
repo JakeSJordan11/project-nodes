@@ -2,7 +2,7 @@
 
 import { type ChangeEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
-import { NodeVariant, type NodeProps } from '../node'
+import { NodeStatus, NodeVariant, type NodeProps } from '../node'
 import styles from './properties.module.css'
 
 export function Properties() {
@@ -29,11 +29,16 @@ export function Properties() {
     <article className={styles.properties}>
       <h1 className={styles.title}>properties</h1>
       {state.nodes.map((node) => {
-        if (!node.selected) return null
+        if (
+          node.status === NodeStatus.Idle ||
+          node.status === NodeStatus.Dragging
+        ) {
+          return undefined
+        }
         switch (node.variant) {
           case NodeVariant.Number: {
             return (
-              <div className={styles.inputs}>
+              <div key={node.id} className={styles.inputs}>
                 <input
                   type='range'
                   value={Number(node.value)}
@@ -56,9 +61,6 @@ export function Properties() {
                 <option value='/'>division</option>
               </select>
             )
-          }
-          default: {
-            return null
           }
         }
       })}
