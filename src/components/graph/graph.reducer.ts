@@ -23,6 +23,7 @@ function moveActiveNode(
 ) {
   const { nodes } = state
   const { clientX, clientY } = action.payload.event
+
   return nodes.map((node) => {
     const { x, y } = node.offset
     // only move active nodes
@@ -45,13 +46,13 @@ function moveStream(
   const { clientX, clientY } = action.payload.event
 
   return streams.map((stream) => {
-    const { source, target } = stream
-    const { x: sourceX, y: sourceY } = getCenterCoords(source)
-
     // if stream is linked, update target and source
     // this should only be when moving a node with a stream attached
     if (stream.status === StreamStatus.Connected) {
-      const { x: targetX, y: targetY } = getCenterCoords(target!)
+      const { source, target } = stream
+      const { x: sourceX, y: sourceY } = getCenterCoords(source)
+      if (!target) throw new Error('Invalid target')
+      const { x: targetX, y: targetY } = getCenterCoords(target)
 
       return {
         ...stream,
@@ -76,7 +77,7 @@ function scrollNodesOnGraph(
   action: GraphAction & { type: GraphActionTypes.GRAPH_WHEEL }
 ) {
   const { nodes } = state
-  const { deltaX, deltaY } = action.payload.event
+  const { deltaX, deltaY } = action.payload.event.nativeEvent
 
   //   update scroll position of all nodes
   return nodes.map((node) => {
@@ -96,7 +97,8 @@ function scrollstreamsOnGraph(state: GraphState) {
   return streams.map((stream) => {
     const { source, target } = stream
     const { x: sourceX, y: sourceY } = getCenterCoords(source)
-    const { x: targetX, y: targetY } = getCenterCoords(target!)
+    if (!target) throw new Error('Invalid target')
+    const { x: targetX, y: targetY } = getCenterCoords(target)
 
     // this should be updating all linked streams when the graph is scrolled
     if (stream.status !== StreamStatus.Connected) return stream
@@ -108,12 +110,29 @@ function scrollstreamsOnGraph(state: GraphState) {
   })
 }
 
+// remove streams that are not linked to a port
 function removeUnlinkedStreams(state: GraphState) {
   const { streams } = state
   return streams.filter((stream) => stream.status === StreamStatus.Connected)
 }
 
-// set draggng node status to idle
+function resetActivePortStatus(state: GraphState) {
+  const { nodes } = state
+  return nodes.map((node) => {
+    return {
+      ...node,
+      ports: node.ports.map((port) => {
+        if (port.status !== PortStatus.Active) return port
+        return {
+          ...port,
+          status: PortStatus.Idle,
+        }
+      }),
+    }
+  })
+}
+
+// set dragging node status to idle
 function resetDraggingNodeStatus(state: GraphState) {
   const { nodes } = state
   return nodes.map((node) => {
@@ -175,7 +194,6 @@ function initializeNode(
             x: clientX,
             y: clientY,
           },
-
           offset: {
             x: offsetX,
             y: offsetY,
@@ -193,7 +211,7 @@ function initializeNode(
             },
           ],
         },
-      ] as GraphState['nodes']
+      ]
     }
     case NodeVariant.Math: {
       return [
@@ -203,7 +221,7 @@ function initializeNode(
           kind: NodeKind.Operator,
           variant: NodeVariant.Math,
           status: NodeStatus.Dragging,
-          value: '+',
+          value: undefined,
           position: {
             x: clientX,
             y: clientY,
@@ -245,7 +263,7 @@ function initializeNode(
   }
 }
 
-function nodesMouseDown(
+function beginDraggingNode(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.NODE_MOUSE_DOWN }
 ) {
@@ -255,19 +273,16 @@ function nodesMouseDown(
 
   return nodes.map((node) => {
     const { x, y } = node.position
-    if (node.id !== id) return node
 
+    if (node.id !== id) return node
     return {
       ...node,
+      // this is used to keep the node in the same position relative to the mouse when dragging
       offset: {
         x: clientX - x,
         y: clientY - y,
       },
       status: NodeStatus.Dragging,
-      position: {
-        x: node.position.x,
-        y: node.position.y,
-      },
     }
   })
 }
@@ -278,6 +293,8 @@ function selectNode(
 ) {
   const { nodes } = state
   const { id } = action.payload
+
+  // set all nodes to idle except for the selected node
   return nodes.map((node) => {
     if (node.id !== id)
       return {
@@ -291,18 +308,19 @@ function selectNode(
   })
 }
 
-function nodesPortMouseDown(
+function activatePort(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_DOWN }
 ) {
   const { nodes } = state
   const { id } = action.payload
+
   return nodes.map((node) => {
     return {
       ...node,
       ports: node.ports.map((port) => {
         if (port.id !== id) return port
-
+        if (port.status === PortStatus.Connected) return port
         return {
           ...port,
           status: PortStatus.Active,
@@ -312,15 +330,19 @@ function nodesPortMouseDown(
   })
 }
 
-function streamsPortMouseDown(
+function InitializeStream(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_DOWN }
 ) {
   const { streams } = state
-  const { value, ref, id } = action.payload
-
+  const { value, ref, id, status, kind } = action.payload
   if (!ref.current) throw new Error('Invalid port reference')
   const portCoords = getCenterCoords(ref.current)
+
+  // if port status is connected return streams
+  if (status === PortStatus.Connected) return streams
+  if (kind !== PortKind.Output) return streams
+
   return [
     ...streams,
     {
@@ -336,7 +358,7 @@ function streamsPortMouseDown(
   ]
 }
 
-function nodesPortMouseUp(
+function createPortConnection(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_UP }
 ) {
@@ -347,16 +369,18 @@ function nodesPortMouseUp(
     return {
       ...node,
       ports: node.ports.map((port) => {
-        if (
-          streams.find((stream) => stream.status === StreamStatus.Dragging)
-            ?.sourceId &&
-          port.id !== id
-        )
-          return port
-
+        // if port is active set status to linked
+        // the active port should always be the source of the stream
+        if (port.status === PortStatus.Active)
+          return {
+            ...port,
+            status: PortStatus.Connected,
+          }
+        // if the port is port set status to linked and set value to the stream value
+        if (port.id !== id) return port
         return {
           ...port,
-          status: PortStatus.Linked,
+          status: PortStatus.Connected,
           value: streams.find(
             (stream) => stream.status === StreamStatus.Dragging
           )?.value,
@@ -366,7 +390,7 @@ function nodesPortMouseUp(
   })
 }
 
-function streamsPortMouseUp(
+function createStreamConnection(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_UP }
 ) {
@@ -374,7 +398,7 @@ function streamsPortMouseUp(
   const { ref, id } = action.payload
 
   if (!ref.current) throw new Error('Invalid port reference')
-  const portCoords = getCenterCoords(ref.current)
+  const { x: targetPortX, y: targetPortY } = getCenterCoords(ref.current)
 
   return streams.map((stream) => {
     if (stream.status !== StreamStatus.Dragging) return stream
@@ -382,7 +406,7 @@ function streamsPortMouseUp(
     return {
       ...stream,
       status: StreamStatus.Connected,
-      l: `${portCoords.x} ${portCoords.y}`,
+      l: `${targetPortX} ${targetPortY}`,
       target: ref.current,
       targetId: id,
     }
@@ -398,7 +422,6 @@ function numberNodeSliderChange(
   const { value } = action.payload.event.target
   return nodes.map((node) => {
     if (node.id !== id) return node
-
     return {
       ...node,
       value: value,
@@ -406,19 +429,23 @@ function numberNodeSliderChange(
   })
 }
 
+// data flows from the output of a node it's output port
+// streams are used to connect the output port to the input port of another node
+// when the value of the node changes, the value of the output port changes
+// and flows through the stream to the input port of the connected node
 function nodeValueChange(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.NODE_VALUE_CHANGE }
 ) {
   const { nodes } = state
   const { id, value } = action.payload
+  // pass the new value to the output port
   return nodes.map((node) => {
     if (node.id !== id) return node
     return {
       ...node,
       ports: node.ports.map((port) => {
         if (port.kind !== PortKind.Output) return port
-
         return {
           ...port,
           value: value,
@@ -434,9 +461,9 @@ function portValueChange(
 ) {
   const { streams } = state
   const { value, id } = action.payload
+  // pass the new value to the connected stream
   return streams.map((stream) => {
     if (stream.sourceId !== id) return stream
-
     return {
       ...stream,
       value: value,
@@ -451,6 +478,7 @@ function streamValueChange(
   const { nodes } = state
   const { value, targetId } = action.payload
 
+  // pass the new value to the target port
   return nodes.map((node) => {
     return {
       ...node,
@@ -475,12 +503,13 @@ function mathNodeOperationChange(
   const { nodes } = state
   const { event } = action.payload
   const target = event.target as HTMLInputElement
+  const { value: operator } = target
 
   return nodes.map((node) => {
     if (!NodeStatus.Selected) return node
     return {
       ...node,
-      value: target.value,
+      value: Number(node.ports[0].value) + Number(node.ports[1].value),
     }
   })
 }
@@ -507,6 +536,7 @@ export function graphReducer(
     case GraphActionTypes.GRAPH_MOUSE_UP: {
       return {
         ...state,
+        nodes: resetActivePortStatus(state),
         streams: removeUnlinkedStreams(state),
       }
     }
@@ -538,7 +568,7 @@ export function graphReducer(
     case GraphActionTypes.NODE_MOUSE_DOWN: {
       return {
         ...state,
-        nodes: nodesMouseDown(state, action),
+        nodes: beginDraggingNode(state, action),
       }
     }
     case GraphActionTypes.NODE_CLICK: {
@@ -550,15 +580,15 @@ export function graphReducer(
     case GraphActionTypes.PORT_MOUSE_DOWN: {
       return {
         ...state,
-        nodes: nodesPortMouseDown(state, action),
-        streams: streamsPortMouseDown(state, action),
+        nodes: activatePort(state, action),
+        streams: InitializeStream(state, action),
       }
     }
     case GraphActionTypes.PORT_MOUSE_UP: {
       return {
         ...state,
-        nodes: nodesPortMouseUp(state, action),
-        streams: streamsPortMouseUp(state, action),
+        nodes: createPortConnection(state, action),
+        streams: createStreamConnection(state, action),
       }
     }
     case GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE: {

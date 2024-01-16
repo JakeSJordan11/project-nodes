@@ -12,7 +12,7 @@ export enum PortKind {
 export enum PortStatus {
   Idle = 'idle',
   Active = 'active',
-  Linked = 'linked',
+  Connected = 'connected',
 }
 
 export interface PortProps {
@@ -23,7 +23,7 @@ export interface PortProps {
   value: number | boolean | string | undefined // TODO: derive this state from node variant
 }
 
-export function Port({ id, value, nodeId }: PortProps) {
+export function Port({ id, value, nodeId, status, kind }: PortProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const { dispatch } = useGraph()
 
@@ -38,7 +38,14 @@ export function Port({ id, value, nodeId }: PortProps) {
     event.stopPropagation()
     dispatch({
       type: GraphActionTypes.PORT_MOUSE_DOWN,
-      payload: { event: event, id: id, value: value, ref: ref },
+      payload: {
+        event: event,
+        id: id,
+        value: value,
+        ref: ref,
+        status: status,
+        kind: kind,
+      },
     })
   }
 
