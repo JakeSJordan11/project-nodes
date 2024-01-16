@@ -13,14 +13,14 @@ export function Properties() {
     id: NodeProps['id']
   ) {
     dispatch({
-      type: GraphActionTypes.NODE_SLIDER_CHANGE,
+      type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE,
       payload: { event: event, id: id },
     })
   }
 
   function handleSelectionChange(event: ChangeEvent<HTMLSelectElement>) {
     dispatch({
-      type: GraphActionTypes.NODE_SELECTION_CHANGE,
+      type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE,
       payload: { event: event },
     })
   }

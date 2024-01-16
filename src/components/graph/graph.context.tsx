@@ -29,8 +29,8 @@ export enum GraphActionTypes {
   NODE_MOUSE_DOWN = 'node_mouse_down',
   PORT_MOUSE_DOWN = 'port_mouse_down',
   PORT_MOUSE_UP = 'port_mouse_up',
-  NODE_SLIDER_CHANGE = 'node_slider_change',
-  NODE_SELECTION_CHANGE = 'node_selection_change',
+  NUMBER_NODE_SLIDER_CHANGE = 'number_node_slider_change',
+  MATH_NODE_OPERATION_CHANGE = 'math_node_operation_change',
   NODE_VALUE_CHANGE = 'node_value_change',
   PORT_VALUE_CHANGE = 'port_value_change',
   STREAM_VALUE_CHANGE = 'stream_value_change',
@@ -100,7 +100,7 @@ export type GraphAction =
       }
     }
   | {
-      type: GraphActionTypes.NODE_SLIDER_CHANGE
+      type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE
       payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
     }
   | {
@@ -126,7 +126,7 @@ export type GraphAction =
       }
     }
   | {
-      type: GraphActionTypes.NODE_SELECTION_CHANGE
+      type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
       payload: { event: ChangeEvent }
     }
 

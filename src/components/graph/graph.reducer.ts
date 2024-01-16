@@ -1,4 +1,3 @@
-import { MouseEvent, WheelEvent } from 'react'
 import { GraphAction, GraphActionTypes, GraphState } from '.'
 import { NodeKind, NodeStatus, NodeVariant } from '../node'
 import { PortKind, PortStatus } from '../port'
@@ -18,13 +17,12 @@ function getCenterCoords(element: HTMLElement) {
   }
 }
 
-function getActiveStream(streams: GraphState['streams']) {
-  return streams.find((stream) => stream.status === StreamStatus.Dragging)
-}
-
-function moveActiveNode(state: GraphState, event: MouseEvent<HTMLElement>) {
+function moveActiveNode(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.GRAPH_MOUSE_MOVE }
+) {
   const { nodes } = state
-  const { clientX, clientY } = event
+  const { clientX, clientY } = action.payload.event
   return nodes.map((node) => {
     const { x, y } = node.offset
     // only move active nodes
@@ -39,9 +37,12 @@ function moveActiveNode(state: GraphState, event: MouseEvent<HTMLElement>) {
   })
 }
 
-function moveStream(state: GraphState, event: MouseEvent<HTMLElement>) {
+function moveStream(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.GRAPH_MOUSE_MOVE }
+) {
   const { streams } = state
-  const { clientX, clientY } = event
+  const { clientX, clientY } = action.payload.event
 
   return streams.map((stream) => {
     const { source, target } = stream
@@ -70,9 +71,12 @@ function moveStream(state: GraphState, event: MouseEvent<HTMLElement>) {
   })
 }
 
-function scrollNodesOnGraph(state: GraphState, event: WheelEvent<HTMLElement>) {
+function scrollNodesOnGraph(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.GRAPH_WHEEL }
+) {
   const { nodes } = state
-  const { deltaX, deltaY } = event
+  const { deltaX, deltaY } = action.payload.event
 
   //   update scroll position of all nodes
   return nodes.map((node) => {
@@ -86,7 +90,7 @@ function scrollNodesOnGraph(state: GraphState, event: WheelEvent<HTMLElement>) {
   })
 }
 
-function scrolltreamsOnGraph(state: GraphState) {
+function scrollstreamsOnGraph(state: GraphState) {
   const { streams } = state
 
   return streams.map((stream) => {
@@ -104,12 +108,14 @@ function scrolltreamsOnGraph(state: GraphState) {
   })
 }
 
-function removeUnlinkedStreams(streams: GraphState['streams']) {
+function removeUnlinkedStreams(state: GraphState) {
+  const { streams } = state
   return streams.filter((stream) => stream.status === StreamStatus.Connected)
 }
 
 // set draggng node status to idle
-function resetDraggingNodeStatus(nodes: GraphState['nodes']) {
+function resetDraggingNodeStatus(state: GraphState) {
+  const { nodes } = state
   return nodes.map((node) => {
     if (node.status !== NodeStatus.Dragging) return node
     return {
@@ -120,10 +126,13 @@ function resetDraggingNodeStatus(nodes: GraphState['nodes']) {
 }
 
 function placeNodeOnGraph(
-  nodes: GraphState['nodes'],
-  clientX: number,
-  clientY: number
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.GRAPH_DROP }
 ) {
+  const { nodes } = state
+  const { event } = action.payload
+  const { clientX, clientY } = event
+
   // if node is not being dragged, return node status to idle
   return nodes.map((node) => {
     if (node.status !== NodeStatus.Dragging)
@@ -143,356 +152,443 @@ function placeNodeOnGraph(
   })
 }
 
+function initializeNode(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.NODE_DRAG_START }
+) {
+  const { nodes } = state
+  const { event, variant } = action.payload
+  const { offsetX, offsetY } = event.nativeEvent
+  const { clientX, clientY } = event
+
+  switch (variant) {
+    case NodeVariant.Number: {
+      return [
+        ...nodes,
+        {
+          id: String(nodes.length + 1),
+          kind: NodeKind.Input,
+          variant: NodeVariant.Number,
+          status: NodeStatus.Dragging,
+          value: 0,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          ports: [
+            {
+              id: String(nodes.length + 1),
+              kind: PortKind.Output,
+              status: PortStatus.Idle,
+              value: 0,
+            },
+          ],
+        },
+      ] as GraphState['nodes']
+    }
+    case NodeVariant.Math: {
+      return [
+        ...nodes,
+        {
+          id: String(nodes.length + 1),
+          kind: NodeKind.Operator,
+          variant: NodeVariant.Math,
+          status: NodeStatus.Dragging,
+          value: '+',
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          ports: [
+            {
+              id: String(nodes.length + 1),
+              kind: PortKind.Input,
+              status: PortStatus.Idle,
+              value: 0,
+            },
+            {
+              id: String(nodes.length + 2),
+              kind: PortKind.Input,
+              status: PortStatus.Idle,
+              value: 0,
+            },
+            {
+              id: String(nodes.length + 3),
+              kind: PortKind.Output,
+              status: PortStatus.Idle,
+              value: 0,
+            },
+          ],
+        },
+      ]
+    }
+  }
+  return {
+    ...nodes,
+  }
+}
+
+function nodesMouseDown(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.NODE_MOUSE_DOWN }
+) {
+  const { nodes } = state
+  const { id } = action.payload
+  const { clientX, clientY } = action.payload.event
+
+  return nodes.map((node) => {
+    const { x, y } = node.position
+    if (node.id !== id) return node
+
+    return {
+      ...node,
+      offset: {
+        x: clientX - x,
+        y: clientY - y,
+      },
+      status: NodeStatus.Dragging,
+      position: {
+        x: node.position.x,
+        y: node.position.y,
+      },
+    }
+  })
+}
+
+function selectNode(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.NODE_CLICK }
+) {
+  const { nodes } = state
+  const { id } = action.payload
+  return nodes.map((node) => {
+    if (node.id !== id)
+      return {
+        ...node,
+        status: NodeStatus.Idle,
+      }
+    return {
+      ...node,
+      status: NodeStatus.Selected,
+    }
+  })
+}
+
+function nodesPortMouseDown(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_DOWN }
+) {
+  const { nodes } = state
+  const { id } = action.payload
+  return nodes.map((node) => {
+    return {
+      ...node,
+      ports: node.ports.map((port) => {
+        if (port.id !== id) return port
+
+        return {
+          ...port,
+          status: PortStatus.Active,
+        }
+      }),
+    }
+  })
+}
+
+function streamsPortMouseDown(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_DOWN }
+) {
+  const { streams } = state
+  const { value, ref, id } = action.payload
+
+  if (!ref.current) throw new Error('Invalid port reference')
+  const portCoords = getCenterCoords(ref.current)
+  return [
+    ...streams,
+    {
+      id: String(streams.length + 1),
+      value: value,
+      m: `${portCoords.x} ${portCoords.y}`,
+      l: `${portCoords.x} ${portCoords.y}`,
+      status: StreamStatus.Dragging,
+      sourceId: id,
+      source: ref.current,
+      target: null,
+    },
+  ]
+}
+
+function nodesPortMouseUp(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_UP }
+) {
+  const { nodes, streams } = state
+  const { id } = action.payload
+
+  return nodes.map((node) => {
+    return {
+      ...node,
+      ports: node.ports.map((port) => {
+        if (
+          streams.find((stream) => stream.status === StreamStatus.Dragging)
+            ?.sourceId &&
+          port.id !== id
+        )
+          return port
+
+        return {
+          ...port,
+          status: PortStatus.Linked,
+          value: streams.find(
+            (stream) => stream.status === StreamStatus.Dragging
+          )?.value,
+        }
+      }),
+    }
+  })
+}
+
+function streamsPortMouseUp(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_UP }
+) {
+  const { streams } = state
+  const { ref, id } = action.payload
+
+  if (!ref.current) throw new Error('Invalid port reference')
+  const portCoords = getCenterCoords(ref.current)
+
+  return streams.map((stream) => {
+    if (stream.status !== StreamStatus.Dragging) return stream
+
+    return {
+      ...stream,
+      status: StreamStatus.Connected,
+      l: `${portCoords.x} ${portCoords.y}`,
+      target: ref.current,
+      targetId: id,
+    }
+  })
+}
+
+function numberNodeSliderChange(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE }
+) {
+  const { nodes } = state
+  const { id } = action.payload
+  const { value } = action.payload.event.target
+  return nodes.map((node) => {
+    if (node.id !== id) return node
+
+    return {
+      ...node,
+      value: value,
+    }
+  })
+}
+
+function nodeValueChange(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.NODE_VALUE_CHANGE }
+) {
+  const { nodes } = state
+  const { id, value } = action.payload
+  return nodes.map((node) => {
+    if (node.id !== id) return node
+    return {
+      ...node,
+      ports: node.ports.map((port) => {
+        if (port.kind !== PortKind.Output) return port
+
+        return {
+          ...port,
+          value: value,
+        }
+      }),
+    }
+  })
+}
+
+function portValueChange(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.PORT_VALUE_CHANGE }
+) {
+  const { streams } = state
+  const { value, id } = action.payload
+  return streams.map((stream) => {
+    if (stream.sourceId !== id) return stream
+
+    return {
+      ...stream,
+      value: value,
+    }
+  })
+}
+
+function streamValueChange(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.STREAM_VALUE_CHANGE }
+) {
+  const { nodes } = state
+  const { value, targetId } = action.payload
+
+  return nodes.map((node) => {
+    return {
+      ...node,
+      ports: node.ports.map((port) => {
+        if (port.id !== targetId) return port
+
+        return {
+          ...port,
+          value: value,
+        }
+      }),
+    }
+  })
+}
+
+function mathNodeOperationChange(
+  state: GraphState,
+  action: GraphAction & {
+    type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
+  }
+) {
+  const { nodes } = state
+  const { event } = action.payload
+  const target = event.target as HTMLInputElement
+
+  return nodes.map((node) => {
+    if (!NodeStatus.Selected) return node
+    return {
+      ...node,
+      value: target.value,
+    }
+  })
+}
+
 export function graphReducer(
   state: GraphState,
   action: GraphAction
 ): GraphState {
   switch (action.type) {
     case GraphActionTypes.GRAPH_MOUSE_MOVE: {
-      const { event } = action.payload
       return {
         ...state,
-        nodes: moveActiveNode(state, event),
-        streams: moveStream(state, event),
+        nodes: moveActiveNode(state, action),
+        streams: moveStream(state, action),
       }
     }
     case GraphActionTypes.GRAPH_WHEEL: {
-      const { event } = action.payload
       return {
         ...state,
-        nodes: scrollNodesOnGraph(state, event),
-        streams: scrolltreamsOnGraph(state),
+        nodes: scrollNodesOnGraph(state, action),
+        streams: scrollstreamsOnGraph(state),
       }
     }
     case GraphActionTypes.GRAPH_MOUSE_UP: {
-      const { streams } = state
       return {
         ...state,
-        streams: removeUnlinkedStreams(streams),
+        streams: removeUnlinkedStreams(state),
       }
     }
     case GraphActionTypes.GRAPH_MOUSE_LEAVE: {
-      const { streams, nodes } = state
       return {
         ...state,
-        nodes: resetDraggingNodeStatus(nodes),
-        streams: removeUnlinkedStreams(streams),
+        nodes: resetDraggingNodeStatus(state),
+        streams: removeUnlinkedStreams(state),
       }
     }
     case GraphActionTypes.GRAPH_DROP: {
-      const { nodes } = state
-      const { clientX, clientY } = action.payload.event.nativeEvent
       return {
         ...state,
-        nodes: placeNodeOnGraph(nodes, clientX, clientY),
+        nodes: placeNodeOnGraph(state, action),
       }
     }
     case GraphActionTypes.NODE_DRAG_START: {
-      const { nodes } = state
-      const { event } = action.payload
-      const { offsetX, offsetY } = event.nativeEvent
-      const { clientX, clientY } = event
-      const { variant } = action.payload
-      switch (variant) {
-        case NodeVariant.Number: {
-          return {
-            ...state,
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Input,
-                variant: NodeVariant.Number,
-                status: NodeStatus.Dragging,
-                value: 0,
-                position: {
-                  x: clientX,
-                  y: clientY,
-                },
-
-                offset: {
-                  x: offsetX,
-                  y: offsetY,
-                },
-                scrollPosition: {
-                  x: 0,
-                  y: 0,
-                },
-                ports: [
-                  {
-                    id: String(nodes.length + 1),
-                    kind: PortKind.Output,
-                    status: PortStatus.Idle,
-                    value: 0,
-                  },
-                ],
-              },
-            ],
-          }
-        }
-        case NodeVariant.Math: {
-          return {
-            ...state,
-            nodes: [
-              ...nodes,
-              {
-                id: String(nodes.length + 1),
-                kind: NodeKind.Operator,
-                variant: NodeVariant.Math,
-                status: NodeStatus.Dragging,
-                value: '+',
-                position: {
-                  x: clientX,
-                  y: clientY,
-                },
-                offset: {
-                  x: offsetX,
-                  y: offsetY,
-                },
-                scrollPosition: {
-                  x: 0,
-                  y: 0,
-                },
-                ports: [
-                  {
-                    id: String(nodes.length + 1),
-                    kind: PortKind.Input,
-                    status: PortStatus.Idle,
-                    value: 0,
-                  },
-                  {
-                    id: String(nodes.length + 2),
-                    kind: PortKind.Input,
-                    status: PortStatus.Idle,
-                    value: 0,
-                  },
-                  {
-                    id: String(nodes.length + 3),
-                    kind: PortKind.Output,
-                    status: PortStatus.Idle,
-                    value: 0,
-                  },
-                ],
-              },
-            ],
-          }
-        }
+      return {
+        ...state,
+        nodes: initializeNode(state, action),
       }
     }
     case GraphActionTypes.NODE_MOUSE_UP: {
-      const { nodes } = state
       return {
         ...state,
-        nodes: resetDraggingNodeStatus(nodes),
+        nodes: resetDraggingNodeStatus(state),
       }
     }
     case GraphActionTypes.NODE_MOUSE_DOWN: {
-      const { nodes } = state
-      const { clientX, clientY } = action.payload.event
-      const { id } = action.payload
       return {
         ...state,
-        nodes: nodes.map((node) => {
-          const { x, y } = node.position
-          if (node.id !== id) return node
-
-          return {
-            ...node,
-            offset: {
-              x: clientX - x,
-              y: clientY - y,
-            },
-            status: NodeStatus.Dragging,
-            position: {
-              x: node.position.x,
-              y: node.position.y,
-            },
-          }
-        }),
+        nodes: nodesMouseDown(state, action),
       }
     }
     case GraphActionTypes.NODE_CLICK: {
-      const { nodes } = state
-      const { id } = action.payload
-
       return {
         ...state,
-        nodes: nodes.map((node) => {
-          return {
-            ...node,
-            status: node.id === id ? NodeStatus.Selected : NodeStatus.Idle,
-          }
-        }),
+        nodes: selectNode(state, action),
       }
     }
     case GraphActionTypes.PORT_MOUSE_DOWN: {
-      const { streams, nodes } = state
-      const { value, ref, id } = action.payload
-
-      if (!ref.current) throw new Error('Invalid port reference')
-      const { x, y, width, height } = ref.current.getBoundingClientRect()
-
       return {
         ...state,
-        nodes: nodes.map((node) => {
-          return {
-            ...node,
-            ports: node.ports.map((port) => {
-              if (port.id !== id) return port
-
-              return {
-                ...port,
-                status: PortStatus.Active,
-              }
-            }),
-          }
-        }),
-        streams: [
-          ...streams,
-          {
-            id: String(streams.length + 1),
-            value: value,
-            m: `${x + width * 0.5 - gap} ${y + height * 0.5 - gap}`,
-            l: `${x + width * 0.5 - gap} ${y + height * 0.5 - gap}`,
-            status: StreamStatus.Dragging,
-            sourceId: id,
-            source: ref.current,
-            target: null,
-          },
-        ],
+        nodes: nodesPortMouseDown(state, action),
+        streams: streamsPortMouseDown(state, action),
       }
     }
     case GraphActionTypes.PORT_MOUSE_UP: {
-      const { nodes, streams } = state
-      const { ref, id } = action.payload
-
-      if (!ref.current) throw new Error('Invalid port reference')
-      const { x, y, width, height } = ref.current.getBoundingClientRect()
-
       return {
         ...state,
-        nodes: nodes.map((node) => {
-          return {
-            ...node,
-            ports: node.ports.map((port) => {
-              if (
-                streams.find(
-                  (stream) => stream.status === StreamStatus.Dragging
-                )?.sourceId &&
-                port.id !== id
-              )
-                return port
-
-              return {
-                ...port,
-                status: PortStatus.Linked,
-                value: streams.find(
-                  (stream) => stream.status === StreamStatus.Dragging
-                )?.value,
-              }
-            }),
-          }
-        }),
-        streams: streams.map((stream) => {
-          if (stream.status !== StreamStatus.Dragging) return stream
-
-          return {
-            ...stream,
-            status: StreamStatus.Connected,
-            l: `${x + width * 0.5 - gap} ${y + height * 0.5 - gap}`,
-            target: ref.current,
-            targetId: id,
-          }
-        }),
+        nodes: nodesPortMouseUp(state, action),
+        streams: streamsPortMouseUp(state, action),
       }
     }
-    case GraphActionTypes.NODE_SLIDER_CHANGE: {
+    case GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE: {
       return {
         ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== action.payload.id) return node
-
-          return {
-            ...node,
-            value: action.payload.event.target.valueAsNumber,
-          }
-        }),
+        nodes: numberNodeSliderChange(state, action),
       }
     }
     case GraphActionTypes.NODE_VALUE_CHANGE: {
-      const { nodes } = state
-      const { value, id } = action.payload
-
       return {
         ...state,
-        nodes: nodes.map((node) => {
-          if (node.id !== id) return node
-
-          return {
-            ...node,
-            ports: node.ports.map((port) => {
-              if (port.kind !== PortKind.Output) return port
-
-              return {
-                ...port,
-                value: value,
-              }
-            }),
-          }
-        }),
+        nodes: nodeValueChange(state, action),
       }
     }
     case GraphActionTypes.PORT_VALUE_CHANGE: {
-      const { streams } = state
-      const { value, id } = action.payload
-
       return {
         ...state,
-        streams: streams.map((stream) => {
-          if (stream.sourceId !== id) return stream
-
-          return {
-            ...stream,
-            value: value,
-          }
-        }),
+        streams: portValueChange(state, action),
       }
     }
     case GraphActionTypes.STREAM_VALUE_CHANGE: {
-      const { nodes } = state
-      const { value, targetId } = action.payload
-
       return {
         ...state,
-        nodes: nodes.map((node) => {
-          return {
-            ...node,
-            ports: node.ports.map((port) => {
-              if (port.id !== targetId) return port
-
-              return {
-                ...port,
-                value: value,
-              }
-            }),
-          }
-        }),
+        nodes: streamValueChange(state, action),
       }
     }
-    case GraphActionTypes.NODE_SELECTION_CHANGE: {
-      const { nodes } = state
-      const { event } = action.payload
-      const target = event.target as HTMLInputElement
-
+    case GraphActionTypes.MATH_NODE_OPERATION_CHANGE: {
       return {
         ...state,
-        nodes: nodes.map((node) => {
-          if (!NodeStatus.Selected) return node
-          return {
-            ...node,
-            value: target.value,
-          }
-        }),
+        nodes: mathNodeOperationChange(state, action),
       }
     }
     default: {
