@@ -1,5 +1,6 @@
+import { title } from 'process'
 import { GraphAction, GraphActionTypes, GraphState } from '.'
-import { NodeKind, NodeStatus, NodeVariant } from '../node'
+import { MathOperation, NodeKind, NodeStatus, NodeVariant } from '../node'
 import { PortKind, PortStatus } from '../port'
 import { StreamStatus } from '../stream'
 
@@ -159,6 +160,17 @@ function placeNodeOnGraph(
         ...node,
         status: NodeStatus.Idle,
       }
+    if (node.variant === NodeVariant.Math) {
+      return {
+        ...node,
+        mathOperation: MathOperation.Addition,
+        position: {
+          x: clientX - node.offset.x - gap,
+          y: clientY - node.offset.y - gap,
+        },
+        status: NodeStatus.Selected,
+      }
+    }
     // if node is being dragged, place node on graph and change node status to selected
     return {
       ...node,
@@ -189,6 +201,7 @@ function initializeNode(
           kind: NodeKind.Input,
           variant: NodeVariant.Number,
           status: NodeStatus.Dragging,
+          title: 'Number',
           value: 0,
           position: {
             x: clientX,
@@ -221,6 +234,7 @@ function initializeNode(
           kind: NodeKind.Operator,
           variant: NodeVariant.Math,
           status: NodeStatus.Dragging,
+          title: 'Math',
           value: undefined,
           position: {
             x: clientX,
@@ -335,13 +349,13 @@ function InitializeStream(
   action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_DOWN }
 ) {
   const { streams } = state
-  const { value, ref, id, status, kind } = action.payload
+  const { value, ref, id } = action.payload
   if (!ref.current) throw new Error('Invalid port reference')
   const portCoords = getCenterCoords(ref.current)
 
   // if port status is connected return streams
-  if (status === PortStatus.Connected) return streams
-  if (kind !== PortKind.Output) return streams
+  // if (status === PortStatus.Connected) return streams
+  // if (kind !== PortKind.Output) return streams
 
   return [
     ...streams,
@@ -448,7 +462,7 @@ function nodeValueChange(
         if (port.kind !== PortKind.Output) return port
         return {
           ...port,
-          value: value,
+          value: Number(value),
         }
       }),
     }
@@ -456,6 +470,20 @@ function nodeValueChange(
 }
 
 function portValueChange(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.PORT_VALUE_CHANGE }
+) {
+  const { nodes } = state
+  return nodes.map((node) => {
+    if (node.variant !== NodeVariant.Math) return node
+    return {
+      ...node,
+      value: Number(node.ports[0].value) + Number(node.ports[1].value),
+    }
+  })
+}
+
+function updateStreamOnPortValueChange(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.PORT_VALUE_CHANGE }
 ) {
@@ -503,13 +531,14 @@ function mathNodeOperationChange(
   const { nodes } = state
   const { event } = action.payload
   const target = event.target as HTMLInputElement
-  const { value: operator } = target
+  const { value } = target
 
   return nodes.map((node) => {
+    if (node.variant !== NodeVariant.Math) return node
     if (!NodeStatus.Selected) return node
     return {
       ...node,
-      value: Number(node.ports[0].value) + Number(node.ports[1].value),
+      mathOperation: value as MathOperation,
     }
   })
 }
@@ -606,7 +635,8 @@ export function graphReducer(
     case GraphActionTypes.PORT_VALUE_CHANGE: {
       return {
         ...state,
-        streams: portValueChange(state, action),
+        nodes: portValueChange(state, action),
+        streams: updateStreamOnPortValueChange(state, action),
       }
     }
     case GraphActionTypes.STREAM_VALUE_CHANGE: {

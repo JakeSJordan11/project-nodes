@@ -88,8 +88,7 @@ export type GraphAction =
         id: PortProps['id']
         value: PortProps['value']
         ref: RefObject<HTMLButtonElement>
-        status: PortProps['status']
-        kind: PortProps['kind']
+        nodeId: PortProps['nodeId']
       }
     }
   | {

@@ -2,7 +2,7 @@
 
 import { type ChangeEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
-import { NodeStatus, NodeVariant, type NodeProps } from '../node'
+import { MathOperation, NodeStatus, NodeVariant, type NodeProps } from '../node'
 import styles from './properties.module.css'
 
 export function Properties() {
@@ -55,10 +55,14 @@ export function Properties() {
           case NodeVariant.Math: {
             return (
               <select key={node.id} onChange={handleSelectionChange}>
-                <option value='+'>addition</option>
-                <option value='-'>subtraction</option>
-                <option value='*'>multiplication</option>
-                <option value='/'>division</option>
+                <option value={MathOperation.Addition}>addition</option>
+                <option value={MathOperation.Subtraction}>subtraction</option>
+                <option value={MathOperation.Multiplication}>
+                  multiplication
+                </option>
+                <option value={MathOperation.Division}>division</option>
+                <option value={MathOperation.Modulo}>modulo</option>
+                <option value={MathOperation.Power}>power</option>
               </select>
             )
           }

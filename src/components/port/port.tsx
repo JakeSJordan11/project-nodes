@@ -23,7 +23,7 @@ export interface PortProps {
   value: number | boolean | string | undefined // TODO: derive this state from node variant
 }
 
-export function Port({ id, value, nodeId, status, kind }: PortProps) {
+export function Port({ id, value, nodeId }: PortProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const { dispatch } = useGraph()
 
@@ -43,8 +43,7 @@ export function Port({ id, value, nodeId, status, kind }: PortProps) {
         id: id,
         value: value,
         ref: ref,
-        status: status,
-        kind: kind,
+        nodeId: nodeId,
       },
     })
   }

@@ -15,6 +15,15 @@ export enum NodeVariant {
   Math = 'math',
 }
 
+export enum MathOperation {
+  Addition = '+',
+  Subtraction = '-',
+  Multiplication = '*',
+  Division = '/',
+  Modulo = '%',
+  Power = '**',
+}
+
 export enum NodeStatus {
   Idle = 'idle',
   Dragging = 'dragging',
@@ -28,6 +37,8 @@ export interface NodeProps {
   position: { x: number; y: number }
   status: NodeStatus
   variant: NodeVariant
+  mathOperation?: MathOperation
+  title: string
 
   value: number | boolean | string | undefined // TODO: derive this state from node variant
   kind: NodeKind // TODO: derive this state from node variant
@@ -40,8 +51,8 @@ export function Node({
   id,
   value,
   position,
-  variant,
   ports,
+  title,
 }: NodeProps) {
   const { dispatch } = useGraph()
 
@@ -94,7 +105,7 @@ export function Node({
           )}
         </div>
       )}
-      <h1 className={styles.title}>{variant}</h1>
+      <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>{value}</output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
       1 ? null : (
