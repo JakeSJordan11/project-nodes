@@ -1,0 +1,25 @@
+.library {
+  grid-area: library;
+  display: grid;
+  gap: var(--size-spacing-small);
+  grid-auto-flow: column;
+  justify-content: start;
+}
+
+.item {
+  height: 100px;
+  aspect-ratio: 1;
+  color: var(--color-text-primary);
+  background-color: var(--color-background-secondary);
+  border: 2px solid var(--color-border-primary);
+  box-shadow: var(--shadow-primary);
+}
+
+.title {
+  margin: 0;
+  padding-block-start: var(--size-spacing-xs);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: normal;
+  text-align: center;
+}

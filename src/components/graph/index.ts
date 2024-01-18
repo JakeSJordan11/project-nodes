@@ -1,4 +1,2 @@
-export * as default from './component'
-export * from './context'
-export * from './menu'
-export * from './reducer'
+export * from './graph'
+export * from './graph.context'

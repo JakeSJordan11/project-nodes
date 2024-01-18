@@ -1,0 +1,18 @@
+.main {
+  height: 100svh;
+  padding: var(--size-spacing-small);
+  display: grid;
+  gap: var(--size-spacing-small);
+  grid-template-areas:
+    'graph output'
+    'graph properties'
+    'library properties';
+  background-color: var(--color-background-primary);
+  grid-template-columns: 1fr minmax(0, 16rem);
+  grid-template-rows: auto 1fr;
+  box-sizing: border-box;
+
+  &.main:active {
+    cursor: move;
+  }
+}

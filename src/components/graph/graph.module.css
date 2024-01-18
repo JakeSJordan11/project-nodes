@@ -1,0 +1,29 @@
+.graph {
+  grid-area: graph;
+  border: 2px solid var(--color-border-primary);
+  background-color: var(--color-background-secondary);
+  contain: content;
+  box-shadow: var(--shadow-primary);
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  stroke: var(--color-stroke-primary);
+  stroke-width: 4px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 8px;
+  background-image: url('/grid.svg');
+  animation: dash 0.5s linear infinite;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 16;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
