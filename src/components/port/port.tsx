@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, type MouseEvent } from 'react'
+import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import styles from './port.module.css'
 
@@ -26,13 +26,17 @@ export interface PortProps {
 export function Port({ id, value, nodeId }: PortProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const { dispatch } = useGraph()
+  const memoizedPayload = useMemo(
+    () => ({ value: value, id: id, nodeId: nodeId }),
+    [value, id, nodeId]
+  )
 
   useEffect(() => {
     dispatch({
       type: GraphActionTypes.PORT_VALUE_CHANGE,
-      payload: { value: value, id: id, nodeId: nodeId },
+      payload: memoizedPayload,
     })
-  }, [value, id, nodeId, dispatch])
+  }, [memoizedPayload, dispatch])
 
   function handleMouseDown(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation()

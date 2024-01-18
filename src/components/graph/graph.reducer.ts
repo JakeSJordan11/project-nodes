@@ -469,10 +469,7 @@ function nodeValueChange(
   })
 }
 
-function portValueChange(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.PORT_VALUE_CHANGE }
-) {
+function portValueChange(state: GraphState) {
   const { nodes } = state
   return nodes.map((node) => {
     if (node.variant !== NodeVariant.Math) return node
@@ -635,7 +632,7 @@ export function graphReducer(
     case GraphActionTypes.PORT_VALUE_CHANGE: {
       return {
         ...state,
-        nodes: portValueChange(state, action),
+        nodes: portValueChange(state),
         streams: updateStreamOnPortValueChange(state, action),
       }
     }
