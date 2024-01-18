@@ -3,6 +3,7 @@ import { GraphAction, GraphActionTypes, GraphState } from '.'
 import { MathOperation, NodeKind, NodeStatus, NodeVariant } from '../node'
 import { PortKind, PortStatus } from '../port'
 import { StreamStatus } from '../stream'
+import { randomUUID } from 'crypto'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
 // this is a temporary fix until a better solution is found
@@ -197,7 +198,7 @@ function initializeNode(
       return [
         ...nodes,
         {
-          id: String(nodes.length + 1),
+          id: crypto.randomUUID(),
           kind: NodeKind.Input,
           variant: NodeVariant.Number,
           status: NodeStatus.Dragging,
@@ -217,7 +218,7 @@ function initializeNode(
           },
           ports: [
             {
-              id: String(nodes.length + 1),
+              id: crypto.randomUUID(),
               kind: PortKind.Output,
               status: PortStatus.Idle,
               value: 0,
@@ -230,12 +231,13 @@ function initializeNode(
       return [
         ...nodes,
         {
-          id: String(nodes.length + 1),
+          id: crypto.randomUUID(),
           kind: NodeKind.Operator,
           variant: NodeVariant.Math,
           status: NodeStatus.Dragging,
-          title: 'Math',
+          title: 'addition',
           value: undefined,
+          mathOperation: MathOperation.Addition,
           position: {
             x: clientX,
             y: clientY,
@@ -250,19 +252,19 @@ function initializeNode(
           },
           ports: [
             {
-              id: String(nodes.length + 1),
+              id: crypto.randomUUID(),
               kind: PortKind.Input,
               status: PortStatus.Idle,
               value: 0,
             },
             {
-              id: String(nodes.length + 2),
+              id: crypto.randomUUID(),
               kind: PortKind.Input,
               status: PortStatus.Idle,
               value: 0,
             },
             {
-              id: String(nodes.length + 3),
+              id: crypto.randomUUID(),
               kind: PortKind.Output,
               status: PortStatus.Idle,
               value: 0,
@@ -475,7 +477,12 @@ function portValueChange(state: GraphState) {
     if (node.variant !== NodeVariant.Math) return node
     return {
       ...node,
-      value: Number(node.ports[0].value) + Number(node.ports[1].value),
+      // value: Number(node.ports[0].value) + Number(node.ports[1].value),
+      value: mathOperations(
+        Number(node.ports[0].value),
+        Number(node.ports[1].value),
+        node.mathOperation as MathOperation
+      ),
     }
   })
 }
@@ -519,6 +526,25 @@ function streamValueChange(
   })
 }
 
+function mathOperations(a: number, b: number, operation: MathOperation) {
+  switch (operation) {
+    case MathOperation.Addition:
+      return a + b
+    case MathOperation.Subtraction:
+      return a - b
+    case MathOperation.Multiplication:
+      return a * b
+    case MathOperation.Division:
+      return a / b
+    case MathOperation.Power:
+      return a ** b
+    case MathOperation.Modulo:
+      return a % b
+    default:
+      return 0
+  }
+}
+
 function mathNodeOperationChange(
   state: GraphState,
   action: GraphAction & {
@@ -526,17 +552,21 @@ function mathNodeOperationChange(
   }
 ) {
   const { nodes } = state
-  const { event } = action.payload
+  const { event, id } = action.payload
   const target = event.target as HTMLSelectElement
   const { value } = target
 
   return nodes.map((node) => {
-    if (node.variant !== NodeVariant.Math) return node
-    if (!NodeStatus.Selected) return node
+    if (node.id !== id) return node
     return {
       ...node,
       mathOperation: value as MathOperation,
       title: target.options[target.selectedIndex].text,
+      value: mathOperations(
+        Number(node.ports[0].value),
+        Number(node.ports[1].value),
+        value as MathOperation
+      ),
     }
   })
 }

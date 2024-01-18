@@ -128,7 +128,7 @@ export type GraphAction =
     }
   | {
       type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
-      payload: { event: ChangeEvent }
+      payload: { event: ChangeEvent<HTMLSelectElement>; id: NodeProps['id'] }
     }
 
 export const GraphsContext = createContext<GraphState | null>(null)

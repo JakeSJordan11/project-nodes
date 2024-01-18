@@ -1,6 +1,6 @@
 'use client'
 
-import { MouseEvent, useEffect, type PointerEvent } from 'react'
+import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
 import styles from './node.module.css'
@@ -55,13 +55,14 @@ export function Node({
   title,
 }: NodeProps) {
   const { dispatch } = useGraph()
+  const memoizedPayload = useMemo(() => ({ value: value, id: id }), [value, id])
 
   useEffect(() => {
     dispatch({
       type: GraphActionTypes.NODE_VALUE_CHANGE,
-      payload: { value: value, id: id },
+      payload: memoizedPayload,
     })
-  }, [value, id, dispatch])
+  }, [memoizedPayload, dispatch])
 
   function handleMouseDown(event: PointerEvent<HTMLButtonElement>) {
     dispatch({

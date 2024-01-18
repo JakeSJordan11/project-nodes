@@ -18,10 +18,13 @@ export function Properties() {
     })
   }
 
-  function handleSelectionChange(event: ChangeEvent<HTMLSelectElement>) {
+  function handleSelectionChange(
+    event: ChangeEvent<HTMLSelectElement>,
+    id: NodeProps['id']
+  ) {
     dispatch({
       type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE,
-      payload: { event: event },
+      payload: { event: event, id: id },
     })
   }
 
@@ -41,11 +44,13 @@ export function Properties() {
               <div key={node.id} className={styles.inputs}>
                 <input
                   type='range'
+                  name='Slider'
                   value={Number(node.value)}
                   onChange={(event) => handleSliderChange(event, node.id)}
                 />
                 <input
                   type='number'
+                  name='Number'
                   value={Number(node.value)}
                   onChange={(event) => handleSliderChange(event, node.id)}
                 />
@@ -55,9 +60,10 @@ export function Properties() {
           case NodeVariant.Math: {
             return (
               <select
-                name='Operations'
                 key={node.id}
-                onChange={handleSelectionChange}
+                name='Operations'
+                onChange={(event) => handleSelectionChange(event, node.id)}
+                value={node.mathOperation}
               >
                 <option value={MathOperation.Addition}>addition</option>
                 <option value={MathOperation.Subtraction}>subtraction</option>
