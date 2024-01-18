@@ -3,24 +3,18 @@
   --radii-border-medium: 12px;
   --size-spacing-small: 1rem;
   --size-spacing-xs: 0.5rem;
-}
 
-:root {
-  @media (prefers-color-scheme: light) {
-    --color-text-primary: #353535;
+  --color-text-primary: #353535;
 
-    --color-background-primary: hsl(240, 1%, 66%);
-    --color-background-secondary: hsl(0, 0%, 88%);
+  --color-background-primary: hsl(240, 1%, 66%);
+  --color-background-secondary: hsl(0, 0%, 88%);
 
-    --shadow-primary: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
+  --shadow-primary: 4px 4px 4px 1px hsla(0, 0%, 0%, 0.33);
 
-    --color-border-primary: hsl(0, 0%, 56%);
+  --color-border-primary: hsl(0, 0%, 56%);
 
-    --color-stroke-primary: hsl(0, 0%, 0%);
-  }
-}
+  --color-stroke-primary: hsl(0, 0%, 0%);
 
-:root {
   @media (prefers-color-scheme: dark) {
     --color-text-primary: #eeeeee;
 
