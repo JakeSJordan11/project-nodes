@@ -54,7 +54,11 @@ export function Properties() {
           }
           case NodeVariant.Math: {
             return (
-              <select key={node.id} onChange={handleSelectionChange}>
+              <select
+                name='Operations'
+                key={node.id}
+                onChange={handleSelectionChange}
+              >
                 <option value={MathOperation.Addition}>addition</option>
                 <option value={MathOperation.Subtraction}>subtraction</option>
                 <option value={MathOperation.Multiplication}>

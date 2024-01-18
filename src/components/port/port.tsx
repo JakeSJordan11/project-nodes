@@ -63,6 +63,7 @@ export function Port({ id, value, nodeId }: PortProps) {
   return (
     <button
       ref={ref}
+      name='port'
       className={styles.port}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
