@@ -527,7 +527,7 @@ function mathNodeOperationChange(
 ) {
   const { nodes } = state
   const { event } = action.payload
-  const target = event.target as HTMLInputElement
+  const target = event.target as HTMLSelectElement
   const { value } = target
 
   return nodes.map((node) => {
@@ -536,6 +536,7 @@ function mathNodeOperationChange(
     return {
       ...node,
       mathOperation: value as MathOperation,
+      title: target.options[target.selectedIndex].text,
     }
   })
 }
