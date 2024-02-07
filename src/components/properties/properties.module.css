@@ -6,9 +6,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--size-spacing-small);
-  align-items: center;
   box-shadow: var(--shadow-primary);
   user-select: none;
+  padding-inline: var(--size-spacing-small);
 }
 
 .title {
@@ -21,6 +21,5 @@
   display: flex;
   flex-direction: column;
   gap: var(--size-spacing-small);
-  align-items: center;
   color: var(--color-text-primary);
 }
