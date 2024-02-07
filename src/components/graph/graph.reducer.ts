@@ -1,9 +1,7 @@
-import { title } from 'process'
 import { GraphAction, GraphActionTypes, GraphState } from '.'
 import { MathOperation, NodeKind, NodeStatus, NodeVariant } from '../node'
 import { PortKind, PortStatus } from '../port'
 import { StreamStatus } from '../stream'
-import { randomUUID } from 'crypto'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
 // this is a temporary fix until a better solution is found
