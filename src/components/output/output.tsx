@@ -1,7 +1,8 @@
 'use client'
 
 import { useGraph } from '../graph'
-import { NodeStatus } from '../node'
+import { NodeStatus, NodeVariant } from '../node'
+import { WebGPU } from '../webgpu'
 import styles from './output.module.css'
 
 export function Output() {
@@ -12,7 +13,7 @@ export function Output() {
         if (node.status !== NodeStatus.Selected) return null
         return (
           <output key={node.id} className={styles.value}>
-            {node.value}
+            {node.variant === NodeVariant.WebGPU ? <WebGPU /> : node.value}
           </output>
         )
       })}
