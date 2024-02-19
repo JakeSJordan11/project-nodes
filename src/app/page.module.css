@@ -8,11 +8,17 @@
     'graph properties'
     'library properties';
   background-color: var(--color-background-primary);
-  grid-template-columns: 1fr minmax(0, 16rem);
+  grid-template-columns: 1fr 20rem;
   grid-template-rows: auto 1fr;
   box-sizing: border-box;
 
   &.main:active {
     cursor: move;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    grid-template-columns: 1fr min-content;
   }
 }

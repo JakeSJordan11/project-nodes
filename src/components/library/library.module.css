@@ -1,9 +1,12 @@
 .library {
   grid-area: library;
   display: grid;
-  gap: var(--size-spacing-small);
   grid-auto-flow: column;
   justify-content: start;
+  gap: var(--size-spacing-small);
+  overflow: auto;
+  padding-inline-end: var(--size-spacing-small);
+  padding-block-end: var(--size-spacing-small);
 }
 
 .item {

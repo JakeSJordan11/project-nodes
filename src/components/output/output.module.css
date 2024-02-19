@@ -4,7 +4,6 @@
   border: 2px solid var(--color-border-primary);
   background-color: var(--color-background-secondary);
   display: grid;
-  place-items: center;
   color: var(--color-text-primary);
   box-shadow: var(--shadow-primary);
   overflow: scroll;
@@ -13,5 +12,6 @@
 
 .value {
   font-size: 1.5rem;
-  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
 }

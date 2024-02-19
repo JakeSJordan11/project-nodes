@@ -9,6 +9,7 @@
   box-shadow: var(--shadow-primary);
   user-select: none;
   padding-inline: var(--size-spacing-small);
+  padding-block: var(--size-spacing-small);
 }
 
 .title {
