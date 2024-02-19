@@ -1,2 +1,1 @@
-export * from './triangle'
 export * from './uniforms'

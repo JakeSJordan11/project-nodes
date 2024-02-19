@@ -2,21 +2,26 @@
 
 import { useGraph } from '../graph'
 import { NodeStatus, NodeVariant } from '../node'
-import { WebGPU } from '../webgpu'
+import { Triangle, Uniforms } from '../webgpu'
 import styles from './output.module.css'
 
 export function Output() {
   const { state } = useGraph()
+  const selectedNode = state.nodes.find(
+    (node) =>
+      node.status === NodeStatus.Selected || node.status === NodeStatus.Dragging
+  )
   return (
     <article className={styles.output}>
-      {state.nodes.map((node) => {
-        if (node.status !== NodeStatus.Selected) return null
-        return (
-          <output key={node.id} className={styles.value}>
-            {node.variant === NodeVariant.WebGPU ? <WebGPU /> : node.value}
-          </output>
-        )
-      })}
+      <output key={selectedNode?.id} className={styles.value}>
+        {selectedNode?.variant === NodeVariant.Uniforms ? (
+          <Uniforms />
+        ) : selectedNode?.variant === NodeVariant.Triangle ? (
+          <Triangle />
+        ) : (
+          selectedNode?.value
+        )}
+      </output>
     </article>
   )
 }

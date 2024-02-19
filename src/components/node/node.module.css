@@ -36,18 +36,21 @@
 }
 
 .title {
+  position: absolute;
   margin: 0;
+  top: 0;
   padding-block-start: var(--size-spacing-xs);
   color: var(--color-text-primary);
-  font-size: 1rem;
+  font-size: small;
   font-weight: normal;
 }
 
 .value {
   flex: 1;
-  width: 80%;
+  aspect-ratio: 1;
   color: var(--color-text-primary);
   display: grid;
   place-items: center;
+  place-content: center;
   overflow-y: scroll;
 }

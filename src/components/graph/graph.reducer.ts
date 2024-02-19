@@ -271,15 +271,48 @@ function initializeNode(
         },
       ]
     }
-    case NodeVariant.WebGPU: {
+    case NodeVariant.Triangle: {
       return [
         ...nodes,
         {
           id: crypto.randomUUID(),
           kind: NodeKind.Input,
-          variant: NodeVariant.WebGPU,
+          variant: NodeVariant.Triangle,
           status: NodeStatus.Dragging,
-          title: 'WebGPU',
+          title: 'Triangle',
+          value: undefined,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          ports: [
+            {
+              id: crypto.randomUUID(),
+              kind: PortKind.Output,
+              status: PortStatus.Idle,
+              value: 0,
+            },
+          ],
+        },
+      ]
+    }
+    case NodeVariant.Uniforms: {
+      return [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          kind: NodeKind.Input,
+          variant: NodeVariant.Uniforms,
+          status: NodeStatus.Dragging,
+          title: 'Uniforms',
           value: undefined,
           position: {
             x: clientX,

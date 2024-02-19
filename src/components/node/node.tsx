@@ -1,10 +1,16 @@
 'use client'
 
-import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
+import {
+  MouseEvent,
+  ReactNode,
+  useEffect,
+  useMemo,
+  type PointerEvent,
+} from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
-import { WebGPU } from '../webgpu'
 import styles from './node.module.css'
+import { Triangle, Uniforms } from '../webgpu'
 
 export enum NodeKind {
   Input = 'input',
@@ -14,7 +20,8 @@ export enum NodeKind {
 export enum NodeVariant {
   Number = 'number',
   Math = 'math',
-  WebGPU = 'webgpu',
+  Triangle = 'triangle',
+  Uniforms = 'uniforms',
 }
 
 export enum MathOperation {
@@ -42,7 +49,7 @@ export interface NodeProps {
   mathOperation?: MathOperation
   title: string
 
-  value: number | boolean | string | undefined // TODO: derive this state from node variant
+  value: number | boolean | string | undefined | any // TODO: derive this state from node variant
   kind: NodeKind // TODO: derive this state from node variant
   offset: { x: number; y: number } // TODO: derive this state this may need to be created locally, but I don't think it needs to be in the global state
   scrollPosition: { x: number; y: number } // TODO: derive this state
@@ -111,7 +118,13 @@ export function Node({
       )}
       <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>
-        {variant === NodeVariant.WebGPU ? <WebGPU /> : value}
+        {variant === NodeVariant.Uniforms ? (
+          <Uniforms />
+        ) : variant === NodeVariant.Triangle ? (
+          <Triangle />
+        ) : (
+          value
+        )}
       </output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
       1 ? null : (

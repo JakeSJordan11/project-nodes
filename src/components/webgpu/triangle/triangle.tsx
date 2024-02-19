@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
-import multiColorTriangle from './multiColorTirangle.wgsl'
-import styles from './webgpu.module.css'
+import styles from '../webgpu.module.css'
+import triangle from './triangle.wgsl'
 
-export function WebGPU() {
+export function Triangle() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export function WebGPU() {
       // create a shader module
       const shaderModule = device.createShaderModule({
         label: 'our hardcoded multicolor triangle shader',
-        code: multiColorTriangle,
+        code: triangle,
       })
 
       // make a render pipeline
@@ -83,10 +83,27 @@ export function WebGPU() {
         device.queue.submit([commandBuffer])
       }
 
-      render()
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const canvas = entry.target as HTMLCanvasElement
+          const width = entry.contentBoxSize[0].inlineSize
+          const height = entry.contentBoxSize[0].blockSize
+          canvas.width = Math.max(
+            1,
+            Math.min(width, device.limits.maxTextureDimension2D)
+          )
+          canvas.height = Math.max(
+            1,
+            Math.min(height, device.limits.maxTextureDimension2D)
+          )
+          // re-render
+          render()
+        }
+      })
+      observer.observe(canvas)
     }
 
-    canvasRef.current && main()
+    main()
   }, [])
 
   return <canvas className={styles.canvas} ref={canvasRef} />
