@@ -10,7 +10,7 @@ import {
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
 import styles from './node.module.css'
-import { Triangle, Uniforms } from '../webgpu'
+import { Storage, Triangle, Uniforms } from '../webgpu'
 
 export enum NodeKind {
   Input = 'input',
@@ -22,6 +22,7 @@ export enum NodeVariant {
   Math = 'math',
   Triangle = 'triangle',
   Uniforms = 'uniforms',
+  Storage = 'storage',
 }
 
 export enum MathOperation {
@@ -122,6 +123,8 @@ export function Node({
           <Uniforms />
         ) : variant === NodeVariant.Triangle ? (
           <Triangle />
+        ) : variant === NodeVariant.Storage ? (
+          <Storage />
         ) : (
           value
         )}

@@ -1,11 +1,21 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import styles from '../webgpu.module.css'
 import uniforms from './uniforms.wgsl'
+
+type objectInfosType = {
+  scale: number
+  uniformBuffer: GPUBuffer
+  uniformValues: Float32Array
+  bindGroup: GPUBindGroup
+}
 
 export function Uniforms() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
+    // A random number between [min and max)
+    // With 1 argument it will be [0 to min)
+    // With no arguments it will be [0 to 1)
     const rand = (min?: number, max?: number) => {
       if (min === undefined) {
         min = 0
@@ -19,10 +29,9 @@ export function Uniforms() {
 
     async function main() {
       const adapter = (await navigator.gpu?.requestAdapter()) as GPUAdapter
-      // request a device from the adapter.
       const device = (await adapter?.requestDevice()) as GPUDevice
       if (!device) {
-        console.error('need a browser that supports WebGPU')
+        fail('need a browser that supports WebGPU')
         return
       }
 
@@ -35,15 +44,12 @@ export function Uniforms() {
         format: presentationFormat,
       })
 
-      // create a shader module
       const shaderModule = device.createShaderModule({
-        label: 'uniforms learning',
         code: uniforms,
       })
 
-      // make a render pipeline
       const pipeline = device.createRenderPipeline({
-        label: 'uniforms learning',
+        label: 'multiple uniform buffer',
         layout: 'auto',
         vertex: {
           module: shaderModule,
@@ -56,36 +62,54 @@ export function Uniforms() {
         },
       })
 
-      // create a buffer for the uniform values
-      const uniformBufferSize =
+      // create 2 buffers for the uniform values
+      const staticUniformBufferSize =
         4 * 4 + // color is 4 32bit floats (4bytes each)
-        2 * 4 + // scale is 2 32bit floats (4bytes each)
-        2 * 4 // offset is 2 32bit floats (4bytes each)
+        2 * 4 + // offset is 2 32bit floats (4bytes each)
+        2 * 4 // padding
+      const uniformBufferSize = 2 * 4 // scale is 2 32bit floats (4bytes each)
 
       // offsets to the various uniform values in float32 indices
       const kColorOffset = 0
-      const kScaleOffset = 4
-      const kOffsetOffset = 6
+      const kOffsetOffset = 4
+
+      const kScaleOffset = 0
 
       const kNumObjects = 100
-      const objectInfos: any = []
+      const objectInfos: objectInfosType[] = []
 
       for (let i = 0; i < kNumObjects; ++i) {
+        const staticUniformBuffer = device.createBuffer({
+          label: `static uniforms for obj: ${i}`,
+          size: staticUniformBufferSize,
+          usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        })
+
+        // These are only set once so set them now
+        {
+          const uniformValues = new Float32Array(staticUniformBufferSize / 4)
+          uniformValues.set([rand(), rand(), rand(), 1], kColorOffset) // set the color
+          uniformValues.set([rand(-0.9, 0.9), rand(-0.9, 0.9)], kOffsetOffset) // set the offset
+
+          // copy these values to the GPU
+          device.queue.writeBuffer(staticUniformBuffer, 0, uniformValues)
+        }
+
+        // create a typedarray to hold the values for the uniforms in JavaScript
+        const uniformValues = new Float32Array(uniformBufferSize / 4)
         const uniformBuffer = device.createBuffer({
-          label: `uniforms for obj: ${i}`,
+          label: `changing uniforms for obj: ${i}`,
           size: uniformBufferSize,
           usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
         })
 
-        // create a typedarray to hold the values for the uniforms in JavaScript
-        const uniformValues = new Float32Array(uniformBufferSize / 4)
-        uniformValues.set([rand(), rand(), rand(), 1], kColorOffset) // set the color
-        uniformValues.set([rand(-0.9, 0.9), rand(-0.9, 0.9)], kOffsetOffset) // set the offset
-
         const bindGroup = device.createBindGroup({
           label: `bind group for obj: ${i}`,
           layout: pipeline.getBindGroupLayout(0),
-          entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
+          entries: [
+            { binding: 0, resource: { buffer: staticUniformBuffer } },
+            { binding: 1, resource: { buffer: uniformBuffer } },
+          ],
         })
 
         objectInfos.push({
@@ -158,6 +182,10 @@ export function Uniforms() {
         }
       })
       observer.observe(canvas)
+    }
+
+    function fail(msg: string) {
+      alert(msg)
     }
 
     main()

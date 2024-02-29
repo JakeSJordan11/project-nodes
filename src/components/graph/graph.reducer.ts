@@ -200,7 +200,7 @@ function initializeNode(
           kind: NodeKind.Input,
           variant: NodeVariant.Number,
           status: NodeStatus.Dragging,
-          title: 'Number',
+          title: 'number',
           value: 0,
           position: {
             x: clientX,
@@ -279,7 +279,7 @@ function initializeNode(
           kind: NodeKind.Input,
           variant: NodeVariant.Triangle,
           status: NodeStatus.Dragging,
-          title: 'Triangle',
+          title: 'triangle',
           value: undefined,
           position: {
             x: clientX,
@@ -312,7 +312,40 @@ function initializeNode(
           kind: NodeKind.Input,
           variant: NodeVariant.Uniforms,
           status: NodeStatus.Dragging,
-          title: 'Uniforms',
+          title: 'uniforms',
+          value: undefined,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          ports: [
+            {
+              id: crypto.randomUUID(),
+              kind: PortKind.Output,
+              status: PortStatus.Idle,
+              value: 0,
+            },
+          ],
+        },
+      ]
+    }
+    case NodeVariant.Storage: {
+      return [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          kind: NodeKind.Input,
+          variant: NodeVariant.Storage,
+          status: NodeStatus.Dragging,
+          title: 'storage',
           value: undefined,
           position: {
             x: clientX,
