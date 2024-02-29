@@ -1,16 +1,10 @@
 'use client'
 
-import {
-  MouseEvent,
-  ReactNode,
-  useEffect,
-  useMemo,
-  type PointerEvent,
-} from 'react'
+import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
-import styles from './node.module.css'
 import { Storage, Triangle, Uniforms } from '../webgpu'
+import styles from './node.module.css'
 
 export enum NodeKind {
   Input = 'input',
