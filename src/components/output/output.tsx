@@ -3,6 +3,7 @@
 import { useGraph } from '../graph'
 import { NodeStatus, NodeVariant } from '../node'
 import { Storage, Triangle, Uniforms } from '../webgpu'
+import { Translation } from '../webgpu/translation'
 import styles from './output.module.css'
 
 export function Output() {
@@ -20,6 +21,11 @@ export function Output() {
           <Triangle />
         ) : selectedNode?.variant === NodeVariant.Storage ? (
           <Storage />
+        ) : selectedNode?.variant === NodeVariant.Translation ? (
+          <Translation
+            valueX={selectedNode.valueX}
+            valueY={selectedNode.valueY}
+          />
         ) : (
           selectedNode?.value
         )}

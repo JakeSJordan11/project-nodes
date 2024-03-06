@@ -370,6 +370,39 @@ function initializeNode(
         },
       ]
     }
+    case NodeVariant.Translation: {
+      return [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          kind: NodeKind.Input,
+          variant: NodeVariant.Translation,
+          status: NodeStatus.Dragging,
+          title: 'translation',
+          value: undefined,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          ports: [
+            {
+              id: crypto.randomUUID(),
+              kind: PortKind.Output,
+              status: PortStatus.Idle,
+              value: 0,
+            },
+          ],
+        },
+      ]
+    }
     default: {
       return nodes
     }
@@ -774,6 +807,40 @@ export function graphReducer(
       return {
         ...state,
         nodes: mathNodeOperationChange(state, action),
+      }
+    }
+    case GraphActionTypes.TRANSLATION_NODE_X_CHANGE: {
+      const { event, id } = action.payload
+      const target = event.target as HTMLInputElement
+      const { value } = target
+      return {
+        ...state,
+        nodes: [
+          ...state.nodes.map((node) => {
+            if (node.id !== id) return node
+            return {
+              ...node,
+              valueX: value,
+            }
+          }),
+        ] as GraphState['nodes'],
+      }
+    }
+    case GraphActionTypes.TRANSLATION_NODE_Y_CHANGE: {
+      const { event, id } = action.payload
+      const target = event.target as HTMLInputElement
+      const { value } = target
+      return {
+        ...state,
+        nodes: [
+          ...state.nodes.map((node) => {
+            if (node.id !== id) return node
+            return {
+              ...node,
+              valueY: value,
+            }
+          }),
+        ] as GraphState['nodes'],
       }
     }
     default: {

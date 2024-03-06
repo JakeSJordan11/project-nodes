@@ -85,6 +85,10 @@ export function Storage() {
 
       // Get a WebGPU context from the canvas and configure it
       const canvas = canvasRef.current as HTMLCanvasElement
+      if (!canvas) {
+        fail('canvasRef is not set')
+        return
+      }
       const context = canvas.getContext('webgpu') as GPUCanvasContext
       const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
       context.configure({

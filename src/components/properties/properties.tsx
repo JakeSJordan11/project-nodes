@@ -28,6 +28,25 @@ export function Properties() {
     })
   }
 
+  function handleValueXChange(
+    event: ChangeEvent<HTMLInputElement>,
+    id: NodeProps['id']
+  ) {
+    dispatch({
+      type: GraphActionTypes.TRANSLATION_NODE_X_CHANGE,
+      payload: { event: event, id: id },
+    })
+  }
+
+  function handleValueYChange(
+    event: ChangeEvent<HTMLInputElement>,
+    id: NodeProps['id']
+  ) {
+    dispatch({
+      type: GraphActionTypes.TRANSLATION_NODE_Y_CHANGE,
+      payload: { event: event, id: id },
+    })
+  }
   return (
     <article className={styles.properties}>
       <h1 className={styles.title}>properties</h1>
@@ -74,6 +93,24 @@ export function Properties() {
                 <option value={MathOperation.Modulo}>modulo</option>
                 <option value={MathOperation.Power}>power</option>
               </select>
+            )
+          }
+          case NodeVariant.Translation: {
+            return (
+              <div key={node.id} className={styles.inputs}>
+                <input
+                  type='range'
+                  name='Slider'
+                  value={Number(node.valueX)}
+                  onChange={(event) => handleValueXChange(event, node.id)}
+                />
+                <input
+                  type='range'
+                  name='Slider'
+                  value={Number(node.valueY)}
+                  onChange={(event) => handleValueYChange(event, node.id)}
+                />
+              </div>
             )
           }
         }

@@ -28,3 +28,16 @@
     --color-stroke-primary: hsl(0, 0%, 56%);
   }
 }
+
+:root {
+  --bg-color: #fff;
+  --line-color-1: #aaa;
+  --line-color-2: #ddd;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #000;
+    --line-color-1: #666;
+    --line-color-2: #333;
+  }
+}

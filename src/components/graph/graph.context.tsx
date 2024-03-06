@@ -34,6 +34,8 @@ export enum GraphActionTypes {
   NODE_VALUE_CHANGE = 'node_value_change',
   PORT_VALUE_CHANGE = 'port_value_change',
   STREAM_VALUE_CHANGE = 'stream_value_change',
+  TRANSLATION_NODE_X_CHANGE = 'translation_node_x_change',
+  TRANSLATION_NODE_Y_CHANGE = 'translation_node_y_change',
 }
 
 export interface GraphState {
@@ -129,6 +131,14 @@ export type GraphAction =
   | {
       type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
       payload: { event: ChangeEvent<HTMLSelectElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.TRANSLATION_NODE_X_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.TRANSLATION_NODE_Y_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
     }
 
 export const GraphsContext = createContext<GraphState | null>(null)

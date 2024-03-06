@@ -5,6 +5,7 @@ import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
 import { Storage, Triangle, Uniforms } from '../webgpu'
 import styles from './node.module.css'
+import { Translation } from '../webgpu/translation'
 
 export enum NodeKind {
   Input = 'input',
@@ -17,6 +18,7 @@ export enum NodeVariant {
   Triangle = 'triangle',
   Uniforms = 'uniforms',
   Storage = 'storage',
+  Translation = 'translation',
 }
 
 export enum MathOperation {
@@ -43,6 +45,8 @@ export interface NodeProps {
   variant: NodeVariant
   mathOperation?: MathOperation
   title: string
+  valueX?: number
+  valueY?: number
 
   value: number | boolean | string | undefined | any // TODO: derive this state from node variant
   kind: NodeKind // TODO: derive this state from node variant
@@ -58,6 +62,8 @@ export function Node({
   ports,
   title,
   variant,
+  valueX,
+  valueY,
 }: NodeProps) {
   const { dispatch } = useGraph()
   const memoizedPayload = useMemo(() => ({ value: value, id: id }), [value, id])
@@ -119,6 +125,8 @@ export function Node({
           <Triangle />
         ) : variant === NodeVariant.Storage ? (
           <Storage />
+        ) : variant === NodeVariant.Translation ? (
+          <Translation valueX={valueX} valueY={valueY} />
         ) : (
           value
         )}
