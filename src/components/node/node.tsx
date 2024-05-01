@@ -6,11 +6,6 @@ import { Port, PortKind, type PortProps } from '../port'
 import { WebGPU } from '../webgpu'
 import styles from './node.module.css'
 
-export enum NodeKind {
-  Input = 'input',
-  Operator = 'operator',
-}
-
 export enum NodeVariant {
   Number = 'number',
   Math = 'math',
@@ -43,7 +38,6 @@ export interface NodeProps {
   title: string
 
   value: number | boolean | string | undefined // TODO: derive this state from node variant
-  kind: NodeKind // TODO: derive this state from node variant
   offset: { x: number; y: number } // TODO: derive this state this may need to be created locally, but I don't think it needs to be in the global state
   scrollPosition: { x: number; y: number } // TODO: derive this state
 }

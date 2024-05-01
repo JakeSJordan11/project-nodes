@@ -1,5 +1,5 @@
 import { GraphAction, GraphActionTypes, GraphState } from '.'
-import { MathOperation, NodeKind, NodeStatus, NodeVariant } from '../node'
+import { MathOperation, NodeStatus, NodeVariant } from '../node'
 import { PortKind, PortStatus } from '../port'
 import { StreamStatus } from '../stream'
 
@@ -197,7 +197,6 @@ function initializeNode(
         ...nodes,
         {
           id: crypto.randomUUID(),
-          kind: NodeKind.Input,
           variant: NodeVariant.Number,
           status: NodeStatus.Dragging,
           title: 'Number',
@@ -230,7 +229,6 @@ function initializeNode(
         ...nodes,
         {
           id: crypto.randomUUID(),
-          kind: NodeKind.Operator,
           variant: NodeVariant.Math,
           status: NodeStatus.Dragging,
           title: 'addition',
@@ -276,7 +274,6 @@ function initializeNode(
         ...nodes,
         {
           id: crypto.randomUUID(),
-          kind: NodeKind.Input,
           variant: NodeVariant.WebGPU,
           status: NodeStatus.Dragging,
           title: 'WebGPU',
