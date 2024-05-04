@@ -269,38 +269,6 @@ function initializeNode(
         },
       ]
     }
-    case NodeVariant.WebGPU: {
-      return [
-        ...nodes,
-        {
-          id: crypto.randomUUID(),
-          variant: NodeVariant.WebGPU,
-          status: NodeStatus.Dragging,
-          title: 'WebGPU',
-          value: undefined,
-          position: {
-            x: clientX,
-            y: clientY,
-          },
-          offset: {
-            x: offsetX,
-            y: offsetY,
-          },
-          scrollPosition: {
-            x: 0,
-            y: 0,
-          },
-          ports: [
-            {
-              id: crypto.randomUUID(),
-              kind: PortKind.Output,
-              status: PortStatus.Idle,
-              value: 0,
-            },
-          ],
-        },
-      ]
-    }
     default: {
       return nodes
     }

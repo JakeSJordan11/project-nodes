@@ -3,13 +3,11 @@
 import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
-import { WebGPU } from '../webgpu'
 import styles from './node.module.css'
 
 export enum NodeVariant {
   Number = 'number',
   Math = 'math',
-  WebGPU = 'webgpu',
 }
 
 export enum MathOperation {
@@ -105,7 +103,7 @@ export function Node({
       )}
       <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>
-        {variant === NodeVariant.WebGPU ? <WebGPU /> : value}
+        {value}
       </output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
       1 ? null : (
