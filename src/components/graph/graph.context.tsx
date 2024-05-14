@@ -25,7 +25,6 @@ export enum GraphActionTypes {
   GRAPH_DROP = 'graph_drop',
   NODE_DRAG_START = 'node_drag_start',
   NODE_MOUSE_UP = 'node_mouse_up',
-  NODE_CLICK = 'node_click',
   NODE_MOUSE_DOWN = 'node_mouse_down',
   PORT_MOUSE_DOWN = 'port_mouse_down',
   PORT_MOUSE_UP = 'port_mouse_up',
@@ -68,10 +67,6 @@ export type GraphAction =
         event: DragEvent<HTMLElement>
         variant: string
       }
-    }
-  | {
-      type: GraphActionTypes.NODE_CLICK
-      payload: { id: NodeProps['id'] }
     }
   | {
       type: GraphActionTypes.NODE_MOUSE_DOWN

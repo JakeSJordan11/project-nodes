@@ -19,18 +19,12 @@ export enum MathOperation {
   Power = '**',
 }
 
-export enum NodeStatus {
-  Idle = 'idle',
-  Dragging = 'dragging',
-  Active = 'active',
-  Selected = 'selected',
-}
-
 export interface NodeProps {
   id: string
   ports: PortProps[]
   position: { x: number; y: number }
-  status: NodeStatus
+  isSelected?: boolean
+  isDragging?: boolean
   variant: NodeVariant
   mathOperation?: MathOperation
   title: string
@@ -47,7 +41,6 @@ export function Node({
   position,
   ports,
   title,
-  variant,
 }: NodeProps) {
   const { dispatch } = useGraph()
   const memoizedPayload = useMemo(() => ({ value: value, id: id }), [value, id])
@@ -66,13 +59,6 @@ export function Node({
     })
   }
 
-  function handleClick() {
-    dispatch({
-      type: GraphActionTypes.NODE_CLICK,
-      payload: { id: id },
-    })
-  }
-
   function handleMouseUp(event: MouseEvent<HTMLElement>) {
     dispatch({
       type: GraphActionTypes.NODE_MOUSE_UP,
@@ -85,7 +71,6 @@ export function Node({
       className={styles.node}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      onClick={handleClick}
       style={{
         left: position.x + scrollPosition.x,
         top: position.y + scrollPosition.y,
@@ -102,9 +87,7 @@ export function Node({
         </div>
       )}
       <h1 className={styles.title}>{title}</h1>
-      <output className={styles.value}>
-        {value}
-      </output>
+      <output className={styles.value}>{value}</output>
       {ports.filter((port) => port.kind === PortKind.Output).length <
       1 ? null : (
         <div className={styles.outputs}>
