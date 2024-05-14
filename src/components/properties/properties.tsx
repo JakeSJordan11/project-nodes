@@ -2,7 +2,7 @@
 
 import { type ChangeEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
-import { MathOperation, NodeStatus, NodeVariant, type NodeProps } from '../node'
+import { MathOperation, NodeVariant, type NodeProps } from '../node'
 import styles from './properties.module.css'
 
 export function Properties() {
@@ -32,12 +32,7 @@ export function Properties() {
     <article className={styles.properties}>
       <h1 className={styles.title}>properties</h1>
       {state.nodes.map((node) => {
-        if (
-          node.status === NodeStatus.Idle ||
-          node.status === NodeStatus.Dragging
-        ) {
-          return undefined
-        }
+        if (!node.isSelected) return null
         switch (node.variant) {
           case NodeVariant.Number: {
             return (

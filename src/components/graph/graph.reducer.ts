@@ -1,5 +1,5 @@
 import { GraphAction, GraphActionTypes, GraphState } from '.'
-import { MathOperation, NodeStatus, NodeVariant } from '../node'
+import { MathOperation, NodeVariant } from '../node'
 import { PortKind, PortStatus } from '../port'
 import { StreamStatus } from '../stream'
 
@@ -27,7 +27,7 @@ function moveActiveNode(
   return nodes.map((node) => {
     const { x, y } = node.offset
     // only move active nodes
-    if (node.status !== NodeStatus.Dragging) return node
+    if (!node.isDragging) return node
     return {
       ...node,
       position: {
@@ -49,6 +49,18 @@ function moveStream(
     // if stream is linked, update target and source
     // this should only be when moving a node with a stream attached
     if (stream.status === StreamStatus.Connected) {
+      if (stream.status === StreamStatus.Connected) {
+        const { source, target } = stream
+        const { x: sourceX, y: sourceY } = getCenterCoords(source)
+        if (!target) throw new Error('Invalid target')
+        const { x: targetX, y: targetY } = getCenterCoords(target)
+
+        return {
+          ...stream,
+          m: `${sourceX} ${sourceY}`,
+          l: `${targetX} ${targetY}`,
+        }
+      }
       const { source, target } = stream
       const { x: sourceX, y: sourceY } = getCenterCoords(source)
       if (!target) throw new Error('Invalid target')
@@ -136,10 +148,11 @@ function resetActivePortStatus(state: GraphState) {
 function resetDraggingNodeStatus(state: GraphState) {
   const { nodes } = state
   return nodes.map((node) => {
-    if (node.status !== NodeStatus.Dragging) return node
+    if (!node.isDragging) return node
     return {
       ...node,
-      status: NodeStatus.Idle,
+      isDragging: false,
+      isSelected: true,
     }
   })
 }
@@ -154,10 +167,10 @@ function placeNodeOnGraph(
 
   // if node is not being dragged, return node status to idle
   return nodes.map((node) => {
-    if (node.status !== NodeStatus.Dragging)
+    if (!node.isDragging)
       return {
         ...node,
-        status: NodeStatus.Idle,
+        isSelected: false,
       }
     if (node.variant === NodeVariant.Math) {
       return {
@@ -167,7 +180,8 @@ function placeNodeOnGraph(
           x: clientX - node.offset.x - gap,
           y: clientY - node.offset.y - gap,
         },
-        status: NodeStatus.Selected,
+        isSelected: true,
+        isDragging: false,
       }
     }
     // if node is being dragged, place node on graph and change node status to selected
@@ -177,7 +191,8 @@ function placeNodeOnGraph(
         x: clientX - node.offset.x - gap,
         y: clientY - node.offset.y - gap,
       },
-      status: NodeStatus.Selected,
+      isSelected: true,
+      isDragging: false,
     }
   })
 }
@@ -198,7 +213,8 @@ function initializeNode(
         {
           id: crypto.randomUUID(),
           variant: NodeVariant.Number,
-          status: NodeStatus.Dragging,
+          isDragging: true,
+          isSelected: false,
           title: 'Number',
           value: 0,
           position: {
@@ -230,7 +246,8 @@ function initializeNode(
         {
           id: crypto.randomUUID(),
           variant: NodeVariant.Math,
-          status: NodeStatus.Dragging,
+          isDragging: true,
+          isSelected: false,
           title: 'addition',
           value: undefined,
           mathOperation: MathOperation.Addition,
@@ -286,7 +303,12 @@ function beginDraggingNode(
   return nodes.map((node) => {
     const { x, y } = node.position
 
-    if (node.id !== id) return node
+    if (node.id !== id)
+      return {
+        ...node,
+        isDragging: false,
+        isSelected: false,
+      }
     return {
       ...node,
       // this is used to keep the node in the same position relative to the mouse when dragging
@@ -294,28 +316,8 @@ function beginDraggingNode(
         x: clientX - x,
         y: clientY - y,
       },
-      status: NodeStatus.Dragging,
-    }
-  })
-}
-
-function selectNode(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.NODE_CLICK }
-) {
-  const { nodes } = state
-  const { id } = action.payload
-
-  // set all nodes to idle except for the selected node
-  return nodes.map((node) => {
-    if (node.id !== id)
-      return {
-        ...node,
-        status: NodeStatus.Idle,
-      }
-    return {
-      ...node,
-      status: NodeStatus.Selected,
+      isSelected: true,
+      isDragging: true,
     }
   })
 }
@@ -622,12 +624,6 @@ export function graphReducer(
       return {
         ...state,
         nodes: beginDraggingNode(state, action),
-      }
-    }
-    case GraphActionTypes.NODE_CLICK: {
-      return {
-        ...state,
-        nodes: selectNode(state, action),
       }
     }
     case GraphActionTypes.PORT_MOUSE_DOWN: {
