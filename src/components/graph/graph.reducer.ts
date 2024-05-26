@@ -103,8 +103,12 @@ function scrollNodesOnGraph(
   })
 }
 
-function scrollstreamsOnGraph(state: GraphState) {
+function scrollstreamsOnGraph(
+  state: GraphState,
+  action: GraphAction & { type: GraphActionTypes.GRAPH_WHEEL }
+) {
   const { streams } = state
+  const { deltaX, deltaY } = action.payload.event.nativeEvent
 
   return streams.map((stream) => {
     // if stream is linked, update target and source
@@ -117,8 +121,8 @@ function scrollstreamsOnGraph(state: GraphState) {
 
       return {
         ...stream,
-        m: `${sourceX} ${sourceY}`,
-        l: `${targetX} ${targetY}`,
+        m: `${sourceX + deltaX} ${sourceY + deltaY}`,
+        l: `${targetX + deltaX} ${targetY + deltaY}`,
       }
     }
 
@@ -621,7 +625,7 @@ export function graphReducer(
       return {
         ...state,
         nodes: scrollNodesOnGraph(state, action),
-        streams: scrollstreamsOnGraph(state),
+        streams: scrollstreamsOnGraph(state, action),
       }
     }
     case GraphActionTypes.GRAPH_MOUSE_UP: {
