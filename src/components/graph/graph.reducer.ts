@@ -255,7 +255,7 @@ function initializeNode(
           variant: NodeVariant.Number,
           isDragging: true,
           isSelected: false,
-          title: 'Number',
+          title: 'number',
           value: 0,
           position: {
             x: clientX,
