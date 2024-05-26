@@ -95,17 +95,27 @@ function scrollstreamsOnGraph(state: GraphState) {
   const { streams } = state
 
   return streams.map((stream) => {
-    const { source, target } = stream
-    const { x: sourceX, y: sourceY } = getCenterCoords(source)
-    if (!target) throw new Error('Invalid target')
-    const { x: targetX, y: targetY } = getCenterCoords(target)
+    // if stream is linked, update target and source
+    // this should only be when moving a node with a stream attached
+    if (stream.status === StreamStatus.Connected) {
+      const { source, target } = stream
+      const { x: sourceX, y: sourceY } = getCenterCoords(source)
+      if (!target) throw new Error('Invalid target')
+      const { x: targetX, y: targetY } = getCenterCoords(target)
 
-    // this should be updating all linked streams when the graph is scrolled
-    if (stream.status !== StreamStatus.Connected) return stream
+      return {
+        ...stream,
+        m: `${sourceX} ${sourceY}`,
+        l: `${targetX} ${targetY}`,
+      }
+    }
+
+    // if stream is active, update stream line
+    // this should only be when creating a new stream
+    if (stream.status !== StreamStatus.Dragging) return stream
+
     return {
       ...stream,
-      m: `${sourceX} ${sourceY}`,
-      l: `${targetX} ${targetY}`,
     }
   })
 }
@@ -113,7 +123,33 @@ function scrollstreamsOnGraph(state: GraphState) {
 // remove streams that are not linked to a port
 function removeUnlinkedStreams(state: GraphState) {
   const { streams } = state
-  return streams.filter((stream) => stream.status === StreamStatus.Connected)
+
+  return streams
+    .map((stream) => {
+      // if stream is linked, update target and source
+      // this should only be when moving a node with a stream attached
+      if (stream.status === StreamStatus.Connected) {
+        const { source, target } = stream
+        const { x: sourceX, y: sourceY } = getCenterCoords(source)
+        if (!target) throw new Error('Invalid target')
+        const { x: targetX, y: targetY } = getCenterCoords(target)
+
+        return {
+          ...stream,
+          m: `${sourceX} ${sourceY}`,
+          l: `${targetX} ${targetY}`,
+        }
+      }
+
+      // if stream is active, update stream line
+      // this should only be when creating a new stream
+      if (stream.status !== StreamStatus.Dragging) return stream
+
+      return {
+        ...stream,
+      }
+    })
+    .filter((stream) => stream.status === StreamStatus.Connected)
 }
 
 function resetActivePortStatus(state: GraphState) {
