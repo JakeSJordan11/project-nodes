@@ -71,6 +71,29 @@ export function Properties() {
               </select>
             )
           }
+          case NodeVariant.WebGPU: {
+            return node.properties?.map((property: any) => {
+              return (
+                <div key={property.id} className={styles.inputs}>
+                  <input
+                    type={property.type}
+                    name={property.name}
+                    value={Number(property.value)}
+                    onChange={(event) =>
+                      dispatch({
+                        type: GraphActionTypes.WEBGPU_NODE_PROPERTY_CHANGE,
+                        payload: {
+                          event: event,
+                          id: node.id,
+                          propertyId: property.id,
+                        },
+                      })
+                    }
+                  />
+                </div>
+              )
+            })
+          }
         }
       })}
     </article>

@@ -33,6 +33,7 @@ export enum GraphActionTypes {
   NODE_VALUE_CHANGE = 'node_value_change',
   PORT_VALUE_CHANGE = 'port_value_change',
   STREAM_VALUE_CHANGE = 'stream_value_change',
+  WEBGPU_NODE_PROPERTY_CHANGE = 'webgpu_node_property_change',
 }
 
 export interface GraphState {
@@ -124,6 +125,14 @@ export type GraphAction =
   | {
       type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
       payload: { event: ChangeEvent<HTMLSelectElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.WEBGPU_NODE_PROPERTY_CHANGE
+      payload: {
+        event: ChangeEvent<HTMLInputElement>
+        id: NodeProps['id']
+        propertyId: string
+      }
     }
 
 export const GraphsContext = createContext<GraphState | null>(null)
