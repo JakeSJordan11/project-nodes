@@ -1,8 +1,7 @@
 'use client'
 
 import { useGraph } from '../graph'
-import { NodeVariant } from '../node'
-import WebGPU from '../node/node'
+import { NodeVariant, WebGPUComponent } from '../node'
 import styles from './output.module.css'
 
 export function Output() {
@@ -14,7 +13,7 @@ export function Output() {
         return (
           <output key={node.id} className={styles.value}>
             {node.variant === NodeVariant.WebGPU ? (
-              <WebGPU key={node.id} />
+              <WebGPUComponent {...node} />
             ) : (
               node.value
             )}

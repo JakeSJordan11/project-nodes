@@ -257,6 +257,8 @@ function initializeNode(
           isSelected: false,
           title: 'number',
           value: 0,
+          translationX: 0,
+          translationY: 0,
           position: {
             x: clientX,
             y: clientY,
@@ -291,6 +293,8 @@ function initializeNode(
           title: 'addition',
           value: undefined,
           mathOperation: MathOperation.Addition,
+          translationX: 0,
+          translationY: 0,
           position: {
             x: clientX,
             y: clientY,
@@ -336,20 +340,8 @@ function initializeNode(
           isSelected: false,
           title: 'webgpu',
           value: undefined,
-          properties: [
-            {
-              id: crypto.randomUUID(),
-              name: 'translationX',
-              value: 0,
-              type: 'range',
-            },
-            {
-              id: crypto.randomUUID(),
-              name: 'translationY',
-              value: 0,
-              type: 'range',
-            },
-          ],
+          translationX: 0,
+          translationY: 0,
           position: {
             x: clientX,
             y: clientY,
@@ -367,13 +359,13 @@ function initializeNode(
               id: crypto.randomUUID(),
               kind: PortKind.Input,
               status: PortStatus.Idle,
-              value: 0,
+              value: undefined,
             },
             {
               id: crypto.randomUUID(),
               kind: PortKind.Input,
               status: PortStatus.Idle,
-              value: 0,
+              value: undefined,
             },
             {
               id: crypto.randomUUID(),
@@ -668,32 +660,6 @@ function mathNodeOperationChange(
   })
 }
 
-function WebGPUPropertyChange(
-  state: GraphState,
-  action: GraphAction & {
-    type: GraphActionTypes.WEBGPU_NODE_PROPERTY_CHANGE
-  }
-) {
-  const { nodes } = state
-  const { id } = action.payload
-  const { value } = action.payload.event.target
-  const { propertyId } = action.payload
-
-  return nodes.map((node) => {
-    if (node.id !== id) return node
-    return {
-      ...node,
-      properties: node.properties?.map((property: any) => {
-        if (property.id !== propertyId) return property
-        return {
-          ...property,
-          value: value,
-        }
-      }),
-    }
-  })
-}
-
 export function graphReducer(
   state: GraphState,
   action: GraphAction
@@ -796,12 +762,41 @@ export function graphReducer(
         nodes: mathNodeOperationChange(state, action),
       }
     }
-    case GraphActionTypes.WEBGPU_NODE_PROPERTY_CHANGE: {
+    case GraphActionTypes.TRANSLATION_X_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
       return {
         ...state,
-        nodes: WebGPUPropertyChange(state, action),
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            translationX: Number(node.ports[0].value)
+              ? Number(node.ports[0].value)
+              : Number(value),
+          }
+        }),
       }
     }
+    case GraphActionTypes.TRANSLATION_Y_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            translationY: Number(node.ports[1].value)
+              ? Number(node.ports[1].value)
+              : Number(value),
+          }
+        }),
+      }
+    }
+
     default: {
       throw new Error(`Unhandled action type: ${GraphActionTypes}`)
     }

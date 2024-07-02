@@ -1,5 +1,6 @@
 'use client'
 
+import { useWebGPU } from '@/context/webgpu.context'
 import {
   MouseEvent,
   useEffect,
@@ -10,13 +11,13 @@ import {
 import { GraphActionTypes, useGraph } from '../graph'
 import { Port, PortKind, type PortProps } from '../port'
 import styles from './node.module.css'
+import shader from './webgpu.wgsl'
 
 export enum NodeVariant {
   Number = 'number',
   Math = 'math',
   WebGPU = 'webgpu',
 }
-
 export enum MathOperation {
   Addition = '+',
   Subtraction = '-',
@@ -25,26 +26,19 @@ export enum MathOperation {
   Modulo = '%',
   Power = '**',
 }
-
-export interface NodeProperties {
-  id: string
-  name: string
-  value: number
-  type: string
-}
-
 export interface NodeProps {
   id: string
   ports: PortProps[]
   position: { x: number; y: number }
-  isSelected?: boolean
-  isDragging?: boolean
   variant: NodeVariant
-  mathOperation?: MathOperation
   title: string
-  properties?: NodeProperties[]
+  mathOperation?: MathOperation
+  isDragging: boolean // TODO: derive this state from node variant
+  isSelected: boolean // TODO: derive this state from node variant
+  translationX: number // TODO: derive this state from node variant
+  translationY: number // TODO: derive this state from node variant
 
-  value: number | boolean | string | undefined | any // TODO: derive this state from node variant
+  value: any // TODO: derive this state from node variant
   offset: { x: number; y: number } // TODO: derive this state this may need to be created locally, but I don't think it needs to be in the global state
   scrollPosition: { x: number; y: number } // TODO: derive this state
 }
@@ -57,7 +51,8 @@ export function Node({
   ports,
   title,
   variant,
-  properties,
+  translationX,
+  translationY,
 }: NodeProps) {
   const { dispatch } = useGraph()
   const memoizedPayload = useMemo(() => ({ value: value, id: id }), [value, id])
@@ -93,39 +88,44 @@ export function Node({
         top: position.y + scrollPosition.y,
       }}
     >
-      {ports.filter((port) => port.kind === PortKind.Input).length <
-      1 ? null : (
-        <div className={styles.inputs}>
-          {ports.map((port) =>
-            port.kind !== PortKind.Input ? null : (
-              <Port {...port} key={port.id} />
-            )
-          )}
-        </div>
-      )}
+      <div className={styles.inputs}>
+        {ports
+          .filter((port) => port.kind === PortKind.Input)
+          .map((port) => (
+            <Port {...port} key={port.id} />
+          ))}
+      </div>
       <h1 className={styles.title}>{title}</h1>
       {variant === NodeVariant.WebGPU ? (
-        properties?.map((property: any) => (
-          <WebGPU key={property.id} property={property} />
-        ))
+        <WebGPUComponent
+          translationX={translationX}
+          translationY={translationY}
+          ports={ports}
+        />
       ) : (
         <output className={styles.value}>{value}</output>
       )}
-      {ports.filter((port) => port.kind === PortKind.Output).length <
-      1 ? null : (
-        <div className={styles.outputs}>
-          {ports.map((port) =>
-            port.kind !== PortKind.Output ? null : (
-              <Port {...port} key={port.id} />
-            )
-          )}
-        </div>
-      )}
+      <div className={styles.outputs}>
+        {ports
+          .filter((port) => port.kind === PortKind.Output)
+          .map((port) => (
+            <Port {...port} key={port.id} />
+          ))}
+      </div>
     </article>
   )
 }
 
-export default function WebGPU(property: any) {
+export function WebGPUComponent({
+  translationX,
+  translationY,
+  ports,
+}: {
+  translationX: NodeProps['translationX']
+  translationY: NodeProps['translationY']
+  ports: NodeProps['ports']
+}) {
+  const { device, presentationFormat } = useWebGPU()
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   function createFVertices() {
@@ -170,77 +170,32 @@ export default function WebGPU(property: any) {
 
   useEffect(() => {
     async function main() {
-      const adapter = await navigator.gpu?.requestAdapter()
-      const device = (await adapter?.requestDevice()) as GPUDevice
-      if (!device) {
-        fail('need a browser that supports WebGPU')
+      if (!device || !presentationFormat) {
+        console.error('WebGPU device or format not available.')
         return
       }
 
-      // Get a WebGPU context from the canvas and configure it
-      // const canvas = document.querySelector('canvas')
-      const canvas = canvasRef.current as HTMLCanvasElement
-      // if (!canvas) throw new Error(`Could not find canvas`)
+      const canvas = canvasRef.current
+      if (!canvas) return
+
       const context = canvas.getContext('webgpu') as GPUCanvasContext
-      // if (!context) throw new Error('Could not generate context for canvas.')
-      const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
+
       context.configure({
         device,
         format: presentationFormat,
         alphaMode: 'premultiplied',
       })
 
-      const myModule = device.createShaderModule({
-        code: `
-      struct Uniforms {
-        color: vec4f,
-        resolution: vec2f,
-        translation: vec2f,
-      };
-
-      struct Vertex {
-        @location(0) position: vec2f,
-      };
-
-      struct VSOutput {
-        @builtin(position) position: vec4f,
-      };
-
-      @group(0) @binding(0) var<uniform> uni: Uniforms;
-
-      @vertex fn vs(vert: Vertex) -> VSOutput {
-        var vsOut: VSOutput;
-        
-        // Add in the translation
-        let position = vert.position + uni.translation;
-
-        // convert the position from pixels to a 0.0 to 1.0 value
-        let zeroToOne = position / uni.resolution;
-
-        // convert from 0 <-> 1 to 0 <-> 2
-        let zeroToTwo = zeroToOne * 2.0;
-
-        // covert from 0 <-> 2 to -1 <-> +1 (clip space)
-        let flippedClipSpace = zeroToTwo - 1.0;
-
-        // flip Y
-        let clipSpace = flippedClipSpace * vec2f(1, -1);
-
-        vsOut.position = vec4f(clipSpace, 0.0, 1.0);
-        return vsOut;
-      }
-
-      @fragment fn fs(vsOut: VSOutput) -> @location(0) vec4f {
-        return uni.color;
-      }
-    `,
+      // WebGPU rendering logic...
+      const shaderModule = device.createShaderModule({
+        code: shader,
       })
 
       const pipeline = device.createRenderPipeline({
         label: 'just 2d position',
         layout: 'auto',
         vertex: {
-          module: myModule,
+          module: shaderModule,
           buffers: [
             {
               arrayStride: 2 * 4, // (2) floats, 4 bytes each
@@ -251,7 +206,7 @@ export default function WebGPU(property: any) {
           ] as GPUVertexBufferLayout[],
         },
         fragment: {
-          module: myModule,
+          module: shaderModule,
           targets: [{ format: presentationFormat }],
         },
       })
@@ -316,10 +271,19 @@ export default function WebGPU(property: any) {
       }
 
       const settings = {
-        tranlastion: [0, 0],
+        tranlastion: [
+          Number(ports[0].value) >= 0 ? Number(ports[0].value) : translationX,
+          Number(ports[1].value) >= 0 ? Number(ports[1].value) : translationY,
+        ],
       }
 
       function render() {
+        if (!device || !presentationFormat) {
+          console.error('WebGPU device or format not available.')
+          return
+        }
+        if (!canvas) return
+
         // Get the current texture from the canvas context and
         // set it as the texture to render to.
         renderPassDescriptor.colorAttachments[0].view = context
@@ -347,6 +311,7 @@ export default function WebGPU(property: any) {
         const commandBuffer = encoder.finish()
         device.queue.submit([commandBuffer])
       }
+
       const observer = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const canvas = entry.target as HTMLCanvasElement
@@ -361,19 +326,15 @@ export default function WebGPU(property: any) {
             Math.min(height, device.limits.maxTextureDimension2D)
           )
           // re-render
+
           render()
         }
       })
       observer.observe(canvas)
-      // }
-    }
-
-    function fail(msg: string) {
-      alert(msg)
     }
 
     main()
-  }, [])
+  }, [translationX, translationY, device, presentationFormat, ports])
 
-  return <canvas ref={canvasRef} className={styles.value} />
+  return <canvas ref={canvasRef} className={styles.canvas} />
 }
