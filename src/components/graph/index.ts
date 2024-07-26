@@ -1,2 +1,2 @@
 export * from './graph'
-export * from './graph.context'
+export * from '../../contexts/graph.context'

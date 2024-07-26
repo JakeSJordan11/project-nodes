@@ -15,7 +15,7 @@ import {
   type RefObject,
   type WheelEvent,
 } from 'react'
-import { graphReducer } from './graph.reducer'
+import { graphReducer } from '../reducers/graph.reducer'
 
 export enum GraphActionTypes {
   GRAPH_WHEEL = 'graph_wheel',

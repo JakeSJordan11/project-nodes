@@ -4,7 +4,7 @@ import styles from '@/styles/graph.module.css'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
 import { Node } from '../node'
 import { Stream } from '../stream'
-import { GraphActionTypes, useGraph } from './graph.context'
+import { GraphActionTypes, useGraph } from '../../contexts/graph.context'
 
 export function Graph() {
   const { state, dispatch } = useGraph()
