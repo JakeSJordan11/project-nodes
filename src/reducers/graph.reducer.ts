@@ -43,43 +43,43 @@ function moveStream(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.GRAPH_MOUSE_MOVE }
 ) {
-  const { streams } = state
+  const { edges } = state
   const { clientX, clientY } = action.payload.event
 
-  return streams.map((stream) => {
-    // if stream is linked, update target and source
-    // this should only be when moving a node with a stream attached
-    if (stream.status === EdgeStatus.Connected) {
-      if (stream.status === EdgeStatus.Connected) {
-        const { source, target } = stream
+  return edges.map((edge) => {
+    // if edge is linked, update target and source
+    // this should only be when moving a node with a edge attached
+    if (edge.status === EdgeStatus.Connected) {
+      if (edge.status === EdgeStatus.Connected) {
+        const { source, target } = edge
         const { x: sourceX, y: sourceY } = getCenterCoords(source)
         if (!target) throw new Error('Invalid target')
         const { x: targetX, y: targetY } = getCenterCoords(target)
 
         return {
-          ...stream,
+          ...edge,
           m: `${sourceX} ${sourceY}`,
           l: `${targetX} ${targetY}`,
         }
       }
-      const { source, target } = stream
+      const { source, target } = edge
       const { x: sourceX, y: sourceY } = getCenterCoords(source)
       if (!target) throw new Error('Invalid target')
       const { x: targetX, y: targetY } = getCenterCoords(target)
 
       return {
-        ...stream,
+        ...edge,
         m: `${sourceX} ${sourceY}`,
         l: `${targetX} ${targetY}`,
       }
     }
 
-    // if stream is active, update stream line
-    // this should only be when creating a new stream
-    if (stream.status !== EdgeStatus.Dragging) return stream
+    // if edge is active, update edge line
+    // this should only be when creating a new edge
+    if (edge.status !== EdgeStatus.Dragging) return edge
 
     return {
-      ...stream,
+      ...edge,
       l: `${clientX - gap} ${clientY - gap}`,
     }
   })
@@ -104,69 +104,69 @@ function scrollNodesOnGraph(
   })
 }
 
-function scrollstreamsOnGraph(
+function scrolledgesOnGraph(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.GRAPH_WHEEL }
 ) {
-  const { streams } = state
+  const { edges } = state
   const { deltaX, deltaY } = action.payload.event.nativeEvent
 
-  return streams.map((stream) => {
-    // if stream is linked, update target and source
-    // this should only be when moving a node with a stream attached
-    if (stream.status === EdgeStatus.Connected) {
-      const { source, target } = stream
+  return edges.map((edge) => {
+    // if edge is linked, update target and source
+    // this should only be when moving a node with a edge attached
+    if (edge.status === EdgeStatus.Connected) {
+      const { source, target } = edge
       const { x: sourceX, y: sourceY } = getCenterCoords(source)
       if (!target) throw new Error('Invalid target')
       const { x: targetX, y: targetY } = getCenterCoords(target)
 
       return {
-        ...stream,
+        ...edge,
         m: `${sourceX + deltaX} ${sourceY + deltaY}`,
         l: `${targetX + deltaX} ${targetY + deltaY}`,
       }
     }
 
-    // if stream is active, update stream line
-    // this should only be when creating a new stream
-    if (stream.status !== EdgeStatus.Dragging) return stream
+    // if edge is active, update edge line
+    // this should only be when creating a new edge
+    if (edge.status !== EdgeStatus.Dragging) return edge
 
     return {
-      ...stream,
+      ...edge,
     }
   })
 }
 
-// remove streams that are not linked to a port
+// remove edges that are not linked to a vertex
 function removeUnlinkedStreams(state: GraphState) {
-  const { streams } = state
+  const { edges } = state
 
-  return streams
-    .map((stream) => {
-      // if stream is linked, update target and source
-      // this should only be when moving a node with a stream attached
-      if (stream.status === EdgeStatus.Connected) {
-        const { source, target } = stream
+  return edges
+    .map((edge) => {
+      // if edge is linked, update target and source
+      // this should only be when moving a node with a edge attached
+      if (edge.status === EdgeStatus.Connected) {
+        const { source, target } = edge
         const { x: sourceX, y: sourceY } = getCenterCoords(source)
         if (!target) throw new Error('Invalid target')
         const { x: targetX, y: targetY } = getCenterCoords(target)
 
         return {
-          ...stream,
+          ...edge,
           m: `${sourceX} ${sourceY}`,
           l: `${targetX} ${targetY}`,
         }
       }
 
-      // if stream is active, update stream line
-      // this should only be when creating a new stream
-      if (stream.status !== EdgeStatus.Dragging) return stream
+      // if edge is active, update edge line
+      // this should only be when creating a new edge
+      if (edge.status !== EdgeStatus.Dragging) return edge
 
       return {
-        ...stream,
+        ...edge,
       }
     })
-    .filter((stream) => stream.status === EdgeStatus.Connected)
+    .filter((edge) => edge.status === EdgeStatus.Connected)
 }
 
 function resetActivePortStatus(state: GraphState) {
@@ -174,10 +174,10 @@ function resetActivePortStatus(state: GraphState) {
   return nodes.map((node) => {
     return {
       ...node,
-      ports: node.ports.map((port) => {
-        if (port.status !== VertexStatus.Active) return port
+      vertices: node.vertices.map((vertex) => {
+        if (vertex.status !== VertexStatus.Active) return vertex
         return {
-          ...port,
+          ...vertex,
           status: VertexStatus.Idle,
         }
       }),
@@ -270,7 +270,7 @@ function initializeNode(
             x: 0,
             y: 0,
           },
-          ports: [
+          vertices: [
             {
               id: crypto.randomUUID(),
               kind: VertexKind.Output,
@@ -304,7 +304,7 @@ function initializeNode(
             x: 0,
             y: 0,
           },
-          ports: [
+          vertices: [
             {
               id: crypto.randomUUID(),
               kind: VertexKind.Input,
@@ -373,11 +373,11 @@ function activatePort(
   return nodes.map((node) => {
     return {
       ...node,
-      ports: node.ports.map((port) => {
-        if (port.id !== id) return port
-        if (port.status === VertexStatus.Connected) return port
+      vertices: node.vertices.map((vertex) => {
+        if (vertex.id !== id) return vertex
+        if (vertex.status === VertexStatus.Connected) return vertex
         return {
-          ...port,
+          ...vertex,
           status: VertexStatus.Active,
         }
       }),
@@ -389,22 +389,22 @@ function InitializeStream(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_DOWN }
 ) {
-  const { streams } = state
+  const { edges } = state
   const { value, ref, id } = action.payload
-  if (!ref.current) throw new Error('Invalid port reference')
-  const portCoords = getCenterCoords(ref.current)
+  if (!ref.current) throw new Error('Invalid vertex reference')
+  const vertexCoords = getCenterCoords(ref.current)
 
-  // if port status is connected return streams
-  // if (status === PortStatus.Connected) return streams
-  // if (kind !== PortKind.Output) return streams
+  // if vertex status is connected return edges
+  // if (status === PortStatus.Connected) return edges
+  // if (kind !== PortKind.Output) return edges
 
   return [
-    ...streams,
+    ...edges,
     {
-      id: String(streams.length + 1),
+      id: String(edges.length + 1),
       value: value,
-      m: `${portCoords.x} ${portCoords.y}`,
-      l: `${portCoords.x} ${portCoords.y}`,
+      m: `${vertexCoords.x} ${vertexCoords.y}`,
+      l: `${vertexCoords.x} ${vertexCoords.y}`,
       status: EdgeStatus.Dragging,
       sourceId: id,
       source: ref.current,
@@ -417,26 +417,26 @@ function createPortConnection(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_UP }
 ) {
-  const { nodes, streams } = state
+  const { nodes, edges } = state
   const { id } = action.payload
 
   return nodes.map((node) => {
     return {
       ...node,
-      ports: node.ports.map((port) => {
-        // if port is active set status to linked
-        // the active port should always be the source of the stream
-        if (port.status === VertexStatus.Active)
+      vertices: node.vertices.map((vertex) => {
+        // if vertex is active set status to linked
+        // the active vertex should always be the source of the edge
+        if (vertex.status === VertexStatus.Active)
           return {
-            ...port,
+            ...vertex,
             status: VertexStatus.Connected,
           }
-        // if the port is port set status to linked and set value to the stream value
-        if (port.id !== id) return port
+        // if the vertex is vertex set status to linked and set value to the edge value
+        if (vertex.id !== id) return vertex
         return {
-          ...port,
+          ...vertex,
           status: VertexStatus.Connected,
-          value: streams.find((stream) => stream.status === EdgeStatus.Dragging)
+          value: edges.find((edge) => edge.status === EdgeStatus.Dragging)
             ?.value,
         }
       }),
@@ -448,17 +448,17 @@ function createStreamConnection(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_UP }
 ) {
-  const { streams } = state
+  const { edges } = state
   const { ref, id } = action.payload
 
-  if (!ref.current) throw new Error('Invalid port reference')
+  if (!ref.current) throw new Error('Invalid vertex reference')
   const { x: targetPortX, y: targetPortY } = getCenterCoords(ref.current)
 
-  return streams.map((stream) => {
-    if (stream.status !== EdgeStatus.Dragging) return stream
+  return edges.map((edge) => {
+    if (edge.status !== EdgeStatus.Dragging) return edge
 
     return {
-      ...stream,
+      ...edge,
       status: EdgeStatus.Connected,
       l: `${targetPortX} ${targetPortY}`,
       target: ref.current,
@@ -483,25 +483,25 @@ function numberNodeSliderChange(
   })
 }
 
-// data flows from the output of a node it's output port
-// streams are used to connect the output port to the input port of another node
-// when the value of the node changes, the value of the output port changes
-// and flows through the stream to the input port of the connected node
+// data flows from the output of a node it's output vertex
+// edges are used to connect the output vertex to the input vertex of another node
+// when the value of the node changes, the value of the output vertex changes
+// and flows through the edge to the input vertex of the connected node
 function nodeValueChange(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.NODE_VALUE_CHANGE }
 ) {
   const { nodes } = state
   const { id, value } = action.payload
-  // pass the new value to the output port
+  // pass the new value to the output vertex
   return nodes.map((node) => {
     if (node.id !== id) return node
     return {
       ...node,
-      ports: node.ports.map((port) => {
-        if (port.kind !== VertexKind.Output) return port
+      vertices: node.vertices.map((vertex) => {
+        if (vertex.kind !== VertexKind.Output) return vertex
         return {
-          ...port,
+          ...vertex,
           value: Number(value),
         }
       }),
@@ -509,16 +509,16 @@ function nodeValueChange(
   })
 }
 
-function portValueChange(state: GraphState) {
+function vertexValueChange(state: GraphState) {
   const { nodes } = state
   return nodes.map((node) => {
     if (node.variant !== NodeVariant.Math) return node
     return {
       ...node,
-      // value: Number(node.ports[0].value) + Number(node.ports[1].value),
+      // value: Number(node.vertices[0].value) + Number(node.vertices[1].value),
       value: mathOperations(
-        Number(node.ports[0].value),
-        Number(node.ports[1].value),
+        Number(node.vertices[0].value),
+        Number(node.vertices[1].value),
         node.mathOperation as MathOperation
       ),
     }
@@ -529,34 +529,34 @@ function updateStreamOnPortValueChange(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.VERTEX_VALUE_CHANGE }
 ) {
-  const { streams } = state
+  const { edges } = state
   const { value, id } = action.payload
-  // pass the new value to the connected stream
-  return streams.map((stream) => {
-    if (stream.sourceId !== id) return stream
+  // pass the new value to the connected edge
+  return edges.map((edge) => {
+    if (edge.sourceId !== id) return edge
     return {
-      ...stream,
+      ...edge,
       value: value,
     }
   })
 }
 
-function streamValueChange(
+function edgeValueChange(
   state: GraphState,
   action: GraphAction & { type: GraphActionTypes.EDGE_VALUE_CHANGE }
 ) {
   const { nodes } = state
   const { value, targetId } = action.payload
 
-  // pass the new value to the target port
+  // pass the new value to the target vertex
   return nodes.map((node) => {
     return {
       ...node,
-      ports: node.ports.map((port) => {
-        if (port.id !== targetId) return port
+      vertices: node.vertices.map((vertex) => {
+        if (vertex.id !== targetId) return vertex
 
         return {
-          ...port,
+          ...vertex,
           value: value,
         }
       }),
@@ -601,8 +601,8 @@ function mathNodeOperationChange(
       mathOperation: value as MathOperation,
       title: target.options[target.selectedIndex].text,
       value: mathOperations(
-        Number(node.ports[0].value),
-        Number(node.ports[1].value),
+        Number(node.vertices[0].value),
+        Number(node.vertices[1].value),
         value as MathOperation
       ),
     }
@@ -618,28 +618,28 @@ export function graphReducer(
       return {
         ...state,
         nodes: moveActiveNode(state, action),
-        streams: moveStream(state, action),
+        edges: moveStream(state, action),
       }
     }
     case GraphActionTypes.GRAPH_WHEEL: {
       return {
         ...state,
         nodes: scrollNodesOnGraph(state, action),
-        streams: scrollstreamsOnGraph(state, action),
+        edges: scrolledgesOnGraph(state, action),
       }
     }
     case GraphActionTypes.GRAPH_MOUSE_UP: {
       return {
         ...state,
         nodes: resetActivePortStatus(state),
-        streams: removeUnlinkedStreams(state),
+        edges: removeUnlinkedStreams(state),
       }
     }
     case GraphActionTypes.GRAPH_MOUSE_LEAVE: {
       return {
         ...state,
         nodes: resetDraggingNodeStatus(state),
-        streams: removeUnlinkedStreams(state),
+        edges: removeUnlinkedStreams(state),
       }
     }
     case GraphActionTypes.GRAPH_DROP: {
@@ -670,14 +670,14 @@ export function graphReducer(
       return {
         ...state,
         nodes: activatePort(state, action),
-        streams: InitializeStream(state, action),
+        edges: InitializeStream(state, action),
       }
     }
     case GraphActionTypes.VERTEX_MOUSE_UP: {
       return {
         ...state,
         nodes: createPortConnection(state, action),
-        streams: createStreamConnection(state, action),
+        edges: createStreamConnection(state, action),
       }
     }
     case GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE: {
@@ -695,14 +695,14 @@ export function graphReducer(
     case GraphActionTypes.VERTEX_VALUE_CHANGE: {
       return {
         ...state,
-        nodes: portValueChange(state),
-        streams: updateStreamOnPortValueChange(state, action),
+        nodes: vertexValueChange(state),
+        edges: updateStreamOnPortValueChange(state, action),
       }
     }
     case GraphActionTypes.EDGE_VALUE_CHANGE: {
       return {
         ...state,
-        nodes: streamValueChange(state, action),
+        nodes: edgeValueChange(state, action),
       }
     }
     case GraphActionTypes.MATH_NODE_OPERATION_CHANGE: {

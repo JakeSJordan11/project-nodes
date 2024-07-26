@@ -13,7 +13,7 @@ export function Node({
   id,
   value,
   position,
-  ports,
+  vertices,
   title,
 }: NodeProps) {
   const { dispatch } = useGraph()
@@ -50,24 +50,24 @@ export function Node({
         top: position.y + scrollPosition.y,
       }}
     >
-      {ports.filter((port) => port.kind === VertexKind.Input).length <
+      {vertices.filter((vertex) => vertex.kind === VertexKind.Input).length <
       1 ? null : (
         <div className={styles.inputs}>
-          {ports.map((port) =>
-            port.kind !== VertexKind.Input ? null : (
-              <Vertex {...port} key={port.id} />
+          {vertices.map((vertex) =>
+            vertex.kind !== VertexKind.Input ? null : (
+              <Vertex {...vertex} key={vertex.id} />
             )
           )}
         </div>
       )}
       <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>{value}</output>
-      {ports.filter((port) => port.kind === VertexKind.Output).length <
+      {vertices.filter((vertex) => vertex.kind === VertexKind.Output).length <
       1 ? null : (
         <div className={styles.outputs}>
-          {ports.map((port) =>
-            port.kind !== VertexKind.Output ? null : (
-              <Vertex {...port} key={port.id} />
+          {vertices.map((vertex) =>
+            vertex.kind !== VertexKind.Output ? null : (
+              <Vertex {...vertex} key={vertex.id} />
             )
           )}
         </div>

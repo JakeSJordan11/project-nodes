@@ -9,10 +9,7 @@ export interface EdgeProps {
   m: string
   l?: string
   status: EdgeStatus
-
-  // this is duplicated state, I should be able to derive this from the global state of the port
-  // but I have not figured out how to do that yet for the streams
-  value: number | boolean | string | undefined // this is duplicate state as well because it is the same as it's linked port value which is in state
+  value: number | boolean | string | undefined
   sourceId: string | undefined
   targetId?: string | undefined
   source: HTMLButtonElement

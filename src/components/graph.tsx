@@ -1,11 +1,11 @@
 'use client'
 
 import { GraphActionTypes } from '@/actions/graph.actions'
+import { Edge } from '@/components/edge'
+import { Node } from '@/components/node'
 import { useGraph } from '@/hooks/useGraph'
 import styles from '@/styles/graph.module.css'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
-import { Edge } from './edge'
-import { Node } from './node'
 
 export function Graph() {
   const { state, dispatch } = useGraph()
@@ -69,8 +69,8 @@ export function Graph() {
           backgroundPosition: `${scrollPosition.x}px ${scrollPosition.y}px`,
         }}
       >
-        {state.streams.map((stream) => (
-          <Edge key={stream.id} {...stream} />
+        {state.edges.map((edge) => (
+          <Edge key={edge.id} {...edge} />
         ))}
       </svg>
     </article>

@@ -1,4 +1,4 @@
-import { PortProps } from '@/types/port.types'
+import { VertexProps } from '@/types/vertex.types'
 
 export enum NodeVariant {
   Number = 'number',
@@ -16,15 +16,14 @@ export enum MathOperation {
 
 export interface NodeProps {
   id: string
-  ports: PortProps[]
+  vertices: VertexProps[]
   position: { x: number; y: number }
   isSelected?: boolean
   isDragging?: boolean
   variant: NodeVariant
   mathOperation?: MathOperation
   title: string
-
-  value: number | boolean | string | undefined // TODO: derive this state from node variant
-  offset: { x: number; y: number } // TODO: derive this state this may need to be created locally, but I don't think it needs to be in the global state
-  scrollPosition: { x: number; y: number } // TODO: derive this state
+  value: number | boolean | string | undefined
+  offset: { x: number; y: number }
+  scrollPosition: { x: number; y: number }
 }

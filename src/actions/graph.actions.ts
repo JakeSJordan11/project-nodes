@@ -18,13 +18,13 @@ export enum GraphActionTypes {
   NODE_DRAG_START = 'node_drag_start',
   NODE_MOUSE_UP = 'node_mouse_up',
   NODE_MOUSE_DOWN = 'node_mouse_down',
-  VERTEX_MOUSE_DOWN = 'port_mouse_down',
-  VERTEX_MOUSE_UP = 'port_mouse_up',
+  VERTEX_MOUSE_DOWN = 'vertex_mouse_down',
+  VERTEX_MOUSE_UP = 'vertex_mouse_up',
   NUMBER_NODE_SLIDER_CHANGE = 'number_node_slider_change',
   MATH_NODE_OPERATION_CHANGE = 'math_node_operation_change',
   NODE_VALUE_CHANGE = 'node_value_change',
-  VERTEX_VALUE_CHANGE = 'port_value_change',
-  EDGE_VALUE_CHANGE = 'stream_value_change',
+  VERTEX_VALUE_CHANGE = 'vertex_value_change',
+  EDGE_VALUE_CHANGE = 'edge_value_change',
 }
 
 export type GraphAction =

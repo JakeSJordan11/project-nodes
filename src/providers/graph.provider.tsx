@@ -8,7 +8,7 @@ import { ReactNode, useReducer } from 'react'
 export function GraphProvider({ children }: { children: ReactNode }) {
   const initialState: GraphState = {
     nodes: [],
-    streams: [],
+    edges: [],
   }
   const [state, dispatch] = useReducer(graphReducer, initialState)
   return (
