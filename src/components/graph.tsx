@@ -4,8 +4,8 @@ import { GraphActionTypes } from '@/actions/graph.actions'
 import { useGraph } from '@/hooks/useGraph'
 import styles from '@/styles/graph.module.css'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
+import { Edge } from './edge'
 import { Node } from './node'
-import { Stream } from './stream'
 
 export function Graph() {
   const { state, dispatch } = useGraph()
@@ -70,7 +70,7 @@ export function Graph() {
         }}
       >
         {state.streams.map((stream) => (
-          <Stream key={stream.id} {...stream} />
+          <Edge key={stream.id} {...stream} />
         ))}
       </svg>
     </article>

@@ -1,5 +1,5 @@
+import { EdgeProps } from '@/types/edge.types'
 import { NodeProps } from '@/types/node.types'
-import { StreamProps } from '@/types/stream.types'
 import { VertexProps } from '@/types/vertex.types'
 import {
   ChangeEvent,
@@ -24,7 +24,7 @@ export enum GraphActionTypes {
   MATH_NODE_OPERATION_CHANGE = 'math_node_operation_change',
   NODE_VALUE_CHANGE = 'node_value_change',
   VERTEX_VALUE_CHANGE = 'port_value_change',
-  STREAM_VALUE_CHANGE = 'stream_value_change',
+  EDGE_VALUE_CHANGE = 'stream_value_change',
 }
 
 export type GraphAction =
@@ -102,10 +102,10 @@ export type GraphAction =
       }
     }
   | {
-      type: GraphActionTypes.STREAM_VALUE_CHANGE
+      type: GraphActionTypes.EDGE_VALUE_CHANGE
       payload: {
-        value: StreamProps['value']
-        targetId: StreamProps['targetId']
+        value: EdgeProps['value']
+        targetId: EdgeProps['targetId']
       }
     }
   | {

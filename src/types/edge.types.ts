@@ -1,14 +1,14 @@
-export enum StreamStatus {
+export enum EdgeStatus {
   Dragging = 'active',
   Connected = 'connected',
   Disconnected = 'disconnected',
 }
 
-export interface StreamProps {
+export interface EdgeProps {
   id: string | undefined
   m: string
   l?: string
-  status: StreamStatus
+  status: EdgeStatus
 
   // this is duplicated state, I should be able to derive this from the global state of the port
   // but I have not figured out how to do that yet for the streams

@@ -2,16 +2,16 @@
 
 import { GraphActionTypes } from '@/actions/graph.actions'
 import { useGraph } from '@/hooks/useGraph'
-import { StreamProps } from '@/types/stream.types'
+import { EdgeProps } from '@/types/edge.types'
 import { useEffect } from 'react'
 
-export function Stream({ m, l, value, targetId }: StreamProps) {
+export function Edge({ m, l, value, targetId }: EdgeProps) {
   const { dispatch } = useGraph()
 
   useEffect(() => {
     if (!targetId) return
     dispatch({
-      type: GraphActionTypes.STREAM_VALUE_CHANGE,
+      type: GraphActionTypes.EDGE_VALUE_CHANGE,
       payload: {
         value: value,
         targetId: targetId,

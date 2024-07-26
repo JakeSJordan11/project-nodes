@@ -1,7 +1,7 @@
 import { GraphAction, GraphActionTypes } from '@/actions/graph.actions'
+import { EdgeStatus } from '@/types/edge.types'
 import { GraphState } from '@/types/graph.types'
 import { MathOperation, NodeVariant } from '@/types/node.types'
-import { StreamStatus } from '@/types/stream.types'
 import { VertexKind, VertexStatus } from '@/types/vertex.types'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
@@ -49,8 +49,8 @@ function moveStream(
   return streams.map((stream) => {
     // if stream is linked, update target and source
     // this should only be when moving a node with a stream attached
-    if (stream.status === StreamStatus.Connected) {
-      if (stream.status === StreamStatus.Connected) {
+    if (stream.status === EdgeStatus.Connected) {
+      if (stream.status === EdgeStatus.Connected) {
         const { source, target } = stream
         const { x: sourceX, y: sourceY } = getCenterCoords(source)
         if (!target) throw new Error('Invalid target')
@@ -76,7 +76,7 @@ function moveStream(
 
     // if stream is active, update stream line
     // this should only be when creating a new stream
-    if (stream.status !== StreamStatus.Dragging) return stream
+    if (stream.status !== EdgeStatus.Dragging) return stream
 
     return {
       ...stream,
@@ -114,7 +114,7 @@ function scrollstreamsOnGraph(
   return streams.map((stream) => {
     // if stream is linked, update target and source
     // this should only be when moving a node with a stream attached
-    if (stream.status === StreamStatus.Connected) {
+    if (stream.status === EdgeStatus.Connected) {
       const { source, target } = stream
       const { x: sourceX, y: sourceY } = getCenterCoords(source)
       if (!target) throw new Error('Invalid target')
@@ -129,7 +129,7 @@ function scrollstreamsOnGraph(
 
     // if stream is active, update stream line
     // this should only be when creating a new stream
-    if (stream.status !== StreamStatus.Dragging) return stream
+    if (stream.status !== EdgeStatus.Dragging) return stream
 
     return {
       ...stream,
@@ -145,7 +145,7 @@ function removeUnlinkedStreams(state: GraphState) {
     .map((stream) => {
       // if stream is linked, update target and source
       // this should only be when moving a node with a stream attached
-      if (stream.status === StreamStatus.Connected) {
+      if (stream.status === EdgeStatus.Connected) {
         const { source, target } = stream
         const { x: sourceX, y: sourceY } = getCenterCoords(source)
         if (!target) throw new Error('Invalid target')
@@ -160,13 +160,13 @@ function removeUnlinkedStreams(state: GraphState) {
 
       // if stream is active, update stream line
       // this should only be when creating a new stream
-      if (stream.status !== StreamStatus.Dragging) return stream
+      if (stream.status !== EdgeStatus.Dragging) return stream
 
       return {
         ...stream,
       }
     })
-    .filter((stream) => stream.status === StreamStatus.Connected)
+    .filter((stream) => stream.status === EdgeStatus.Connected)
 }
 
 function resetActivePortStatus(state: GraphState) {
@@ -405,7 +405,7 @@ function InitializeStream(
       value: value,
       m: `${portCoords.x} ${portCoords.y}`,
       l: `${portCoords.x} ${portCoords.y}`,
-      status: StreamStatus.Dragging,
+      status: EdgeStatus.Dragging,
       sourceId: id,
       source: ref.current,
       target: null,
@@ -436,9 +436,8 @@ function createPortConnection(
         return {
           ...port,
           status: VertexStatus.Connected,
-          value: streams.find(
-            (stream) => stream.status === StreamStatus.Dragging
-          )?.value,
+          value: streams.find((stream) => stream.status === EdgeStatus.Dragging)
+            ?.value,
         }
       }),
     }
@@ -456,11 +455,11 @@ function createStreamConnection(
   const { x: targetPortX, y: targetPortY } = getCenterCoords(ref.current)
 
   return streams.map((stream) => {
-    if (stream.status !== StreamStatus.Dragging) return stream
+    if (stream.status !== EdgeStatus.Dragging) return stream
 
     return {
       ...stream,
-      status: StreamStatus.Connected,
+      status: EdgeStatus.Connected,
       l: `${targetPortX} ${targetPortY}`,
       target: ref.current,
       targetId: id,
@@ -544,7 +543,7 @@ function updateStreamOnPortValueChange(
 
 function streamValueChange(
   state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.STREAM_VALUE_CHANGE }
+  action: GraphAction & { type: GraphActionTypes.EDGE_VALUE_CHANGE }
 ) {
   const { nodes } = state
   const { value, targetId } = action.payload
@@ -700,7 +699,7 @@ export function graphReducer(
         streams: updateStreamOnPortValueChange(state, action),
       }
     }
-    case GraphActionTypes.STREAM_VALUE_CHANGE: {
+    case GraphActionTypes.EDGE_VALUE_CHANGE: {
       return {
         ...state,
         nodes: streamValueChange(state, action),
