@@ -28,3 +28,8 @@
     --color-stroke-primary: hsl(0, 0%, 56%);
   }
 }
+
+body {
+  margin: 0;
+  overflow: hidden;
+}

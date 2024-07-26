@@ -1,8 +1,8 @@
 'use client'
 
+import styles from '@/styles/port.module.css'
 import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
-import styles from './port.module.css'
 
 export enum PortKind {
   Input = 'input',

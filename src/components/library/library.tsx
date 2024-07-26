@@ -1,9 +1,9 @@
 'use client'
 
+import styles from '@/styles/library.module.css'
 import type { DragEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import { NodeVariant } from '../node'
-import styles from './library.module.css'
 
 export function Library() {
   const { dispatch } = useGraph()
