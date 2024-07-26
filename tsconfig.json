@@ -17,12 +17,12 @@
     "incremental": true,
     "baseUrl": "./",
     "paths": {
-      "@/actions/*": ["src/actions"],
+      "@/actions/*": ["src/actions/*"],
       "@/app/*": ["src/app/*"],
       "@/components/*": ["src/components/*"],
-      "@/contexts/*": ["src/contexts"],
-      "@/hooks/*": ["src/hooks"],
-      "@/reducers/*": ["src/reducers"],
+      "@/contexts/*": ["src/contexts/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/reducers/*": ["src/reducers/*"],
       "@/styles/*": ["src/styles/*"],
       "@/types/*": ["src/types/*"]
     },
