@@ -1,5 +1,8 @@
 'use client'
 
+import { NodeProps } from '@/types/node.types'
+import { PortProps } from '@/types/port.types'
+import { StreamProps } from '@/types/stream.types'
 import {
   createContext,
   useContext,
@@ -12,9 +15,6 @@ import {
   type RefObject,
   type WheelEvent,
 } from 'react'
-import { type NodeProps } from '../node'
-import { type PortProps } from '../port'
-import { type StreamProps } from '../stream'
 import { graphReducer } from './graph.reducer'
 
 export enum GraphActionTypes {

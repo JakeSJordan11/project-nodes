@@ -1,7 +1,7 @@
+import { MathOperation, NodeVariant } from '@/types/node.types'
+import { PortKind, PortStatus } from '@/types/port.types'
+import { StreamStatus } from '@/types/stream.types'
 import { GraphAction, GraphActionTypes, GraphState } from '.'
-import { MathOperation, NodeVariant } from '../node'
-import { PortKind, PortStatus } from '../port'
-import { StreamStatus } from '../stream'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
 // this is a temporary fix until a better solution is found
