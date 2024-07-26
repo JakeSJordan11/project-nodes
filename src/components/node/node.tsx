@@ -1,10 +1,11 @@
 'use client'
 
+import { useGraph } from '@/hooks/useGraph'
 import styles from '@/styles/node.module.css'
 import { NodeProps } from '@/types/node.types'
 import { PortKind } from '@/types/port.types'
 import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
-import { GraphActionTypes, useGraph } from '../graph'
+import { GraphActionTypes } from '../graph'
 import { Port } from '../port'
 
 export function Node({

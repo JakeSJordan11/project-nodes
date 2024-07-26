@@ -1,9 +1,10 @@
 'use client'
 
+import { useGraph } from '@/hooks/useGraph'
 import styles from '@/styles/properties.module.css'
 import { MathOperation, NodeProps, NodeVariant } from '@/types/node.types'
 import { type ChangeEvent } from 'react'
-import { GraphActionTypes, useGraph } from '../graph'
+import { GraphActionTypes } from '../graph'
 
 export function Properties() {
   const { state, dispatch } = useGraph()

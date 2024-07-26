@@ -130,15 +130,6 @@ export const GraphsContext = createContext<GraphState | null>(null)
 export const GraphsDispatchContext =
   createContext<Dispatch<GraphAction> | null>(null)
 
-export function useGraph() {
-  const state = useContext(GraphsContext)
-  const dispatch = useContext(GraphsDispatchContext)
-  if (!state || !dispatch) {
-    throw new Error('useGraph must be used within a GraphProvider')
-  }
-  return { state, dispatch }
-}
-
 export function GraphProvider({ children }: { children: ReactNode }) {
   const initialState: GraphState = {
     nodes: [],

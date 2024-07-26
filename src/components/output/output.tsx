@@ -1,7 +1,7 @@
 'use client'
 
+import { useGraph } from '@/hooks/useGraph'
 import styles from '@/styles/output.module.css'
-import { useGraph } from '../graph'
 
 export function Output() {
   const { state } = useGraph()
