@@ -15,9 +15,16 @@
     "jsx": "preserve",
     "types": ["@webgpu/types"],
     "incremental": true,
-    "baseUrl": ".",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"]
+      "@/actions/*": ["src/actions"],
+      "@/app/*": ["src/app/*"],
+      "@/components/*": ["src/components/*"],
+      "@/contexts/*": ["src/contexts"],
+      "@/hooks/*": ["src/hooks"],
+      "@/reducers/*": ["src/reducers"],
+      "@/styles/*": ["src/styles/*"],
+      "@/types/*": ["src/types/*"]
     },
     "plugins": [
       {
