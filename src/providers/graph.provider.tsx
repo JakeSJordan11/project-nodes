@@ -1,3 +1,5 @@
+'use client'
+
 import { GraphsContext, GraphsDispatchContext } from '@/contexts/graph.context'
 import { graphReducer } from '@/reducers/graph.reducer'
 import { GraphState } from '@/types/graph.types'
