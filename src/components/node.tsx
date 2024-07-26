@@ -6,7 +6,7 @@ import styles from '@/styles/node.module.css'
 import { NodeProps } from '@/types/node.types'
 import { PortKind } from '@/types/port.types'
 import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
-import { Port } from '../port'
+import { Port } from './port'
 
 export function Node({
   scrollPosition,
