@@ -4,9 +4,9 @@ import { GraphActionTypes } from '@/actions/graph.actions'
 import { useGraph } from '@/hooks/useGraph'
 import styles from '@/styles/node.module.css'
 import { NodeProps } from '@/types/node.types'
-import { PortKind } from '@/types/port.types'
+import { VertexKind } from '@/types/vertex.types'
 import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
-import { Port } from './port'
+import { Vertex } from './vertex'
 
 export function Node({
   scrollPosition,
@@ -50,24 +50,24 @@ export function Node({
         top: position.y + scrollPosition.y,
       }}
     >
-      {ports.filter((port) => port.kind === PortKind.Input).length <
+      {ports.filter((port) => port.kind === VertexKind.Input).length <
       1 ? null : (
         <div className={styles.inputs}>
           {ports.map((port) =>
-            port.kind !== PortKind.Input ? null : (
-              <Port {...port} key={port.id} />
+            port.kind !== VertexKind.Input ? null : (
+              <Vertex {...port} key={port.id} />
             )
           )}
         </div>
       )}
       <h1 className={styles.title}>{title}</h1>
       <output className={styles.value}>{value}</output>
-      {ports.filter((port) => port.kind === PortKind.Output).length <
+      {ports.filter((port) => port.kind === VertexKind.Output).length <
       1 ? null : (
         <div className={styles.outputs}>
           {ports.map((port) =>
-            port.kind !== PortKind.Output ? null : (
-              <Port {...port} key={port.id} />
+            port.kind !== VertexKind.Output ? null : (
+              <Vertex {...port} key={port.id} />
             )
           )}
         </div>

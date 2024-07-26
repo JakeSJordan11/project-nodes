@@ -1,6 +1,6 @@
 import { NodeProps } from '@/types/node.types'
-import { PortProps } from '@/types/port.types'
 import { StreamProps } from '@/types/stream.types'
+import { VertexProps } from '@/types/vertex.types'
 import {
   ChangeEvent,
   DragEvent,
@@ -18,12 +18,12 @@ export enum GraphActionTypes {
   NODE_DRAG_START = 'node_drag_start',
   NODE_MOUSE_UP = 'node_mouse_up',
   NODE_MOUSE_DOWN = 'node_mouse_down',
-  PORT_MOUSE_DOWN = 'port_mouse_down',
-  PORT_MOUSE_UP = 'port_mouse_up',
+  VERTEX_MOUSE_DOWN = 'port_mouse_down',
+  VERTEX_MOUSE_UP = 'port_mouse_up',
   NUMBER_NODE_SLIDER_CHANGE = 'number_node_slider_change',
   MATH_NODE_OPERATION_CHANGE = 'math_node_operation_change',
   NODE_VALUE_CHANGE = 'node_value_change',
-  PORT_VALUE_CHANGE = 'port_value_change',
+  VERTEX_VALUE_CHANGE = 'port_value_change',
   STREAM_VALUE_CHANGE = 'stream_value_change',
 }
 
@@ -64,21 +64,21 @@ export type GraphAction =
       payload: { event: MouseEvent<HTMLElement>; id: NodeProps['id'] }
     }
   | {
-      type: GraphActionTypes.PORT_MOUSE_DOWN
+      type: GraphActionTypes.VERTEX_MOUSE_DOWN
       payload: {
         event: MouseEvent<HTMLButtonElement>
-        id: PortProps['id']
-        value: PortProps['value']
+        id: VertexProps['id']
+        value: VertexProps['value']
         ref: RefObject<HTMLButtonElement>
-        nodeId: PortProps['nodeId']
+        nodeId: VertexProps['nodeId']
       }
     }
   | {
-      type: GraphActionTypes.PORT_MOUSE_UP
+      type: GraphActionTypes.VERTEX_MOUSE_UP
       payload: {
         event: MouseEvent<HTMLButtonElement>
-        id: PortProps['id']
-        value: PortProps['value']
+        id: VertexProps['id']
+        value: VertexProps['value']
         ref: RefObject<HTMLButtonElement>
       }
     }
@@ -94,11 +94,11 @@ export type GraphAction =
       }
     }
   | {
-      type: GraphActionTypes.PORT_VALUE_CHANGE
+      type: GraphActionTypes.VERTEX_VALUE_CHANGE
       payload: {
-        value: PortProps['value']
-        id: PortProps['id']
-        nodeId: PortProps['nodeId']
+        value: VertexProps['value']
+        id: VertexProps['id']
+        nodeId: VertexProps['nodeId']
       }
     }
   | {

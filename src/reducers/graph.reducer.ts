@@ -1,8 +1,8 @@
 import { GraphAction, GraphActionTypes } from '@/actions/graph.actions'
 import { GraphState } from '@/types/graph.types'
 import { MathOperation, NodeVariant } from '@/types/node.types'
-import { PortKind, PortStatus } from '@/types/port.types'
 import { StreamStatus } from '@/types/stream.types'
+import { VertexKind, VertexStatus } from '@/types/vertex.types'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
 // this is a temporary fix until a better solution is found
@@ -175,10 +175,10 @@ function resetActivePortStatus(state: GraphState) {
     return {
       ...node,
       ports: node.ports.map((port) => {
-        if (port.status !== PortStatus.Active) return port
+        if (port.status !== VertexStatus.Active) return port
         return {
           ...port,
-          status: PortStatus.Idle,
+          status: VertexStatus.Idle,
         }
       }),
     }
@@ -273,8 +273,8 @@ function initializeNode(
           ports: [
             {
               id: crypto.randomUUID(),
-              kind: PortKind.Output,
-              status: PortStatus.Idle,
+              kind: VertexKind.Output,
+              status: VertexStatus.Idle,
               value: 0,
             },
           ],
@@ -307,20 +307,20 @@ function initializeNode(
           ports: [
             {
               id: crypto.randomUUID(),
-              kind: PortKind.Input,
-              status: PortStatus.Idle,
+              kind: VertexKind.Input,
+              status: VertexStatus.Idle,
               value: 0,
             },
             {
               id: crypto.randomUUID(),
-              kind: PortKind.Input,
-              status: PortStatus.Idle,
+              kind: VertexKind.Input,
+              status: VertexStatus.Idle,
               value: 0,
             },
             {
               id: crypto.randomUUID(),
-              kind: PortKind.Output,
-              status: PortStatus.Idle,
+              kind: VertexKind.Output,
+              status: VertexStatus.Idle,
               value: 0,
             },
           ],
@@ -365,7 +365,7 @@ function beginDraggingNode(
 
 function activatePort(
   state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_DOWN }
+  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_DOWN }
 ) {
   const { nodes } = state
   const { id } = action.payload
@@ -375,10 +375,10 @@ function activatePort(
       ...node,
       ports: node.ports.map((port) => {
         if (port.id !== id) return port
-        if (port.status === PortStatus.Connected) return port
+        if (port.status === VertexStatus.Connected) return port
         return {
           ...port,
-          status: PortStatus.Active,
+          status: VertexStatus.Active,
         }
       }),
     }
@@ -387,7 +387,7 @@ function activatePort(
 
 function InitializeStream(
   state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_DOWN }
+  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_DOWN }
 ) {
   const { streams } = state
   const { value, ref, id } = action.payload
@@ -415,7 +415,7 @@ function InitializeStream(
 
 function createPortConnection(
   state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_UP }
+  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_UP }
 ) {
   const { nodes, streams } = state
   const { id } = action.payload
@@ -426,16 +426,16 @@ function createPortConnection(
       ports: node.ports.map((port) => {
         // if port is active set status to linked
         // the active port should always be the source of the stream
-        if (port.status === PortStatus.Active)
+        if (port.status === VertexStatus.Active)
           return {
             ...port,
-            status: PortStatus.Connected,
+            status: VertexStatus.Connected,
           }
         // if the port is port set status to linked and set value to the stream value
         if (port.id !== id) return port
         return {
           ...port,
-          status: PortStatus.Connected,
+          status: VertexStatus.Connected,
           value: streams.find(
             (stream) => stream.status === StreamStatus.Dragging
           )?.value,
@@ -447,7 +447,7 @@ function createPortConnection(
 
 function createStreamConnection(
   state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.PORT_MOUSE_UP }
+  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_UP }
 ) {
   const { streams } = state
   const { ref, id } = action.payload
@@ -500,7 +500,7 @@ function nodeValueChange(
     return {
       ...node,
       ports: node.ports.map((port) => {
-        if (port.kind !== PortKind.Output) return port
+        if (port.kind !== VertexKind.Output) return port
         return {
           ...port,
           value: Number(value),
@@ -528,7 +528,7 @@ function portValueChange(state: GraphState) {
 
 function updateStreamOnPortValueChange(
   state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.PORT_VALUE_CHANGE }
+  action: GraphAction & { type: GraphActionTypes.VERTEX_VALUE_CHANGE }
 ) {
   const { streams } = state
   const { value, id } = action.payload
@@ -667,14 +667,14 @@ export function graphReducer(
         nodes: beginDraggingNode(state, action),
       }
     }
-    case GraphActionTypes.PORT_MOUSE_DOWN: {
+    case GraphActionTypes.VERTEX_MOUSE_DOWN: {
       return {
         ...state,
         nodes: activatePort(state, action),
         streams: InitializeStream(state, action),
       }
     }
-    case GraphActionTypes.PORT_MOUSE_UP: {
+    case GraphActionTypes.VERTEX_MOUSE_UP: {
       return {
         ...state,
         nodes: createPortConnection(state, action),
@@ -693,7 +693,7 @@ export function graphReducer(
         nodes: nodeValueChange(state, action),
       }
     }
-    case GraphActionTypes.PORT_VALUE_CHANGE: {
+    case GraphActionTypes.VERTEX_VALUE_CHANGE: {
       return {
         ...state,
         nodes: portValueChange(state),
