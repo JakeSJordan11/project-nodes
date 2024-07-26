@@ -1,7 +1,8 @@
+import { GraphAction, GraphActionTypes } from '@/actions/graph.actions'
+import { GraphState } from '@/types/graph.types'
 import { MathOperation, NodeVariant } from '@/types/node.types'
 import { PortKind, PortStatus } from '@/types/port.types'
 import { StreamStatus } from '@/types/stream.types'
-import { GraphAction, GraphActionTypes, GraphState } from '../components/graph'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
 // this is a temporary fix until a better solution is found
