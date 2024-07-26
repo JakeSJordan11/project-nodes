@@ -1,10 +1,10 @@
 'use client'
 
+import { GraphActionTypes } from '@/actions/graph.actions'
 import { useGraph } from '@/hooks/useGraph'
 import styles from '@/styles/port.module.css'
 import { PortProps } from '@/types/port.types'
 import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
-import { GraphActionTypes } from '../graph'
 
 export function Port({ id, value, nodeId }: PortProps) {
   const ref = useRef<HTMLButtonElement>(null)

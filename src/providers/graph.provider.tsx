@@ -1,9 +1,6 @@
-import {
-  GraphsContext,
-  GraphsDispatchContext,
-  GraphState,
-} from '@/contexts/graph.context'
+import { GraphsContext, GraphsDispatchContext } from '@/contexts/graph.context'
 import { graphReducer } from '@/reducers/graph.reducer'
+import { GraphState } from '@/types/graph.types'
 import { ReactNode, useReducer } from 'react'
 
 export function GraphProvider({ children }: { children: ReactNode }) {

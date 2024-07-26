@@ -1,9 +1,9 @@
 'use client'
 
+import { GraphActionTypes } from '@/actions/graph.actions'
 import { useGraph } from '@/hooks/useGraph'
 import { StreamProps } from '@/types/stream.types'
 import { useEffect } from 'react'
-import { GraphActionTypes } from '../graph'
 
 export function Stream({ m, l, value, targetId }: StreamProps) {
   const { dispatch } = useGraph()
