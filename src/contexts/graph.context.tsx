@@ -5,17 +5,13 @@ import { PortProps } from '@/types/port.types'
 import { StreamProps } from '@/types/stream.types'
 import {
   createContext,
-  useContext,
-  useReducer,
   type ChangeEvent,
   type Dispatch,
   type DragEvent,
   type MouseEvent,
-  type ReactNode,
   type RefObject,
   type WheelEvent,
 } from 'react'
-import { graphReducer } from '../reducers/graph.reducer'
 
 export enum GraphActionTypes {
   GRAPH_WHEEL = 'graph_wheel',
@@ -129,18 +125,3 @@ export type GraphAction =
 export const GraphsContext = createContext<GraphState | null>(null)
 export const GraphsDispatchContext =
   createContext<Dispatch<GraphAction> | null>(null)
-
-export function GraphProvider({ children }: { children: ReactNode }) {
-  const initialState: GraphState = {
-    nodes: [],
-    streams: [],
-  }
-  const [state, dispatch] = useReducer(graphReducer, initialState)
-  return (
-    <GraphsContext.Provider value={state}>
-      <GraphsDispatchContext.Provider value={dispatch}>
-        {children}
-      </GraphsDispatchContext.Provider>
-    </GraphsContext.Provider>
-  )
-}
