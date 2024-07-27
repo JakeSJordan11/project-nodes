@@ -1,4 +1,4 @@
-.output {
+.viewport2d {
   grid-area: output;
   aspect-ratio: 1;
   border: 2px solid var(--color-border-primary);

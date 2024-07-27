@@ -1,12 +1,12 @@
 'use client'
 
 import { useGraph } from '@/hooks'
-import styles from './output.module.css'
+import styles from './viewport2d.module.css'
 
-export function Output() {
+export function Viewport2D() {
   const { state } = useGraph()
   return (
-    <article className={styles.output}>
+    <article className={styles.viewport2d}>
       {state.nodes.map((node) => {
         if (!node.isSelected) return null
         return (

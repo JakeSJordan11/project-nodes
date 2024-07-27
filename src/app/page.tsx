@@ -1,4 +1,4 @@
-import { Graph, Library, Output, Properties } from '@/components'
+import { Graph, Library, Properties, Viewport2D } from '@/components'
 import { GraphProvider } from '@/providers'
 import styles from './page.module.css'
 
@@ -8,7 +8,7 @@ export default function Home() {
       <main className={styles.main}>
         <Graph />
         <Library />
-        <Output />
+        <Viewport2D />
         <Properties />
       </main>
     </GraphProvider>
