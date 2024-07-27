@@ -1,6 +1,12 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions'
+import {
+  graphDrop,
+  graphMouseLeave,
+  graphMouseMove,
+  graphMouseUp,
+  graphWheel,
+} from '@/actions'
 import { Edge, Node } from '@/components'
 import { useGraph } from '@/hooks'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
@@ -11,28 +17,19 @@ export function Graph() {
   const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 })
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
-    dispatch({
-      type: GraphActionTypes.GRAPH_MOUSE_MOVE,
-      payload: { event: event },
-    })
+    dispatch(graphMouseMove(event))
   }
 
   function handleMouseUp(event: MouseEvent<HTMLDivElement>) {
-    dispatch({
-      type: GraphActionTypes.GRAPH_MOUSE_UP,
-      payload: { event: event },
-    })
+    dispatch(graphMouseUp(event))
   }
 
   function handleMouseLeave(event: MouseEvent<HTMLDivElement>) {
-    dispatch({
-      type: GraphActionTypes.GRAPH_MOUSE_LEAVE,
-      payload: { event: event },
-    })
+    dispatch(graphMouseLeave(event))
   }
 
   function handleDrop(event: DragEvent<HTMLDivElement>) {
-    dispatch({ type: GraphActionTypes.GRAPH_DROP, payload: { event: event } })
+    dispatch(graphDrop(event))
   }
 
   function handleDragOver(event: DragEvent<HTMLDivElement>) {
@@ -43,10 +40,7 @@ export function Graph() {
     const { deltaY, deltaX } = event
     const { x, y } = scrollPosition
     setScrollPosition({ x: x + deltaX, y: y + deltaY })
-    dispatch({
-      type: GraphActionTypes.GRAPH_WHEEL,
-      payload: { event },
-    })
+    dispatch(graphWheel(event))
   }
 
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions'
+import { edgeValueChange } from '@/actions'
 import { useGraph } from '@/hooks'
 import { EdgeProps } from '@/types'
 import { useEffect } from 'react'
@@ -10,13 +10,7 @@ export function Edge({ m, l, value, targetId }: EdgeProps) {
 
   useEffect(() => {
     if (!targetId) return
-    dispatch({
-      type: GraphActionTypes.EDGE_VALUE_CHANGE,
-      payload: {
-        value,
-        targetId,
-      },
-    })
+    dispatch(edgeValueChange({ value, targetId }))
   }, [value, targetId, dispatch])
 
   return <path d={`M ${m} L ${l}`} />

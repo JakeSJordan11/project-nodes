@@ -1,6 +1,6 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions'
+import { mathNodeOperationChange, numberNodeSliderChange } from '@/actions'
 import { useGraph } from '@/hooks'
 import { MathOperation, NodeProps, NodeVariant } from '@/types'
 import { type ChangeEvent } from 'react'
@@ -13,20 +13,14 @@ export function Properties() {
     event: ChangeEvent<HTMLInputElement>,
     id: NodeProps['id']
   ) {
-    dispatch({
-      type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE,
-      payload: { event, id },
-    })
+    dispatch(numberNodeSliderChange(event, id))
   }
 
   function handleSelectionChange(
     event: ChangeEvent<HTMLSelectElement>,
     id: NodeProps['id']
   ) {
-    dispatch({
-      type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE,
-      payload: { event, id },
-    })
+    dispatch(mathNodeOperationChange(event, id))
   }
 
   return (

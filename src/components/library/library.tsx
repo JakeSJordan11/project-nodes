@@ -1,6 +1,6 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions'
+import { nodeDragStart } from '@/actions'
 import { useGraph } from '@/hooks'
 import { NodeVariant } from '@/types'
 import type { DragEvent } from 'react'
@@ -10,10 +10,7 @@ export function Library() {
   const { dispatch } = useGraph()
 
   function handleonDragStart(event: DragEvent<HTMLElement>, variant: string) {
-    dispatch({
-      type: GraphActionTypes.NODE_DRAG_START,
-      payload: { event, variant },
-    })
+    dispatch(nodeDragStart(event, variant))
   }
 
   return (

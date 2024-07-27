@@ -112,3 +112,149 @@ export type GraphAction =
       type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
       payload: { event: ChangeEvent<HTMLSelectElement>; id: NodeProps['id'] }
     }
+
+export function edgeValueChange({
+  value,
+  targetId,
+}: {
+  value: EdgeProps['value']
+  targetId: EdgeProps['targetId']
+}): GraphAction {
+  return {
+    type: GraphActionTypes.EDGE_VALUE_CHANGE,
+    payload: { value, targetId },
+  }
+}
+
+export function graphMouseMove(event: MouseEvent<HTMLDivElement>): GraphAction {
+  return {
+    type: GraphActionTypes.GRAPH_MOUSE_MOVE,
+    payload: { event },
+  }
+}
+
+export function graphMouseUp(event: MouseEvent<HTMLDivElement>): GraphAction {
+  return {
+    type: GraphActionTypes.GRAPH_MOUSE_UP,
+    payload: { event },
+  }
+}
+
+export function graphMouseLeave(
+  event: MouseEvent<HTMLDivElement>
+): GraphAction {
+  return {
+    type: GraphActionTypes.GRAPH_MOUSE_LEAVE,
+    payload: { event },
+  }
+}
+
+export function graphDrop(event: DragEvent<HTMLDivElement>): GraphAction {
+  return {
+    type: GraphActionTypes.GRAPH_DROP,
+    payload: { event },
+  }
+}
+
+export function graphWheel(event: WheelEvent<HTMLDivElement>): GraphAction {
+  return {
+    type: GraphActionTypes.GRAPH_WHEEL,
+    payload: { event },
+  }
+}
+
+export function nodeDragStart(
+  event: DragEvent<HTMLElement>,
+  variant: string
+): GraphAction {
+  return {
+    type: GraphActionTypes.NODE_DRAG_START,
+    payload: { event, variant },
+  }
+}
+
+export function nodeValueChange(memoizedPayload: {
+  value: NodeProps['value']
+  id: NodeProps['id']
+}): GraphAction {
+  return {
+    type: GraphActionTypes.NODE_VALUE_CHANGE,
+    payload: memoizedPayload,
+  }
+}
+
+export function nodeMouseDown(
+  event: MouseEvent<HTMLButtonElement>,
+  id: NodeProps['id']
+): GraphAction {
+  return {
+    type: GraphActionTypes.NODE_MOUSE_DOWN,
+    payload: { event, id },
+  }
+}
+
+export function nodeMouseUp(
+  event: MouseEvent<HTMLElement>,
+  id: NodeProps['id']
+): GraphAction {
+  return {
+    type: GraphActionTypes.NODE_MOUSE_UP,
+    payload: { event, id },
+  }
+}
+
+export function numberNodeSliderChange(
+  event: ChangeEvent<HTMLInputElement>,
+  id: NodeProps['id']
+): GraphAction {
+  return {
+    type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE,
+    payload: { event, id },
+  }
+}
+
+export function mathNodeOperationChange(
+  event: ChangeEvent<HTMLSelectElement>,
+  id: NodeProps['id']
+): GraphAction {
+  return {
+    type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE,
+    payload: { event, id },
+  }
+}
+
+export function vertexValueChange(memoizedPayload: {
+  value: VertexProps['value']
+  id: VertexProps['id']
+  nodeId: VertexProps['nodeId']
+}): GraphAction {
+  return {
+    type: GraphActionTypes.VERTEX_VALUE_CHANGE,
+    payload: memoizedPayload,
+  }
+}
+
+export function vertexMouseDown(
+  event: MouseEvent<HTMLButtonElement>,
+  id: VertexProps['id'],
+  value: VertexProps['value'],
+  ref: RefObject<HTMLButtonElement>,
+  nodeId: VertexProps['nodeId']
+): GraphAction {
+  return {
+    type: GraphActionTypes.VERTEX_MOUSE_DOWN,
+    payload: { event, id, value, ref, nodeId },
+  }
+}
+
+export function vertexMouseUp(
+  event: MouseEvent<HTMLButtonElement>,
+  id: VertexProps['id'],
+  value: VertexProps['value'],
+  ref: RefObject<HTMLButtonElement>
+): GraphAction {
+  return {
+    type: GraphActionTypes.VERTEX_MOUSE_UP,
+    payload: { event, id, value, ref },
+  }
+}

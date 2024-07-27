@@ -1,6 +1,6 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions'
+import { vertexMouseDown, vertexMouseUp, vertexValueChange } from '@/actions'
 import { useGraph } from '@/hooks'
 import { VertexProps } from '@/types'
 import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
@@ -15,32 +15,17 @@ export function Vertex({ id, value, nodeId }: VertexProps) {
   )
 
   useEffect(() => {
-    dispatch({
-      type: GraphActionTypes.VERTEX_VALUE_CHANGE,
-      payload: memoizedPayload,
-    })
+    dispatch(vertexValueChange(memoizedPayload))
   }, [memoizedPayload, dispatch])
 
   function handleMouseDown(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation()
-    dispatch({
-      type: GraphActionTypes.VERTEX_MOUSE_DOWN,
-      payload: {
-        event,
-        id,
-        value,
-        ref,
-        nodeId,
-      },
-    })
+    dispatch(vertexMouseDown(event, id, value, ref, nodeId))
   }
 
   function handleMouseUp(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation()
-    dispatch({
-      type: GraphActionTypes.VERTEX_MOUSE_UP,
-      payload: { event, id, value, ref },
-    })
+    dispatch(vertexMouseUp(event, id, value, ref))
   }
 
   return (
