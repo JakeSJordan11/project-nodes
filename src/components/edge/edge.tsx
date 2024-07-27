@@ -1,8 +1,8 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions/graph.actions'
-import { useGraph } from '@/hooks/useGraph'
-import { EdgeProps } from '@/types/edge.types'
+import { GraphActionTypes } from '@/actions'
+import { useGraph } from '@/hooks'
+import { EdgeProps } from '@/types'
 import { useEffect } from 'react'
 
 export function Edge({ m, l, value, targetId }: EdgeProps) {

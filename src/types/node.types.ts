@@ -1,4 +1,4 @@
-import { VertexProps } from '@/types/vertex.types'
+import { VertexProps } from '@/types'
 
 export enum NodeVariant {
   Number = 'number',

@@ -1,4 +1,4 @@
-import { GraphsContext, GraphsDispatchContext } from '@/contexts/graph.context'
+import { GraphsContext, GraphsDispatchContext } from '@/contexts'
 import { useContext } from 'react'
 
 export function useGraph() {

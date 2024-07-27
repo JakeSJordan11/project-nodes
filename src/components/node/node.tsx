@@ -1,12 +1,11 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions/graph.actions'
-import { useGraph } from '@/hooks/useGraph'
-import styles from '@/styles/node.module.css'
-import { NodeProps } from '@/types/node.types'
-import { VertexKind } from '@/types/vertex.types'
+import { GraphActionTypes } from '@/actions'
+import { Vertex } from '@/components'
+import { useGraph } from '@/hooks'
+import { NodeProps, VertexKind } from '@/types'
 import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
-import { Vertex } from './vertex'
+import styles from './node.module.css'
 
 export function Node({
   scrollPosition,

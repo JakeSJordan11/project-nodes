@@ -1,10 +1,10 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions/graph.actions'
-import { useGraph } from '@/hooks/useGraph'
-import styles from '@/styles/library.module.css'
-import { NodeVariant } from '@/types/node.types'
+import { GraphActionTypes } from '@/actions'
+import { useGraph } from '@/hooks'
+import { NodeVariant } from '@/types'
 import type { DragEvent } from 'react'
+import styles from './library.module.css'
 
 export function Library() {
   const { dispatch } = useGraph()

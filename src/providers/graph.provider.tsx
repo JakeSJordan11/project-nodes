@@ -1,8 +1,8 @@
 'use client'
 
-import { GraphsContext, GraphsDispatchContext } from '@/contexts/graph.context'
-import { graphReducer } from '@/reducers/graph.reducer'
-import { GraphState } from '@/types/graph.types'
+import { GraphsContext, GraphsDispatchContext } from '@/contexts'
+import { graphReducer } from '@/reducers'
+import { GraphState } from '@/types'
 import { ReactNode, useReducer } from 'react'
 
 export function GraphProvider({ children }: { children: ReactNode }) {

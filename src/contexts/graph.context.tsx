@@ -1,7 +1,7 @@
 'use client'
 
-import { GraphAction } from '@/actions/graph.actions'
-import { GraphState } from '@/types/graph.types'
+import { GraphAction } from '@/actions'
+import { GraphState } from '@/types'
 import { createContext, type Dispatch } from 'react'
 
 export const GraphsContext = createContext<GraphState | null>(null)

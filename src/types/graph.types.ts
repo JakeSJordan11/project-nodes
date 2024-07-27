@@ -1,5 +1,4 @@
-import { EdgeProps } from '@/types/edge.types'
-import { NodeProps } from '@/types/node.types'
+import { EdgeProps, NodeProps } from '@/types'
 
 export interface GraphState {
   nodes: NodeProps[]

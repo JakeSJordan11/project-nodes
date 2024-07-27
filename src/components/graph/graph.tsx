@@ -1,11 +1,10 @@
 'use client'
 
-import { GraphActionTypes } from '@/actions/graph.actions'
-import { Edge } from '@/components/edge'
-import { Node } from '@/components/node'
-import { useGraph } from '@/hooks/useGraph'
-import styles from '@/styles/graph.module.css'
+import { GraphActionTypes } from '@/actions'
+import { Edge, Node } from '@/components'
+import { useGraph } from '@/hooks'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
+import styles from './graph.module.css'
 
 export function Graph() {
   const { state, dispatch } = useGraph()

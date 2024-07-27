@@ -1,5 +1,5 @@
 import '@/styles/globals.css'
-import { inter } from '@/utilities/fonts'
+import { inter } from '@/utilities'
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 

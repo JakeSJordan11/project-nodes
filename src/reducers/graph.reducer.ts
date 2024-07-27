@@ -1,8 +1,12 @@
-import { GraphAction, GraphActionTypes } from '@/actions/graph.actions'
-import { EdgeStatus } from '@/types/edge.types'
-import { GraphState } from '@/types/graph.types'
-import { MathOperation, NodeVariant } from '@/types/node.types'
-import { VertexKind, VertexStatus } from '@/types/vertex.types'
+import { GraphAction, GraphActionTypes } from '@/actions'
+import {
+  EdgeStatus,
+  GraphState,
+  MathOperation,
+  NodeVariant,
+  VertexKind,
+  VertexStatus,
+} from '@/types'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
 // this is a temporary fix until a better solution is found
