@@ -28,14 +28,14 @@ export function Node({
   function handleMouseDown(event: PointerEvent<HTMLButtonElement>) {
     dispatch({
       type: GraphActionTypes.NODE_MOUSE_DOWN,
-      payload: { event: event, id: id },
+      payload: { event, id },
     })
   }
 
   function handleMouseUp(event: MouseEvent<HTMLElement>) {
     dispatch({
       type: GraphActionTypes.NODE_MOUSE_UP,
-      payload: { event: event, id: id },
+      payload: { event, id },
     })
   }
 

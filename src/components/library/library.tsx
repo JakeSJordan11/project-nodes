@@ -12,7 +12,7 @@ export function Library() {
   function handleonDragStart(event: DragEvent<HTMLElement>, variant: string) {
     dispatch({
       type: GraphActionTypes.NODE_DRAG_START,
-      payload: { event: event, variant: variant },
+      payload: { event, variant },
     })
   }
 

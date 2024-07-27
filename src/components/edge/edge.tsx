@@ -13,8 +13,8 @@ export function Edge({ m, l, value, targetId }: EdgeProps) {
     dispatch({
       type: GraphActionTypes.EDGE_VALUE_CHANGE,
       payload: {
-        value: value,
-        targetId: targetId,
+        value,
+        targetId,
       },
     })
   }, [value, targetId, dispatch])

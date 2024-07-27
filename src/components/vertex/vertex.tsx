@@ -10,7 +10,7 @@ export function Vertex({ id, value, nodeId }: VertexProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const { dispatch } = useGraph()
   const memoizedPayload = useMemo(
-    () => ({ value: value, id: id, nodeId: nodeId }),
+    () => ({ value, id, nodeId }),
     [value, id, nodeId]
   )
 
@@ -26,11 +26,11 @@ export function Vertex({ id, value, nodeId }: VertexProps) {
     dispatch({
       type: GraphActionTypes.VERTEX_MOUSE_DOWN,
       payload: {
-        event: event,
-        id: id,
-        value: value,
-        ref: ref,
-        nodeId: nodeId,
+        event,
+        id,
+        value,
+        ref,
+        nodeId,
       },
     })
   }
@@ -39,7 +39,7 @@ export function Vertex({ id, value, nodeId }: VertexProps) {
     event.stopPropagation()
     dispatch({
       type: GraphActionTypes.VERTEX_MOUSE_UP,
-      payload: { event: event, id: id, value: value, ref: ref },
+      payload: { event, id, value, ref },
     })
   }
 

@@ -15,7 +15,7 @@ export function Properties() {
   ) {
     dispatch({
       type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE,
-      payload: { event: event, id: id },
+      payload: { event, id },
     })
   }
 
@@ -25,7 +25,7 @@ export function Properties() {
   ) {
     dispatch({
       type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE,
-      payload: { event: event, id: id },
+      payload: { event, id },
     })
   }
 

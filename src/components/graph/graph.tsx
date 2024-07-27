@@ -45,7 +45,7 @@ export function Graph() {
     setScrollPosition({ x: x + deltaX, y: y + deltaY })
     dispatch({
       type: GraphActionTypes.GRAPH_WHEEL,
-      payload: { event: event },
+      payload: { event },
     })
   }
 
