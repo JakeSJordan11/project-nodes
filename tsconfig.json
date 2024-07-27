@@ -25,7 +25,8 @@
       "@/providers/*": ["src/providers/*"],
       "@/reducers/*": ["src/reducers/*"],
       "@/styles/*": ["src/styles/*"],
-      "@/types/*": ["src/types/*"]
+      "@/types/*": ["src/types/*"],
+      "@/utilities/*": ["src/utilities/*"]
     },
     "plugins": [
       {
