@@ -4,7 +4,7 @@ import { nodeDragStart } from '@/actions'
 import { useGraph } from '@/hooks'
 import { NodeVariant } from '@/types'
 import type { DragEvent } from 'react'
-import styles from './library.module.css'
+import styles from './Library.module.css'
 
 export function Library() {
   const { dispatch } = useGraph()

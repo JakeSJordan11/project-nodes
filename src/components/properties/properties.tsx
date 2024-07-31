@@ -4,7 +4,7 @@ import { mathNodeOperationChange, numberNodeSliderChange } from '@/actions'
 import { useGraph } from '@/hooks'
 import { MathOperation, NodeProps, NodeVariant } from '@/types'
 import { type ChangeEvent } from 'react'
-import styles from './properties.module.css'
+import styles from './Properties.module.css'
 
 export function Properties() {
   const { state, dispatch } = useGraph()

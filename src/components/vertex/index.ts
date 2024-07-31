@@ -1,1 +1,1 @@
-export * from './vertex'
+export * from './Vertex'

@@ -10,7 +10,7 @@ import {
 import { Edge, Node } from '@/components'
 import { useGraph } from '@/hooks'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
-import styles from './graph.module.css'
+import styles from './Graph.module.css'
 
 export function Graph() {
   const { state, dispatch } = useGraph()

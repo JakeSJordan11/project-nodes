@@ -4,7 +4,7 @@ import { vertexMouseDown, vertexMouseUp, vertexValueChange } from '@/actions'
 import { useGraph } from '@/hooks'
 import { VertexProps } from '@/types'
 import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
-import styles from './vertex.module.css'
+import styles from './Vertex.module.css'
 
 export function Vertex({ id, value, nodeId }: VertexProps) {
   const ref = useRef<HTMLButtonElement>(null)

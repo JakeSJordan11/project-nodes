@@ -5,7 +5,7 @@ import { Vertex } from '@/components'
 import { useGraph } from '@/hooks'
 import { NodeProps, VertexKind } from '@/types'
 import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
-import styles from './node.module.css'
+import styles from './Node.module.css'
 
 export function Node({
   scrollPosition,

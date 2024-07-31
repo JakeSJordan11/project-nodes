@@ -1,7 +1,7 @@
 'use client'
 
 import { useGraph } from '@/hooks'
-import styles from './viewport2d.module.css'
+import styles from './Viewport2d.module.css'
 
 export function Viewport2D() {
   const { state } = useGraph()
