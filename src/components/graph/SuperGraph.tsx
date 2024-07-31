@@ -10,9 +10,9 @@ import {
 import { Edge, Node } from '@/components'
 import { useGraph } from '@/hooks'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
-import styles from './Graph.module.css'
+import styles from './SuperGraph.module.css'
 
-export function Graph() {
+export function SuperGraph() {
   const { state, dispatch } = useGraph()
   const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 })
 
