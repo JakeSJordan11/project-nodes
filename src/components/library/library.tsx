@@ -1,13 +1,13 @@
 'use client'
 
 import { nodeDragStart } from '@/actions'
-import { useGraph } from '@/hooks'
+import { useSuperGraph } from '@/hooks'
 import { NodeVariant } from '@/types'
 import type { DragEvent } from 'react'
 import styles from './Library.module.css'
 
 export function Library() {
-  const { dispatch } = useGraph()
+  const { dispatch } = useSuperGraph()
 
   function handleonDragStart(event: DragEvent<HTMLElement>, variant: string) {
     dispatch(nodeDragStart(event, variant))

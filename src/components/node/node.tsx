@@ -2,7 +2,7 @@
 
 import { nodeMouseDown, nodeMouseUp, nodeValueChange } from '@/actions'
 import { Vertex } from '@/components'
-import { useGraph } from '@/hooks'
+import { useSuperGraph } from '@/hooks'
 import { NodeProps, VertexKind } from '@/types'
 import { MouseEvent, useEffect, useMemo, type PointerEvent } from 'react'
 import styles from './Node.module.css'
@@ -15,7 +15,7 @@ export function Node({
   vertices,
   title,
 }: NodeProps) {
-  const { dispatch } = useGraph()
+  const { dispatch } = useSuperGraph()
   const memoizedPayload = useMemo(() => ({ value, id }), [value, id])
 
   useEffect(() => {

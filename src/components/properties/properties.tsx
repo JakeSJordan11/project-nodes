@@ -1,13 +1,13 @@
 'use client'
 
 import { mathNodeOperationChange, numberNodeSliderChange } from '@/actions'
-import { useGraph } from '@/hooks'
+import { useSuperGraph } from '@/hooks'
 import { MathOperation, NodeProps, NodeVariant } from '@/types'
 import { type ChangeEvent } from 'react'
 import styles from './Properties.module.css'
 
 export function Properties() {
-  const { state, dispatch } = useGraph()
+  const { state, dispatch } = useSuperGraph()
 
   function handleSliderChange(
     event: ChangeEvent<HTMLInputElement>,

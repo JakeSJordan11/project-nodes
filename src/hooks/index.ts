@@ -1,1 +1,1 @@
-export * from './useGraph'
+export * from './useSuperGraph'

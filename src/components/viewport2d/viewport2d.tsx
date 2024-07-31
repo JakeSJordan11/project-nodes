@@ -1,10 +1,10 @@
 'use client'
 
-import { useGraph } from '@/hooks'
+import { useSuperGraph } from '@/hooks'
 import styles from './Viewport2d.module.css'
 
 export function Viewport2D() {
-  const { state } = useGraph()
+  const { state } = useSuperGraph()
   return (
     <article className={styles.viewport2d}>
       {state.nodes.map((node) => {

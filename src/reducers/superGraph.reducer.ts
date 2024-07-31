@@ -1,7 +1,7 @@
-import { GraphAction, GraphActionTypes } from '@/actions'
+import { SuperGraphAction, SuperGraphActionTypes } from '@/actions'
 import {
   EdgeStatus,
-  GraphState,
+  SuperGraphState,
   MathOperation,
   NodeVariant,
   VertexKind,
@@ -23,8 +23,8 @@ function getCenterCoords(element: HTMLElement) {
 }
 
 function moveActiveNode(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.GRAPH_MOUSE_MOVE }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.GRAPH_MOUSE_MOVE }
 ) {
   const { nodes } = state
   const { clientX, clientY } = action.payload.event
@@ -44,8 +44,8 @@ function moveActiveNode(
 }
 
 function moveStream(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.GRAPH_MOUSE_MOVE }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.GRAPH_MOUSE_MOVE }
 ) {
   const { edges } = state
   const { clientX, clientY } = action.payload.event
@@ -90,8 +90,8 @@ function moveStream(
 }
 
 function scrollNodesOnGraph(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.GRAPH_WHEEL }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.GRAPH_WHEEL }
 ) {
   const { nodes } = state
   const { deltaX, deltaY } = action.payload.event.nativeEvent
@@ -109,8 +109,8 @@ function scrollNodesOnGraph(
 }
 
 function scrolledgesOnGraph(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.GRAPH_WHEEL }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.GRAPH_WHEEL }
 ) {
   const { edges } = state
   const { deltaX, deltaY } = action.payload.event.nativeEvent
@@ -142,7 +142,7 @@ function scrolledgesOnGraph(
 }
 
 // remove edges that are not linked to a vertex
-function removeUnlinkedStreams(state: GraphState) {
+function removeUnlinkedStreams(state: SuperGraphState) {
   const { edges } = state
 
   return edges
@@ -173,7 +173,7 @@ function removeUnlinkedStreams(state: GraphState) {
     .filter((edge) => edge.status === EdgeStatus.Connected)
 }
 
-function resetActivePortStatus(state: GraphState) {
+function resetActivePortStatus(state: SuperGraphState) {
   const { nodes } = state
   return nodes.map((node) => {
     return {
@@ -190,7 +190,7 @@ function resetActivePortStatus(state: GraphState) {
 }
 
 // set dragging node status to idle
-function resetDraggingNodeStatus(state: GraphState) {
+function resetDraggingNodeStatus(state: SuperGraphState) {
   const { nodes } = state
   return nodes.map((node) => {
     if (!node.isDragging) return node
@@ -203,8 +203,8 @@ function resetDraggingNodeStatus(state: GraphState) {
 }
 
 function placeNodeOnGraph(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.GRAPH_DROP }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.GRAPH_DROP }
 ) {
   const { nodes } = state
   const { event } = action.payload
@@ -243,8 +243,8 @@ function placeNodeOnGraph(
 }
 
 function initializeNode(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.NODE_DRAG_START }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.NODE_DRAG_START }
 ) {
   const { nodes } = state
   const { event, variant } = action.payload
@@ -338,8 +338,8 @@ function initializeNode(
 }
 
 function beginDraggingNode(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.NODE_MOUSE_DOWN }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.NODE_MOUSE_DOWN }
 ) {
   const { nodes } = state
   const { id } = action.payload
@@ -368,8 +368,8 @@ function beginDraggingNode(
 }
 
 function activatePort(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_DOWN }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_DOWN }
 ) {
   const { nodes } = state
   const { id } = action.payload
@@ -390,8 +390,8 @@ function activatePort(
 }
 
 function InitializeStream(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_DOWN }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_DOWN }
 ) {
   const { edges } = state
   const { value, ref, id } = action.payload
@@ -418,8 +418,8 @@ function InitializeStream(
 }
 
 function createPortConnection(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_UP }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_UP }
 ) {
   const { nodes, edges } = state
   const { id } = action.payload
@@ -449,8 +449,8 @@ function createPortConnection(
 }
 
 function createStreamConnection(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.VERTEX_MOUSE_UP }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_UP }
 ) {
   const { edges } = state
   const { ref, id } = action.payload
@@ -472,8 +472,10 @@ function createStreamConnection(
 }
 
 function numberNodeSliderChange(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE }
+  state: SuperGraphState,
+  action: SuperGraphAction & {
+    type: SuperGraphActionTypes.NUMBER_NODE_SLIDER_CHANGE
+  }
 ) {
   const { nodes } = state
   const { id } = action.payload
@@ -492,8 +494,8 @@ function numberNodeSliderChange(
 // when the value of the node changes, the value of the output vertex changes
 // and flows through the edge to the input vertex of the connected node
 function nodeValueChange(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.NODE_VALUE_CHANGE }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.NODE_VALUE_CHANGE }
 ) {
   const { nodes } = state
   const { id, value } = action.payload
@@ -513,7 +515,7 @@ function nodeValueChange(
   })
 }
 
-function vertexValueChange(state: GraphState) {
+function vertexValueChange(state: SuperGraphState) {
   const { nodes } = state
   return nodes.map((node) => {
     if (node.variant !== NodeVariant.Math) return node
@@ -530,8 +532,8 @@ function vertexValueChange(state: GraphState) {
 }
 
 function updateStreamOnPortValueChange(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.VERTEX_VALUE_CHANGE }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_VALUE_CHANGE }
 ) {
   const { edges } = state
   const { value, id } = action.payload
@@ -546,8 +548,8 @@ function updateStreamOnPortValueChange(
 }
 
 function edgeValueChange(
-  state: GraphState,
-  action: GraphAction & { type: GraphActionTypes.EDGE_VALUE_CHANGE }
+  state: SuperGraphState,
+  action: SuperGraphAction & { type: SuperGraphActionTypes.EDGE_VALUE_CHANGE }
 ) {
   const { nodes } = state
   const { value, targetId } = action.payload
@@ -588,9 +590,9 @@ function mathOperations(a: number, b: number, operation: MathOperation) {
 }
 
 function mathNodeOperationChange(
-  state: GraphState,
-  action: GraphAction & {
-    type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
+  state: SuperGraphState,
+  action: SuperGraphAction & {
+    type: SuperGraphActionTypes.MATH_NODE_OPERATION_CHANGE
   }
 ) {
   const { nodes } = state
@@ -613,110 +615,110 @@ function mathNodeOperationChange(
   })
 }
 
-export function graphReducer(
-  state: GraphState,
-  action: GraphAction
-): GraphState {
+export function superGraphReducer(
+  state: SuperGraphState,
+  action: SuperGraphAction
+): SuperGraphState {
   switch (action.type) {
-    case GraphActionTypes.GRAPH_MOUSE_MOVE: {
+    case SuperGraphActionTypes.GRAPH_MOUSE_MOVE: {
       return {
         ...state,
         nodes: moveActiveNode(state, action),
         edges: moveStream(state, action),
       }
     }
-    case GraphActionTypes.GRAPH_WHEEL: {
+    case SuperGraphActionTypes.GRAPH_WHEEL: {
       return {
         ...state,
         nodes: scrollNodesOnGraph(state, action),
         edges: scrolledgesOnGraph(state, action),
       }
     }
-    case GraphActionTypes.GRAPH_MOUSE_UP: {
+    case SuperGraphActionTypes.GRAPH_MOUSE_UP: {
       return {
         ...state,
         nodes: resetActivePortStatus(state),
         edges: removeUnlinkedStreams(state),
       }
     }
-    case GraphActionTypes.GRAPH_MOUSE_LEAVE: {
+    case SuperGraphActionTypes.GRAPH_MOUSE_LEAVE: {
       return {
         ...state,
         nodes: resetDraggingNodeStatus(state),
         edges: removeUnlinkedStreams(state),
       }
     }
-    case GraphActionTypes.GRAPH_DROP: {
+    case SuperGraphActionTypes.GRAPH_DROP: {
       return {
         ...state,
         nodes: placeNodeOnGraph(state, action),
       }
     }
-    case GraphActionTypes.NODE_DRAG_START: {
+    case SuperGraphActionTypes.NODE_DRAG_START: {
       return {
         ...state,
         nodes: initializeNode(state, action),
       }
     }
-    case GraphActionTypes.NODE_MOUSE_UP: {
+    case SuperGraphActionTypes.NODE_MOUSE_UP: {
       return {
         ...state,
         nodes: resetDraggingNodeStatus(state),
       }
     }
-    case GraphActionTypes.NODE_MOUSE_DOWN: {
+    case SuperGraphActionTypes.NODE_MOUSE_DOWN: {
       return {
         ...state,
         nodes: beginDraggingNode(state, action),
       }
     }
-    case GraphActionTypes.VERTEX_MOUSE_DOWN: {
+    case SuperGraphActionTypes.VERTEX_MOUSE_DOWN: {
       return {
         ...state,
         nodes: activatePort(state, action),
         edges: InitializeStream(state, action),
       }
     }
-    case GraphActionTypes.VERTEX_MOUSE_UP: {
+    case SuperGraphActionTypes.VERTEX_MOUSE_UP: {
       return {
         ...state,
         nodes: createPortConnection(state, action),
         edges: createStreamConnection(state, action),
       }
     }
-    case GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE: {
+    case SuperGraphActionTypes.NUMBER_NODE_SLIDER_CHANGE: {
       return {
         ...state,
         nodes: numberNodeSliderChange(state, action),
       }
     }
-    case GraphActionTypes.NODE_VALUE_CHANGE: {
+    case SuperGraphActionTypes.NODE_VALUE_CHANGE: {
       return {
         ...state,
         nodes: nodeValueChange(state, action),
       }
     }
-    case GraphActionTypes.VERTEX_VALUE_CHANGE: {
+    case SuperGraphActionTypes.VERTEX_VALUE_CHANGE: {
       return {
         ...state,
         nodes: vertexValueChange(state),
         edges: updateStreamOnPortValueChange(state, action),
       }
     }
-    case GraphActionTypes.EDGE_VALUE_CHANGE: {
+    case SuperGraphActionTypes.EDGE_VALUE_CHANGE: {
       return {
         ...state,
         nodes: edgeValueChange(state, action),
       }
     }
-    case GraphActionTypes.MATH_NODE_OPERATION_CHANGE: {
+    case SuperGraphActionTypes.MATH_NODE_OPERATION_CHANGE: {
       return {
         ...state,
         nodes: mathNodeOperationChange(state, action),
       }
     }
     default: {
-      throw new Error(`Unhandled action type: ${GraphActionTypes}`)
+      throw new Error(`Unhandled action type: ${SuperGraphActionTypes}`)
     }
   }
 }

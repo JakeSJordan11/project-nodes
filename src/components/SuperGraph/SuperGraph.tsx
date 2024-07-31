@@ -8,12 +8,12 @@ import {
   graphWheel,
 } from '@/actions'
 import { Edge, Node } from '@/components'
-import { useGraph } from '@/hooks'
+import { useSuperGraph } from '@/hooks'
 import { WheelEvent, useState, type DragEvent, type MouseEvent } from 'react'
 import styles from './SuperGraph.module.css'
 
 export function SuperGraph() {
-  const { state, dispatch } = useGraph()
+  const { state, dispatch } = useSuperGraph()
   const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 })
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {

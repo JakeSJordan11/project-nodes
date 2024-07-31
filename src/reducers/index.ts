@@ -1,1 +1,1 @@
-export * from './graph.reducer'
+export * from './superGraph.reducer'

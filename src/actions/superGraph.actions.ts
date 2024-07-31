@@ -9,7 +9,7 @@ import {
   WheelEvent,
 } from 'react'
 
-export enum GraphActionTypes {
+export enum SuperGraphActionTypes {
   GRAPH_WHEEL = 'graph_wheel',
   GRAPH_MOUSE_MOVE = 'graph_mouse_move',
   GRAPH_MOUSE_UP = 'graph_mouse_up',
@@ -27,44 +27,44 @@ export enum GraphActionTypes {
   EDGE_VALUE_CHANGE = 'edge_value_change',
 }
 
-export type GraphAction =
+export type SuperGraphAction =
   | {
-      type: GraphActionTypes.GRAPH_WHEEL
+      type: SuperGraphActionTypes.GRAPH_WHEEL
       payload: { event: WheelEvent<HTMLDivElement> }
     }
   | {
-      type: GraphActionTypes.GRAPH_MOUSE_MOVE
+      type: SuperGraphActionTypes.GRAPH_MOUSE_MOVE
       payload: { event: MouseEvent<HTMLElement> }
     }
   | {
-      type: GraphActionTypes.GRAPH_MOUSE_UP
+      type: SuperGraphActionTypes.GRAPH_MOUSE_UP
       payload: { event: MouseEvent<HTMLElement> }
     }
   | {
-      type: GraphActionTypes.GRAPH_MOUSE_LEAVE
+      type: SuperGraphActionTypes.GRAPH_MOUSE_LEAVE
       payload: { event: MouseEvent<HTMLElement> }
     }
   | {
-      type: GraphActionTypes.GRAPH_DROP
+      type: SuperGraphActionTypes.GRAPH_DROP
       payload: { event: DragEvent<HTMLElement> }
     }
   | {
-      type: GraphActionTypes.NODE_DRAG_START
+      type: SuperGraphActionTypes.NODE_DRAG_START
       payload: {
         event: DragEvent<HTMLElement>
         variant: string
       }
     }
   | {
-      type: GraphActionTypes.NODE_MOUSE_DOWN
+      type: SuperGraphActionTypes.NODE_MOUSE_DOWN
       payload: { event: MouseEvent<HTMLElement>; id: NodeProps['id'] }
     }
   | {
-      type: GraphActionTypes.NODE_MOUSE_UP
+      type: SuperGraphActionTypes.NODE_MOUSE_UP
       payload: { event: MouseEvent<HTMLElement>; id: NodeProps['id'] }
     }
   | {
-      type: GraphActionTypes.VERTEX_MOUSE_DOWN
+      type: SuperGraphActionTypes.VERTEX_MOUSE_DOWN
       payload: {
         event: MouseEvent<HTMLButtonElement>
         id: VertexProps['id']
@@ -74,7 +74,7 @@ export type GraphAction =
       }
     }
   | {
-      type: GraphActionTypes.VERTEX_MOUSE_UP
+      type: SuperGraphActionTypes.VERTEX_MOUSE_UP
       payload: {
         event: MouseEvent<HTMLButtonElement>
         id: VertexProps['id']
@@ -83,18 +83,18 @@ export type GraphAction =
       }
     }
   | {
-      type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE
+      type: SuperGraphActionTypes.NUMBER_NODE_SLIDER_CHANGE
       payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
     }
   | {
-      type: GraphActionTypes.NODE_VALUE_CHANGE
+      type: SuperGraphActionTypes.NODE_VALUE_CHANGE
       payload: {
         value: number | boolean | string | undefined
         id: string | undefined
       }
     }
   | {
-      type: GraphActionTypes.VERTEX_VALUE_CHANGE
+      type: SuperGraphActionTypes.VERTEX_VALUE_CHANGE
       payload: {
         value: VertexProps['value']
         id: VertexProps['id']
@@ -102,14 +102,14 @@ export type GraphAction =
       }
     }
   | {
-      type: GraphActionTypes.EDGE_VALUE_CHANGE
+      type: SuperGraphActionTypes.EDGE_VALUE_CHANGE
       payload: {
         value: EdgeProps['value']
         targetId: EdgeProps['targetId']
       }
     }
   | {
-      type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE
+      type: SuperGraphActionTypes.MATH_NODE_OPERATION_CHANGE
       payload: { event: ChangeEvent<HTMLSelectElement>; id: NodeProps['id'] }
     }
 
@@ -119,46 +119,52 @@ export function edgeValueChange({
 }: {
   value: EdgeProps['value']
   targetId: EdgeProps['targetId']
-}): GraphAction {
+}): SuperGraphAction {
   return {
-    type: GraphActionTypes.EDGE_VALUE_CHANGE,
+    type: SuperGraphActionTypes.EDGE_VALUE_CHANGE,
     payload: { value, targetId },
   }
 }
 
-export function graphMouseMove(event: MouseEvent<HTMLDivElement>): GraphAction {
+export function graphMouseMove(
+  event: MouseEvent<HTMLDivElement>
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.GRAPH_MOUSE_MOVE,
+    type: SuperGraphActionTypes.GRAPH_MOUSE_MOVE,
     payload: { event },
   }
 }
 
-export function graphMouseUp(event: MouseEvent<HTMLDivElement>): GraphAction {
+export function graphMouseUp(
+  event: MouseEvent<HTMLDivElement>
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.GRAPH_MOUSE_UP,
+    type: SuperGraphActionTypes.GRAPH_MOUSE_UP,
     payload: { event },
   }
 }
 
 export function graphMouseLeave(
   event: MouseEvent<HTMLDivElement>
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.GRAPH_MOUSE_LEAVE,
+    type: SuperGraphActionTypes.GRAPH_MOUSE_LEAVE,
     payload: { event },
   }
 }
 
-export function graphDrop(event: DragEvent<HTMLDivElement>): GraphAction {
+export function graphDrop(event: DragEvent<HTMLDivElement>): SuperGraphAction {
   return {
-    type: GraphActionTypes.GRAPH_DROP,
+    type: SuperGraphActionTypes.GRAPH_DROP,
     payload: { event },
   }
 }
 
-export function graphWheel(event: WheelEvent<HTMLDivElement>): GraphAction {
+export function graphWheel(
+  event: WheelEvent<HTMLDivElement>
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.GRAPH_WHEEL,
+    type: SuperGraphActionTypes.GRAPH_WHEEL,
     payload: { event },
   }
 }
@@ -166,9 +172,9 @@ export function graphWheel(event: WheelEvent<HTMLDivElement>): GraphAction {
 export function nodeDragStart(
   event: DragEvent<HTMLElement>,
   variant: string
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.NODE_DRAG_START,
+    type: SuperGraphActionTypes.NODE_DRAG_START,
     payload: { event, variant },
   }
 }
@@ -176,9 +182,9 @@ export function nodeDragStart(
 export function nodeValueChange(memoizedPayload: {
   value: NodeProps['value']
   id: NodeProps['id']
-}): GraphAction {
+}): SuperGraphAction {
   return {
-    type: GraphActionTypes.NODE_VALUE_CHANGE,
+    type: SuperGraphActionTypes.NODE_VALUE_CHANGE,
     payload: memoizedPayload,
   }
 }
@@ -186,9 +192,9 @@ export function nodeValueChange(memoizedPayload: {
 export function nodeMouseDown(
   event: MouseEvent<HTMLButtonElement>,
   id: NodeProps['id']
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.NODE_MOUSE_DOWN,
+    type: SuperGraphActionTypes.NODE_MOUSE_DOWN,
     payload: { event, id },
   }
 }
@@ -196,9 +202,9 @@ export function nodeMouseDown(
 export function nodeMouseUp(
   event: MouseEvent<HTMLElement>,
   id: NodeProps['id']
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.NODE_MOUSE_UP,
+    type: SuperGraphActionTypes.NODE_MOUSE_UP,
     payload: { event, id },
   }
 }
@@ -206,9 +212,9 @@ export function nodeMouseUp(
 export function numberNodeSliderChange(
   event: ChangeEvent<HTMLInputElement>,
   id: NodeProps['id']
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.NUMBER_NODE_SLIDER_CHANGE,
+    type: SuperGraphActionTypes.NUMBER_NODE_SLIDER_CHANGE,
     payload: { event, id },
   }
 }
@@ -216,9 +222,9 @@ export function numberNodeSliderChange(
 export function mathNodeOperationChange(
   event: ChangeEvent<HTMLSelectElement>,
   id: NodeProps['id']
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.MATH_NODE_OPERATION_CHANGE,
+    type: SuperGraphActionTypes.MATH_NODE_OPERATION_CHANGE,
     payload: { event, id },
   }
 }
@@ -227,9 +233,9 @@ export function vertexValueChange(memoizedPayload: {
   value: VertexProps['value']
   id: VertexProps['id']
   nodeId: VertexProps['nodeId']
-}): GraphAction {
+}): SuperGraphAction {
   return {
-    type: GraphActionTypes.VERTEX_VALUE_CHANGE,
+    type: SuperGraphActionTypes.VERTEX_VALUE_CHANGE,
     payload: memoizedPayload,
   }
 }
@@ -240,9 +246,9 @@ export function vertexMouseDown(
   value: VertexProps['value'],
   ref: RefObject<HTMLButtonElement>,
   nodeId: VertexProps['nodeId']
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.VERTEX_MOUSE_DOWN,
+    type: SuperGraphActionTypes.VERTEX_MOUSE_DOWN,
     payload: { event, id, value, ref, nodeId },
   }
 }
@@ -252,9 +258,9 @@ export function vertexMouseUp(
   id: VertexProps['id'],
   value: VertexProps['value'],
   ref: RefObject<HTMLButtonElement>
-): GraphAction {
+): SuperGraphAction {
   return {
-    type: GraphActionTypes.VERTEX_MOUSE_UP,
+    type: SuperGraphActionTypes.VERTEX_MOUSE_UP,
     payload: { event, id, value, ref },
   }
 }

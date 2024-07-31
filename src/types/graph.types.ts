@@ -1,6 +1,6 @@
 import { EdgeProps, NodeProps } from '@/types'
 
-export interface GraphState {
+export interface SuperGraphState {
   nodes: NodeProps[]
   edges: EdgeProps[]
 }
