@@ -1,5 +1,5 @@
 export * from './Edge'
-export * from './Graph'
+export * from './SuperGraph'
 export * from './Library'
 export * from './Node'
 export * from './Properties'
