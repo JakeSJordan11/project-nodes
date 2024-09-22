@@ -43,7 +43,7 @@ function moveActiveNode(
   })
 }
 
-function moveStream(
+function moveEdge(
   state: SuperGraphState,
   action: SuperGraphAction & { type: SuperGraphActionTypes.GRAPH_MOUSE_MOVE }
 ) {
@@ -142,7 +142,7 @@ function scrolledgesOnGraph(
 }
 
 // remove edges that are not linked to a vertex
-function removeUnlinkedStreams(state: SuperGraphState) {
+function removeUnlinkedEdges(state: SuperGraphState) {
   const { edges } = state
 
   return edges
@@ -173,7 +173,7 @@ function removeUnlinkedStreams(state: SuperGraphState) {
     .filter((edge) => edge.status === EdgeStatus.Connected)
 }
 
-function resetActivePortStatus(state: SuperGraphState) {
+function resetActiveVertexStatus(state: SuperGraphState) {
   const { nodes } = state
   return nodes.map((node) => {
     return {
@@ -331,6 +331,52 @@ function initializeNode(
         },
       ]
     }
+    case NodeVariant.Addition: {
+      return [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          variant: NodeVariant.Addition,
+          isDragging: true,
+          isSelected: false,
+          title: 'addition',
+          value: undefined,
+          mathOperation: MathOperation.Addition,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          vertices: [
+            {
+              id: crypto.randomUUID(),
+              kind: VertexKind.Input,
+              status: VertexStatus.Idle,
+              value: 0,
+            },
+            {
+              id: crypto.randomUUID(),
+              kind: VertexKind.Input,
+              status: VertexStatus.Idle,
+              value: 0,
+            },
+            {
+              id: crypto.randomUUID(),
+              kind: VertexKind.Output,
+              status: VertexStatus.Idle,
+              value: 0,
+            },
+          ],
+        },
+      ]
+    }
     default: {
       return nodes
     }
@@ -367,7 +413,7 @@ function beginDraggingNode(
   })
 }
 
-function activatePort(
+function activateVertex(
   state: SuperGraphState,
   action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_DOWN }
 ) {
@@ -389,7 +435,7 @@ function activatePort(
   })
 }
 
-function InitializeStream(
+function InitializeEdge(
   state: SuperGraphState,
   action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_DOWN }
 ) {
@@ -417,7 +463,7 @@ function InitializeStream(
   ]
 }
 
-function createPortConnection(
+function createVertexConnection(
   state: SuperGraphState,
   action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_UP }
 ) {
@@ -448,7 +494,7 @@ function createPortConnection(
   })
 }
 
-function createStreamConnection(
+function createEdgeConnection(
   state: SuperGraphState,
   action: SuperGraphAction & { type: SuperGraphActionTypes.VERTEX_MOUSE_UP }
 ) {
@@ -624,7 +670,7 @@ export function superGraphReducer(
       return {
         ...state,
         nodes: moveActiveNode(state, action),
-        edges: moveStream(state, action),
+        edges: moveEdge(state, action),
       }
     }
     case SuperGraphActionTypes.GRAPH_WHEEL: {
@@ -637,15 +683,15 @@ export function superGraphReducer(
     case SuperGraphActionTypes.GRAPH_MOUSE_UP: {
       return {
         ...state,
-        nodes: resetActivePortStatus(state),
-        edges: removeUnlinkedStreams(state),
+        nodes: resetActiveVertexStatus(state),
+        edges: removeUnlinkedEdges(state),
       }
     }
     case SuperGraphActionTypes.GRAPH_MOUSE_LEAVE: {
       return {
         ...state,
         nodes: resetDraggingNodeStatus(state),
-        edges: removeUnlinkedStreams(state),
+        edges: removeUnlinkedEdges(state),
       }
     }
     case SuperGraphActionTypes.GRAPH_DROP: {
@@ -675,15 +721,15 @@ export function superGraphReducer(
     case SuperGraphActionTypes.VERTEX_MOUSE_DOWN: {
       return {
         ...state,
-        nodes: activatePort(state, action),
-        edges: InitializeStream(state, action),
+        nodes: activateVertex(state, action),
+        edges: InitializeEdge(state, action),
       }
     }
     case SuperGraphActionTypes.VERTEX_MOUSE_UP: {
       return {
         ...state,
-        nodes: createPortConnection(state, action),
-        edges: createStreamConnection(state, action),
+        nodes: createVertexConnection(state, action),
+        edges: createEdgeConnection(state, action),
       }
     }
     case SuperGraphActionTypes.NUMBER_NODE_SLIDER_CHANGE: {

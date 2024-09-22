@@ -3,6 +3,7 @@ import { VertexProps } from '@/types'
 export enum NodeVariant {
   Number = 'number',
   Math = 'math',
+  Addition = 'addition',
 }
 
 export enum MathOperation {
