@@ -35,6 +35,13 @@ export enum GraphActionTypes {
   STREAM_VALUE_CHANGE = 'stream_value_change',
   TRANSLATION_X_CHANGE = 'translation_x_change',
   TRANSLATION_Y_CHANGE = 'translation_y_change',
+  ROTATION_CHANGE = 'rotation_change',
+  SCALE_X_CHANGE = 'scale_x_change',
+  SCALE_Y_CHANGE = 'scale_y_change',
+  COLOR_R_CHANGE = 'color_r_change',
+  COLOR_G_CHANGE = 'color_g_change',
+  COLOR_B_CHANGE = 'color_b_change',
+  COLOR_A_CHANGE = 'color_a_change',
 }
 
 export interface GraphState {
@@ -133,6 +140,34 @@ export type GraphAction =
     }
   | {
       type: GraphActionTypes.TRANSLATION_Y_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.ROTATION_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.SCALE_X_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.SCALE_Y_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.COLOR_R_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.COLOR_G_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.COLOR_B_CHANGE
+      payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
+    }
+  | {
+      type: GraphActionTypes.COLOR_A_CHANGE
       payload: { event: ChangeEvent<HTMLInputElement>; id: NodeProps['id'] }
     }
 

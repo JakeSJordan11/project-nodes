@@ -37,6 +37,15 @@ export interface NodeProps {
   isSelected: boolean // TODO: derive this state from node variant
   translationX: number // TODO: derive this state from node variant
   translationY: number // TODO: derive this state from node variant
+  rotation: number
+  scaleX: number
+  scaleY: number
+  color: {
+    r: number
+    g: number
+    b: number
+    a: number
+  }
 
   value: any // TODO: derive this state from node variant
   offset: { x: number; y: number } // TODO: derive this state this may need to be created locally, but I don't think it needs to be in the global state
@@ -53,6 +62,10 @@ export function Node({
   variant,
   translationX,
   translationY,
+  rotation,
+  scaleX,
+  scaleY,
+  color,
 }: NodeProps) {
   const { dispatch } = useGraph()
   const memoizedPayload = useMemo(() => ({ value: value, id: id }), [value, id])
@@ -100,7 +113,11 @@ export function Node({
         <WebGPUComponent
           translationX={translationX}
           translationY={translationY}
+          rotation={rotation}
+          scaleX={scaleX}
+          scaleY={scaleY}
           ports={ports}
+          color={color}
         />
       ) : (
         <output className={styles.value}>{value}</output>
@@ -119,11 +136,19 @@ export function Node({
 export function WebGPUComponent({
   translationX,
   translationY,
+  rotation,
+  scaleX,
+  scaleY,
   ports,
+  color,
 }: {
   translationX: NodeProps['translationX']
   translationY: NodeProps['translationY']
+  rotation: NodeProps['rotation']
+  scaleX: NodeProps['scaleX']
+  scaleY: NodeProps['scaleY']
   ports: NodeProps['ports']
+  color: NodeProps['color']
 }) {
   const { device, presentationFormat } = useWebGPU()
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -211,8 +236,8 @@ export function WebGPUComponent({
         },
       })
 
-      // color, resolution, translation
-      const uniformBufferSize = (4 + 2 + 2) * 4
+      // color, resolution, translation, rotation, scale
+      const uniformBufferSize = (4 + 2 + 2 + 2 + 2) * 4
       const uniformBuffer = device.createBuffer({
         label: 'uniforms',
         size: uniformBufferSize,
@@ -225,6 +250,8 @@ export function WebGPUComponent({
       const kColorOffset = 0
       const kResolutionOffset = 4
       const kTranslationOffset = 6
+      const kRotationOffset = 8
+      const kScaleOffset = 10
 
       const colorValue = uniformValues.subarray(kColorOffset, kColorOffset + 4)
       const resolutionValue = uniformValues.subarray(
@@ -235,9 +262,14 @@ export function WebGPUComponent({
         kTranslationOffset,
         kTranslationOffset + 2
       )
+      const rotationValue = uniformValues.subarray(
+        kRotationOffset,
+        kRotationOffset + 2
+      )
+      const scaleValue = uniformValues.subarray(kScaleOffset, kScaleOffset + 2)
 
       // The color will not change so let's set it once at init time
-      colorValue.set([1, 1, 0, 1])
+      // colorValue.set([1, 1, 0, 1])
 
       const { vertexData, indexData, numVertices } = createFVertices()
       const vertexBuffer = device.createBuffer({
@@ -271,10 +303,13 @@ export function WebGPUComponent({
       }
 
       const settings = {
-        tranlastion: [
-          Number(ports[0].value) >= 0 ? Number(ports[0].value) : translationX,
-          Number(ports[1].value) >= 0 ? Number(ports[1].value) : translationY,
+        tranlastion: [translationX, translationY],
+        rotation: [
+          Math.sin((rotation * Math.PI) / 180),
+          Math.cos((rotation * Math.PI) / 180),
         ],
+        scale: [scaleX, scaleY],
+        color: [color.r, color.g, color.b, color.a],
       }
 
       function render() {
@@ -299,6 +334,9 @@ export function WebGPUComponent({
         // Set the uniform values in our JavaScript side Float32Array
         resolutionValue.set([canvas.width, canvas.height])
         translationValue.set(settings.tranlastion)
+        rotationValue.set(settings.rotation)
+        scaleValue.set(settings.scale)
+        colorValue.set(settings.color)
 
         // upload the uniform values to the uniform buffer
         device.queue.writeBuffer(uniformBuffer, 0, uniformValues)
@@ -334,7 +372,17 @@ export function WebGPUComponent({
     }
 
     main()
-  }, [translationX, translationY, device, presentationFormat, ports])
+  }, [
+    translationX,
+    translationY,
+    rotation,
+    scaleX,
+    scaleY,
+    color,
+    device,
+    presentationFormat,
+    ports,
+  ])
 
   return <canvas ref={canvasRef} className={styles.canvas} />
 }

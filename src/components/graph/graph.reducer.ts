@@ -342,6 +342,15 @@ function initializeNode(
           value: undefined,
           translationX: 0,
           translationY: 0,
+          scaleX: 1,
+          scaleY: 1,
+          rotation: 0,
+          color: {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 1, // default alpha value
+          },
           position: {
             x: clientX,
             y: clientY,
@@ -357,21 +366,9 @@ function initializeNode(
           ports: [
             {
               id: crypto.randomUUID(),
-              kind: PortKind.Input,
-              status: PortStatus.Idle,
-              value: undefined,
-            },
-            {
-              id: crypto.randomUUID(),
-              kind: PortKind.Input,
-              status: PortStatus.Idle,
-              value: undefined,
-            },
-            {
-              id: crypto.randomUUID(),
               kind: PortKind.Output,
               status: PortStatus.Idle,
-              value: 0,
+              value: undefined,
             },
           ],
         },
@@ -772,9 +769,7 @@ export function graphReducer(
           if (node.variant !== NodeVariant.WebGPU) return node
           return {
             ...node,
-            translationX: Number(node.ports[0].value)
-              ? Number(node.ports[0].value)
-              : Number(value),
+            translationX: Number(value),
           }
         }),
       }
@@ -789,9 +784,131 @@ export function graphReducer(
           if (node.variant !== NodeVariant.WebGPU) return node
           return {
             ...node,
-            translationY: Number(node.ports[1].value)
-              ? Number(node.ports[1].value)
-              : Number(value),
+            translationY: Number(value),
+          }
+        }),
+      }
+    }
+
+    case GraphActionTypes.ROTATION_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            rotation: Number(value),
+          }
+        }),
+      }
+    }
+
+    case GraphActionTypes.SCALE_X_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            scaleX: Number(value),
+          }
+        }),
+      }
+    }
+
+    case GraphActionTypes.SCALE_Y_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            scaleY: Number(value),
+          }
+        }),
+      }
+    }
+
+    case GraphActionTypes.COLOR_R_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            color: {
+              ...node.color,
+              r: Number(value),
+            },
+          }
+        }),
+      }
+    }
+
+    case GraphActionTypes.COLOR_G_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            color: {
+              ...node.color,
+              g: Number(value),
+            },
+          }
+        }),
+      }
+    }
+
+    case GraphActionTypes.COLOR_B_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            color: {
+              ...node.color,
+              b: Number(value),
+            },
+          }
+        }),
+      }
+    }
+
+    case GraphActionTypes.COLOR_A_CHANGE: {
+      const { event, id } = action.payload
+      const { value } = event.target
+      return {
+        ...state,
+        nodes: state.nodes.map((node) => {
+          if (node.id !== id) return node
+          if (node.variant !== NodeVariant.WebGPU) return node
+          return {
+            ...node,
+            color: {
+              ...node.color,
+              a: Number(value),
+            },
           }
         }),
       }
