@@ -49,5 +49,4 @@
   color: var(--color-text-primary);
   display: grid;
   place-items: center;
-  overflow-y: scroll;
 }

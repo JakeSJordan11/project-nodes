@@ -7,7 +7,6 @@
   place-items: center;
   color: var(--color-text-primary);
   box-shadow: var(--shadow-primary);
-  overflow: scroll;
   user-select: none;
 }
 

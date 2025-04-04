@@ -1,1 +1,1 @@
-export * from './SuperGraph.provider'
+export * from './supergraphProvider'

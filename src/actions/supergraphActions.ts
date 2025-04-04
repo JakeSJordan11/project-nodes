@@ -1,6 +1,6 @@
-import { EdgeProps } from '@/types/edge.types'
-import { NodeProps } from '@/types/node.types'
-import { VertexProps } from '@/types/vertex.types'
+import { EdgeProps } from '@/types/edgeTypes'
+import { NodeProps } from '@/types/nodeTypes'
+import { VertexProps } from '@/types/vertexTypes'
 import {
   ChangeEvent,
   DragEvent,

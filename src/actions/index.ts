@@ -1,1 +1,1 @@
-export * from './superGraph.actions'
+export * from './supergraphActions'

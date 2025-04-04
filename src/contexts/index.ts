@@ -1,1 +1,1 @@
-export * from './SuperGraph.context'
+export * from './SuperGraphContext'

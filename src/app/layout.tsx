@@ -1,7 +1,12 @@
 import '@/styles/globals.css'
-import { inter } from '@/utilities'
 import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
 import type { ReactNode } from 'react'
+
+export const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: 'Project-Nodes',
