@@ -1,7 +1,10 @@
+import { ReactComponentElement } from 'react'
 import { GraphAction, GraphActionTypes, GraphState } from '.'
 import { MathOperation, NodeVariant } from '../node'
+import { Noise1 } from '../node/variants/noise1'
 import { PortKind, PortStatus } from '../port'
 import { StreamStatus } from '../stream'
+import { Noise2 } from '../node/variants/noise2'
 
 // this is here because when the border around the graph was created it messed up the svg positioning
 // this is a temporary fix until a better solution is found
@@ -257,8 +260,6 @@ function initializeNode(
           isSelected: false,
           title: 'number',
           value: 0,
-          translationX: 0,
-          translationY: 0,
           position: {
             x: clientX,
             y: clientY,
@@ -293,8 +294,6 @@ function initializeNode(
           title: 'addition',
           value: undefined,
           mathOperation: MathOperation.Addition,
-          translationX: 0,
-          translationY: 0,
           position: {
             x: clientX,
             y: clientY,
@@ -330,27 +329,16 @@ function initializeNode(
         },
       ]
     }
-    case NodeVariant.WebGPU: {
+    case NodeVariant.Noise1: {
       return [
         ...nodes,
         {
           id: crypto.randomUUID(),
-          variant: NodeVariant.WebGPU,
+          variant: NodeVariant.Noise1,
           isDragging: true,
           isSelected: false,
-          title: 'webgpu',
+          title: 'noise 1',
           value: undefined,
-          translationX: 0,
-          translationY: 0,
-          scaleX: 1,
-          scaleY: 1,
-          rotation: 0,
-          color: {
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 1, // default alpha value
-          },
           position: {
             x: clientX,
             y: clientY,
@@ -364,6 +352,84 @@ function initializeNode(
             y: 0,
           },
           ports: [
+            {
+              id: crypto.randomUUID(),
+              kind: PortKind.Output,
+              status: PortStatus.Idle,
+              value: undefined,
+            },
+          ],
+        },
+      ]
+    }
+    case NodeVariant.Noise2: {
+      return [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          variant: NodeVariant.Noise2,
+          isDragging: true,
+          isSelected: false,
+          title: 'noise 2',
+          value: undefined,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          ports: [
+            {
+              id: crypto.randomUUID(),
+              kind: PortKind.Output,
+              status: PortStatus.Idle,
+              value: undefined,
+            },
+          ],
+        },
+      ]
+    }
+    case NodeVariant.Blend: {
+      return [
+        ...nodes,
+        {
+          id: crypto.randomUUID(),
+          variant: NodeVariant.Noise2,
+          isDragging: true,
+          isSelected: false,
+          title: 'blend',
+          value: undefined,
+          position: {
+            x: clientX,
+            y: clientY,
+          },
+          offset: {
+            x: offsetX,
+            y: offsetY,
+          },
+          scrollPosition: {
+            x: 0,
+            y: 0,
+          },
+          ports: [
+            {
+              id: crypto.randomUUID(),
+              kind: PortKind.Input,
+              status: PortStatus.Idle,
+              value: undefined,
+            },
+            {
+              id: crypto.randomUUID(),
+              kind: PortKind.Input,
+              status: PortStatus.Idle,
+              value: undefined,
+            },
             {
               id: crypto.randomUUID(),
               kind: PortKind.Output,
@@ -757,160 +823,6 @@ export function graphReducer(
       return {
         ...state,
         nodes: mathNodeOperationChange(state, action),
-      }
-    }
-    case GraphActionTypes.TRANSLATION_X_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            translationX: Number(value),
-          }
-        }),
-      }
-    }
-    case GraphActionTypes.TRANSLATION_Y_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            translationY: Number(value),
-          }
-        }),
-      }
-    }
-
-    case GraphActionTypes.ROTATION_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            rotation: Number(value),
-          }
-        }),
-      }
-    }
-
-    case GraphActionTypes.SCALE_X_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            scaleX: Number(value),
-          }
-        }),
-      }
-    }
-
-    case GraphActionTypes.SCALE_Y_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            scaleY: Number(value),
-          }
-        }),
-      }
-    }
-
-    case GraphActionTypes.COLOR_R_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            color: {
-              ...node.color,
-              r: Number(value),
-            },
-          }
-        }),
-      }
-    }
-
-    case GraphActionTypes.COLOR_G_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            color: {
-              ...node.color,
-              g: Number(value),
-            },
-          }
-        }),
-      }
-    }
-
-    case GraphActionTypes.COLOR_B_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            color: {
-              ...node.color,
-              b: Number(value),
-            },
-          }
-        }),
-      }
-    }
-
-    case GraphActionTypes.COLOR_A_CHANGE: {
-      const { event, id } = action.payload
-      const { value } = event.target
-      return {
-        ...state,
-        nodes: state.nodes.map((node) => {
-          if (node.id !== id) return node
-          if (node.variant !== NodeVariant.WebGPU) return node
-          return {
-            ...node,
-            color: {
-              ...node.color,
-              a: Number(value),
-            },
-          }
-        }),
       }
     }
 

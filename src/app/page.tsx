@@ -1,9 +1,9 @@
-import { Graph, GraphProvider } from '@/components/graph'
-import { Library } from '@/components/library'
-import { Output } from '@/components/output'
-import { Properties } from '@/components/properties'
 import styles from './page.module.css'
-import { WebGPUProvider } from '@/context/webgpu.context'
+import { Library } from '../components/library'
+import { WebGPUProvider } from '../context/webgpu.context'
+import { Graph, GraphProvider } from '../components/graph'
+import { Output } from '../components/output'
+import { Properties } from '../components/properties'
 
 export default function Home() {
   return (

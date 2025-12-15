@@ -15,10 +15,6 @@
     "jsx": "preserve",
     "types": ["@webgpu/types"],
     "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
     "plugins": [
       {
         "name": "next"

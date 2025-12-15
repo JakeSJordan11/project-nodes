@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, type MouseEvent } from 'react'
+import { RefObject, useEffect, useMemo, useRef, type MouseEvent } from 'react'
 import { GraphActionTypes, useGraph } from '../graph'
 import styles from './port.module.css'
 
@@ -24,7 +24,7 @@ export interface PortProps {
 }
 
 export function Port({ id, value, nodeId }: PortProps) {
-  const ref = useRef<HTMLButtonElement>(null)
+  const ref = useRef<HTMLButtonElement>(null) as RefObject<HTMLButtonElement>
   const { dispatch } = useGraph()
   const memoizedPayload = useMemo(
     () => ({ value: value, id: id, nodeId: nodeId }),
