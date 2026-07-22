@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import noise1Shader from './noise1.wgsl'
 
 export function Noise1({ canvasStyle }: { canvasStyle: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -10,7 +11,7 @@ export function Noise1({ canvasStyle }: { canvasStyle: string }) {
       const hasBGRA8unormStorage = adapter?.features.has('bgra8unorm-storage')
       const device = await adapter?.requestDevice({
         requiredFeatures: hasBGRA8unormStorage
-          ? (['bgra8unorm-storage'] as Iterable<GPUFeatureName>)
+          ? (['bgra8unorm-storage'] as GPUFeatureName[])
           : [],
       })
 
@@ -35,22 +36,10 @@ export function Noise1({ canvasStyle }: { canvasStyle: string }) {
 
       const module = device.createShaderModule({
         label: 'noise1',
-        code: `@group(0) @binding(0) var tex : texture_storage_2d<${presentationFormat}, write>;
-
-        @compute @workgroup_size(1)
-        fn cs(@builtin(global_invocation_id) id : vec3u) {
-          let size = textureDimensions(tex);
-          if (id.x >= size.x || id.y >= size.y) {
-            return;
-          }
-
-          // cheap hash
-          let seed = id.x * 1973u + id.y * 9277u + 89173u;
-          let n = f32((seed << 13u) ^ seed) * 0.0000001;
-          let v = fract(sin(n) * 43758.5453);
-
-          textureStore(tex, id.xy, vec4f(v, v, v, 1.0));
-        }`,
+        code: noise1Shader.replace(
+          /\$\{presentationFormat\}/g,
+          presentationFormat,
+        ),
       })
 
       const pipeline = device.createComputePipeline({
@@ -93,11 +82,11 @@ export function Noise1({ canvasStyle }: { canvasStyle: string }) {
           const height = entry.contentBoxSize[0].blockSize
           canvas.width = Math.max(
             1,
-            Math.min(width, device.limits.maxTextureDimension2D)
+            Math.min(width, device.limits.maxTextureDimension2D),
           )
           canvas.height = Math.max(
             1,
-            Math.min(height, device.limits.maxTextureDimension2D)
+            Math.min(height, device.limits.maxTextureDimension2D),
           )
 
           render()

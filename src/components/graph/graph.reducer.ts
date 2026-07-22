@@ -52,18 +52,6 @@ function moveStream(
     // if stream is linked, update target and source
     // this should only be when moving a node with a stream attached
     if (stream.status === StreamStatus.Connected) {
-      if (stream.status === StreamStatus.Connected) {
-        const { source, target } = stream
-        const { x: sourceX, y: sourceY } = getCenterCoords(source)
-        if (!target) throw new Error('Invalid target')
-        const { x: targetX, y: targetY } = getCenterCoords(target)
-
-        return {
-          ...stream,
-          m: `${sourceX} ${sourceY}`,
-          l: `${targetX} ${targetY}`,
-        }
-      }
       const { source, target } = stream
       const { x: sourceX, y: sourceY } = getCenterCoords(source)
       if (!target) throw new Error('Invalid target')
@@ -86,6 +74,7 @@ function moveStream(
     }
   })
 }
+
 
 function scrollNodesOnGraph(
   state: GraphState,

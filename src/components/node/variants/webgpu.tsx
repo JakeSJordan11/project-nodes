@@ -1,3 +1,9 @@
+import { useEffect, useRef } from 'react'
+import { useWebGPU } from '../../../context/webgpu.context'
+import { NodeProps } from '../node'
+import styles from './webgpu.module.css'
+import shader from './webgpu.wgsl'
+
 export function WebGPUComponent({
   translationX,
   translationY,
@@ -121,15 +127,15 @@ export function WebGPUComponent({
       const colorValue = uniformValues.subarray(kColorOffset, kColorOffset + 4)
       const resolutionValue = uniformValues.subarray(
         kResolutionOffset,
-        kResolutionOffset + 2
+        kResolutionOffset + 2,
       )
       const translationValue = uniformValues.subarray(
         kTranslationOffset,
-        kTranslationOffset + 2
+        kTranslationOffset + 2,
       )
       const rotationValue = uniformValues.subarray(
         kRotationOffset,
-        kRotationOffset + 2
+        kRotationOffset + 2,
       )
       const scaleValue = uniformValues.subarray(kScaleOffset, kScaleOffset + 2)
 
@@ -222,11 +228,11 @@ export function WebGPUComponent({
           const height = entry.contentBoxSize[0].blockSize
           canvas.width = Math.max(
             1,
-            Math.min(width, device.limits.maxTextureDimension2D)
+            Math.min(width, device.limits.maxTextureDimension2D),
           )
           canvas.height = Math.max(
             1,
-            Math.min(height, device.limits.maxTextureDimension2D)
+            Math.min(height, device.limits.maxTextureDimension2D),
           )
           // re-render
 

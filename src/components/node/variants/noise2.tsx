@@ -10,7 +10,7 @@ export function Noise2({ canvasStyle }: { canvasStyle: string }) {
       const hasBGRA8unormStorage = adapter?.features.has('bgra8unorm-storage')
       const device = await adapter?.requestDevice({
         requiredFeatures: hasBGRA8unormStorage
-          ? (['bgra8unorm-storage'] as Iterable<GPUFeatureName>)
+          ? (['bgra8unorm-storage'] as GPUFeatureName[])
           : [],
       })
 
@@ -96,11 +96,11 @@ export function Noise2({ canvasStyle }: { canvasStyle: string }) {
           const height = entry.contentBoxSize[0].blockSize
           canvas.width = Math.max(
             1,
-            Math.min(width, device.limits.maxTextureDimension2D)
+            Math.min(width, device.limits.maxTextureDimension2D),
           )
           canvas.height = Math.max(
             1,
-            Math.min(height, device.limits.maxTextureDimension2D)
+            Math.min(height, device.limits.maxTextureDimension2D),
           )
 
           render()
